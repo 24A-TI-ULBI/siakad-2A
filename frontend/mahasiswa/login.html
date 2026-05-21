@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIAKAD — Login Mahasiswa</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; }
+
+    header {
+      background: #1a73e8;
+      color: white;
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    header a { color: white; text-decoration: none; font-size: 1.2rem; }
+    header h1 { font-size: 1rem; font-weight: 600; }
+
+    nav {
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0 2rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    nav a {
+      padding: 0.8rem 1.2rem;
+      text-decoration: none;
+      font-size: 0.875rem;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1px;
+    }
+    nav a.active { color: #1a73e8; border-bottom-color: #1a73e8; font-weight: 600; }
+    nav a:hover:not(.active) { color: #1a73e8; }
+
+    .container { max-width: 560px; margin: 2rem auto; padding: 0 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      padding: 1.8rem;
+    }
+    .card h2 { font-size: 1rem; color: #444; margin-bottom: 1.2rem; padding-bottom: 0.6rem; border-bottom: 1px solid #eee; }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
+    label { font-size: 0.82rem; font-weight: 600; color: #555; }
+    input {
+      padding: 0.55rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #1a73e8; }
+
+    .btn {
+      width: 100%;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: #1a73e8;
+      color: white;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+
+    .alert {
+      padding: 0.7rem 1rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert-success { background: #e6f4ea; color: #1e7e34; border: 1px solid #c3e6cb; }
+    .alert-error   { background: #fce8e6; color: #c5221f; border: 1px solid #f5c6cb; }
+
+    .result-card { display: none; }
+
+    .token-box {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      word-break: break-all;
+      margin-top: 0.5rem;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 1.5rem;
+      margin-top: 0.75rem;
+    }
+    .profile-item span { display: block; font-size: 0.75rem; color: #999; }
+    .profile-item strong { font-size: 0.875rem; }
+
+    .copy-btn {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.3rem 0.7rem;
+      background: #e8eaed;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: #dadce0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/">&#8592;</a>
+  <h1>Login Mahasiswa</h1>
+</header>
+
+<nav>
+  <a href="/mahasiswa/daftar.html">Daftar</a>
+  <a href="/mahasiswa/tambah.html">Tambah</a>
+  <a href="/mahasiswa/login.html" class="active">Login</a>
+</nav>
+
+<div class="container">
+  <div class="card">
+    <h2>Login dengan Nomor HP</h2>
+    <div id="alert" class="alert"></div>
+    <form id="form" onsubmit="submitLogin(event)">
+      <div class="form-group">
+        <label for="phone">Nomor HP *</label>
+        <input type="text" id="phone" placeholder="Masukkan nomor HP terdaftar" required>
+      </div>
+      <button type="submit" class="btn">Login</button>
+    </form>
+  </div>
+
+  <div class="card result-card" id="result-card">
+    <h2>Hasil Login</h2>
+    <p style="font-size:0.8rem;color:#888;">JWT Token:</p>
+    <div class="token-box" id="token-display"></div>
+    <button class="copy-btn" onclick="copyToken()">Salin Token</button>
+
+    <p style="font-size:0.8rem;color:#888;margin-top:1.2rem;">Profil:</p>
+    <div class="profile-grid" id="profile-display"></div>
+  </div>
+</div>
+
+<script>
+  function showAlert(type, msg) {
+    const el = document.getElementById('alert');
+    el.className = 'alert show alert-' + type;
+    el.textContent = msg;
+    setTimeout(() => el.classList.remove('show'), 5000);
+  }
+
+  async function submitLogin(e) {
+    e.preventDefault();
+    const phone = document.getElementById('phone').value.trim();
+    try {
+      const res  = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      });
+      const json = await res.json();
+      if (json.status !== 'success') throw new Error(json.message);
+
+      const { token, user } = json.data;
+      document.getElementById('token-display').textContent = token;
+      document.getElementById('profile-display').innerHTML = `
+        <div class="profile-item"><span>NPM</span><strong>${user.npm}</strong></div>
+        <div class="profile-item"><span>Nama</span><strong>${user.nama}</strong></div>
+        <div class="profile-item"><span>No. HP</span><strong>${user.phone}</strong></div>
+        <div class="profile-item"><span>Prodi</span><strong>${user.prodi || '-'}</strong></div>
+      `;
+      document.getElementById('result-card').style.display = 'block';
+      showAlert('success', 'Login berhasil!');
+    } catch (e) {
+      document.getElementById('result-card').style.display = 'none';
+      showAlert('error', 'Login gagal: ' + e.message);
+    }
+  }
+
+  function copyToken() {
+    const text = document.getElementById('token-display').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Tersalin!';
+      setTimeout(() => btn.textContent = 'Salin Token', 2000);
+    });
+  }
+</script>
+</body>
+</html>

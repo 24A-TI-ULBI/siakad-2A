@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIAKAD — Daftar Mahasiswa</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; }
+
+    header {
+      background: #1a73e8;
+      color: white;
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    header a { color: white; text-decoration: none; font-size: 1.2rem; }
+    header h1 { font-size: 1rem; font-weight: 600; }
+
+    nav {
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0 2rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+    nav a {
+      padding: 0.8rem 1.2rem;
+      text-decoration: none;
+      font-size: 0.875rem;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1px;
+    }
+    nav a.active { color: #1a73e8; border-bottom-color: #1a73e8; font-weight: 600; }
+    nav a:hover:not(.active) { color: #1a73e8; }
+
+    .container { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+    .card-header h2 { font-size: 1rem; color: #444; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th {
+      background: #f8f9fa;
+      text-align: left;
+      padding: 0.65rem 0.8rem;
+      border-bottom: 2px solid #dee2e6;
+      color: #555;
+      font-weight: 600;
+    }
+    td { padding: 0.65rem 0.8rem; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    tr:hover td { background: #fafafa; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.45rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary   { background: #1a73e8; color: white; }
+    .btn-secondary { background: #e8eaed; color: #333; }
+    .btn-danger    { background: #ea4335; color: white; padding: 0.35rem 0.7rem; font-size: 0.8rem; }
+
+    .alert {
+      padding: 0.7rem 1rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert-success { background: #e6f4ea; color: #1e7e34; border: 1px solid #c3e6cb; }
+    .alert-error   { background: #fce8e6; color: #c5221f; border: 1px solid #f5c6cb; }
+
+    .empty-msg { text-align: center; color: #aaa; padding: 2.5rem; font-size: 0.875rem; }
+    .loading   { text-align: center; color: #888; padding: 2rem; font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/">&#8592;</a>
+  <h1>Daftar Mahasiswa</h1>
+</header>
+
+<nav>
+  <a href="/mahasiswa/daftar.html" class="active">Daftar</a>
+  <a href="/mahasiswa/tambah.html">Tambah</a>
+  <a href="/mahasiswa/login.html">Login</a>
+</nav>
+
+<div class="container">
+  <div id="alert" class="alert"></div>
+  <div class="card">
+    <div class="card-header">
+      <h2>Data Semua Mahasiswa</h2>
+      <div style="display:flex;gap:0.5rem;">
+        <a href="/mahasiswa/tambah.html" class="btn btn-primary">+ Tambah</a>
+        <button class="btn btn-secondary" onclick="loadData()">Refresh</button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>NPM</th>
+          <th>Nama</th>
+          <th>Email</th>
+          <th>No. HP</th>
+          <th>Prodi</th>
+          <th>Angkatan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="7" class="loading">Memuat data...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function showAlert(type, msg) {
+    const el = document.getElementById('alert');
+    el.className = 'alert show alert-' + type;
+    el.textContent = msg;
+    setTimeout(() => el.classList.remove('show'), 4000);
+  }
+
+  async function loadData() {
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '<tr><td colspan="7" class="loading">Memuat data...</td></tr>';
+    try {
+      const res  = await fetch('/mahasiswa');
+      const json = await res.json();
+      if (json.status !== 'success') throw new Error(json.message);
+
+      const data = json.data;
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-msg">Belum ada data mahasiswa.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(m => `
+        <tr>
+          <td>${m.npm}</td>
+          <td>${m.nama}</td>
+          <td>${m.email || '-'}</td>
+          <td>${m.phone}</td>
+          <td>${m.prodi || '-'}</td>
+          <td>${m.angkatan || '-'}</td>
+          <td>
+            <button class="btn btn-danger" onclick="hapus('${m.npm}')">Hapus</button>
+          </td>
+        </tr>`).join('');
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="7" class="loading" style="color:#c5221f;">Gagal memuat: ' + e.message + '</td></tr>';
+    }
+  }
+
+  async function hapus(npm) {
+    if (!confirm('Hapus mahasiswa NPM ' + npm + '?')) return;
+    try {
+      const res  = await fetch('/mahasiswa/' + npm, { method: 'DELETE' });
+      const json = await res.json();
+      if (json.status !== 'success') throw new Error(json.message);
+      showAlert('success', 'Data berhasil dihapus.');
+      loadData();
+    } catch (e) {
+      showAlert('error', 'Gagal menghapus: ' + e.message);
+    }
+  }
+
+  loadData();
+</script>
+</body>
+</html>
