@@ -542,10 +542,10 @@ Frontend **Halaman Portal Berita**
 | 10 | Prestasi (CRUD) | Kategori Prestasi | Halaman Input Prestasi | isa |
 | 11 | Alumni (CRUD) | Lowongan Kerja (CRUD) | Halaman Alumni & Lowongan | Faris |
 | 12 | Ormawa (CRUD) | Kegiatan Ormawa (CRUD) | Halaman Data Ormawa | arip |
-| 13 | Notifikasi (CRUD) | Riwayat Notifikasi | Halaman Notifikasi | - |
-| 14 | Kuesioner (CRUD) | Jawaban Kuesioner | Halaman Kuesioner | - |
-| 15 | Pembayaran SPP (CRUD) | Riwayat Pembayaran | Halaman Tagihan SPP | - |
-| 16 | Surat Keterangan (CRUD) | Pengajuan Surat | Halaman Pengajuan Surat | - |
+| 13 | Notifikasi (CRUD) | Riwayat Notifikasi | Halaman Notifikasi | ridwan |
+| 14 | Kuesioner (CRUD) | Jawaban Kuesioner | Halaman Kuesioner | samsi |
+| 15 | Pembayaran SPP (CRUD) | Riwayat Pembayaran | Halaman Tagihan SPP | rashid |
+| 16 | Surat Keterangan (CRUD) | Pengajuan Surat | Halaman Pengajuan Surat | zakwan |
 | 17 | PKL (CRUD) | Laporan PKL | Halaman Data PKL | - |
 | 18 | Skripsi (CRUD) | Bimbingan (CRUD) | Halaman Progress Skripsi | - |
 | 19 | Fasilitas (CRUD) | Peminjaman Fasilitas | Halaman Booking Fasilitas | - |
