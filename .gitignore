@@ -1,0 +1,17 @@
+# Environment variables
+.env
+.env.*
+
+# Executables
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Uploads directory Modul 7
+frontend/pengumuman/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
