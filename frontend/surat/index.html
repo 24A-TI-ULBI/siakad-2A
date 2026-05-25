@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIAKAD — Surat Keterangan & Pengajuan</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --accent-blue: #0ea5e9;
+      --accent-purple: #a855f7;
+      --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --glass-bg: rgba(30, 41, 59, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      
+      --color-proses: #f59e0b;
+      --color-selesai: #10b981;
+      --color-ditolak: #ef4444;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: var(--glass-bg);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-logo {
+      background: var(--accent-grad);
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Tabs Navigation */
+    .nav-tabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      padding: 0.25rem;
+      gap: 0.25rem;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.5rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-grad);
+      color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+    }
+
+    /* Tab Contents */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1.2fr;
+      }
+    }
+
+    /* Glass Panels */
+    .panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      margin-bottom: 2rem;
+    }
+
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .panel-title span {
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control, select, textarea {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: var(--accent-grad);
+      color: var(--text-main);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: var(--text-muted);
+      box-shadow: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: var(--color-ditolak);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      width: auto;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      text-transform: uppercase;
+    }
+
+    .badge-proses {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--color-proses);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-selesai {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-selesai);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-ditolak {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--color-ditolak);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Template Cards */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .template-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .template-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+    }
+
+    .template-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--accent-blue);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .template-code {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      color: var(--text-main);
+    }
+
+    .template-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    .requirements-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .requirement-tag {
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      color: #c084fc;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .template-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Submissions List / Table */
+    .sub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sub-item {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: border-color 0.2s;
+    }
+
+    .sub-item:hover {
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .sub-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 0.75rem;
+    }
+
+    .sub-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .sub-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .sub-meta span strong {
+      color: var(--text-main);
+    }
+
+    .sub-reason {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      background: rgba(15, 23, 42, 0.6);
+      padding: 0.75rem;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent-blue);
+      margin-bottom: 0.75rem;
+    }
+
+    .sub-note {
+      font-size: 0.8rem;
+      color: var(--color-proses);
+      background: rgba(245, 158, 11, 0.05);
+      padding: 0.6rem 0.75rem;
+      border-radius: 6px;
+      border: 1px dashed rgba(245, 158, 11, 0.25);
+    }
+
+    .sub-note.selesai {
+      color: var(--color-selesai);
+      background: rgba(16, 185, 129, 0.05);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .sub-note.ditolak {
+      color: var(--color-ditolak);
+      background: rgba(239, 68, 68, 0.05);
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+
+    .admin-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .admin-actions-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Modal / Popups */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      padding: 1.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .toast {
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent-blue);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: var(--text-main);
+      font-size: 0.875rem;
+      min-width: 300px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast.success {
+      border-color: var(--color-selesai);
+      border-left-color: var(--color-selesai);
+    }
+
+    .toast.error {
+      border-color: var(--color-ditolak);
+      border-left-color: var(--color-ditolak);
+    }
+
+    /* Status Filters */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .filter-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    .filter-btn.active {
+      background: rgba(14, 165, 233, 0.1);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border: 2px dashed var(--border-color);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .empty-icon {
+      font-size: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="/" class="brand">
+      <div class="brand-logo">S</div>
+      <div class="brand-text">
+        <h1>SIAKAD</h1>
+        <p>Layanan Surat Akademik</p>
+      </div>
+    </a>
+
+    <!-- Role Tabs Switcher -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('mhs')">
+        <span>🎓</span> Mahasiswa
+      </button>
+      <button class="tab-btn" onclick="switchTab('admin')">
+        <span>💼</span> Admin/Petugas
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTAINER -->
+  <div class="container">
+
+    <!-- ========================================== -->
+    <!-- 1. PORTAL MAHASISWA -->
+    <!-- ========================================== -->
+    <div id="tab-mhs" class="tab-content active">
+      <div class="grid-2">
+        
+        <!-- Kolom Kiri: Form Pengajuan -->
+        <div>
+          <div class="panel">
+            <h2 class="panel-title"><span>Ajukan</span> Surat Keterangan</h2>
+            
+            <form id="form-ajukan" onsubmit="handleAjukan(event)">
+              <div class="form-group">
+                <label for="ajukan-template">Pilih Jenis Surat</label>
+                <select id="ajukan-template" required onchange="updatePersyaratanView()">
+                  <option value="" disabled selected>-- Pilih Surat Keterangan --</option>
+                </select>
+              </div>
+
+              <!-- Tampilan Dinamis Persyaratan -->
+              <div id="persyaratan-box" style="display: none; margin-bottom: 1.25rem;">
+                <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+                  Persyaratan Dokumen (Bawa saat pengambilan):
+                </label>
+                <div id="persyaratan-list" class="requirements-list"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="ajukan-npm">NPM Anda</label>
+                <input type="text" id="ajukan-npm" class="form-control" placeholder="Contoh: 714240010" required>
+              </div>
+
+              <div class="form-group">
+                <label for="ajukan-nama">Nama Lengkap</label>
+                <input type="text" id="ajukan-nama" class="form-control" placeholder="Masukkan nama sesuai KTM" required>
+              </div>
+
+              <div class="form-group">
+                <label for="ajukan-prodi">Program Studi</label>
+                <select id="ajukan-prodi" required>
+                  <option value="" disabled selected>-- Pilih Program Studi --</option>
+                  <option value="D4 Teknik Informatika">D4 Teknik Informatika</option>
+                  <option value="D3 Manajemen Informatika">D3 Manajemen Informatika</option>
+                  <option value="D4 Logistik Bisnis">D4 Logistik Bisnis</option>
+                  <option value="S1 Manajemen Transportasi">S1 Manajemen Transportasi</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="ajukan-keterangan">Keterangan / Keperluan Pengajuan</label>
+                <textarea id="ajukan-keterangan" placeholder="Contoh: Untuk keperluan pengajuan Beasiswa Jabar Future Leaders / BPJS" required></textarea>
+              </div>
+
+              <button type="submit" class="btn">
+                <span>🚀</span> Ajukan Sekarang
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Tracking Status & Riwayat -->
+        <div>
+          <div class="panel">
+            <h2 class="panel-title"><span>Lacak</span> Status Pengajuan</h2>
+            
+            <div class="form-group" style="display: flex; gap: 0.5rem;">
+              <input type="text" id="search-npm" class="form-control" placeholder="Masukkan NPM Anda">
+              <button onclick="fetchHistoryMhs()" class="btn btn-sm" style="width: auto;">Cari</button>
+            </div>
+
+            <div id="riwayat-mhs-list" class="sub-list">
+              <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <p>Masukkan NPM untuk melihat riwayat pengajuan surat Anda.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 2. PORTAL ADMIN -->
+    <!-- ========================================== -->
+    <div id="tab-admin" class="tab-content">
+      
+      <!-- Panel Atas: Template Management -->
+      <div class="panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+          <h2 class="panel-title" style="border: none; margin-bottom: 0; padding-bottom: 0;">
+            <span>Kelola</span> Template Surat
+          </h2>
+          <button onclick="openTemplateModal()" class="btn btn-sm" style="width: auto;">
+            <span>➕</span> Tambah Template
+          </button>
+        </div>
+
+        <div id="templates-admin-grid" class="template-grid">
+          <!-- Dinamis dari API -->
+        </div>
+      </div>
+
+      <!-- Panel Bawah: Daftar Pengajuan Antrean -->
+      <div class="panel">
+        <h2 class="panel-title"><span>Antrean</span> Pengajuan Surat</h2>
+
+        <!-- Filters status -->
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="setAdminFilter('proses', this)">Proses</button>
+          <button class="filter-btn" onclick="setAdminFilter('selesai', this)">Selesai</button>
+          <button class="filter-btn" onclick="setAdminFilter('ditolak', this)">Ditolak</button>
+        </div>
+
+        <div id="antrean-admin-list" class="sub-list">
+          <!-- Dinamis dari API -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toast-box"></div>
+
+  <!-- TEMPLATE MODAL (ADD / EDIT) -->
+  <div class="modal-overlay" id="template-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="modal-title">Tambah Template Surat</span>
+        <button class="close-btn" onclick="closeTemplateModal()">&times;</button>
+      </div>
+
+      <form id="form-template" onsubmit="handleSaveTemplate(event)">
+        <input type="hidden" id="template-id">
+        
+        <div class="form-group">
+          <label for="tpl-kode">Kode Template</label>
+          <input type="text" id="tpl-kode" class="form-control" placeholder="Contoh: SK-MA" required>
+        </div>
+
+        <div class="form-group">
+          <label for="tpl-nama">Nama Template Surat</label>
+          <input type="text" id="tpl-nama" class="form-control" placeholder="Contoh: Surat Keterangan Mahasiswa Aktif" required>
+        </div>
+
+        <div class="form-group">
+          <label for="tpl-deskripsi">Deskripsi Singkat</label>
+          <textarea id="tpl-deskripsi" placeholder="Terangkan kegunaan surat ini..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="tpl-persyaratan">Persyaratan (Pisahkan dengan koma)</label>
+          <input type="text" id="tpl-persyaratan" class="form-control" placeholder="Contoh: Foto KTM, KHS Terakhir, Kwitansi SPP">
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeTemplateModal()">Batal</button>
+          <button type="submit" class="btn">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL PROSES PENGAJUAN (APPROVE / REJECT) -->
+  <div class="modal-overlay" id="proses-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>Proses Pengajuan Surat</span>
+        <button class="close-btn" onclick="closeProsesModal()">&times;</button>
+      </div>
+
+      <form id="form-proses" onsubmit="handleSaveProses(event)">
+        <input type="hidden" id="proses-id">
+        <input type="hidden" id="proses-status">
+
+        <div style="margin-bottom: 1rem;">
+          <p id="proses-desc" style="font-size: 0.9rem; color: var(--text-muted);"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="proses-catatan">Catatan / Pesan untuk Mahasiswa</label>
+          <textarea id="proses-catatan" placeholder="Contoh: Surat sudah selesai dicetak dan dapat diambil di loket akademik ruang A.101" required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeProsesModal()">Batal</button>
+          <button type="submit" class="btn" id="proses-btn-submit">Proses</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Global States
+    let allTemplates = [];
+    let currentAdminFilter = 'proses';
+
+    // Initial Load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTemplates();
+      fetchAdminAntrean();
+    });
+
+    // Tab Switcher
+    function switchTab(role) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      if (role === 'mhs') {
+        event.currentTarget.classList.add('active');
+        document.getElementById('tab-mhs').classList.add('active');
+      } else {
+        event.currentTarget.classList.add('active');
+        document.getElementById('tab-admin').classList.add('active');
+        fetchAdminAntrean();
+      }
+    }
+
+    // Toast Notification
+    function showToast(message, type = 'success') {
+      const toastBox = document.getElementById('toast-box');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" style="background:transparent;border:none;color:white;cursor:pointer;margin-left:1rem;">&times;</button>
+      `;
+      toastBox.appendChild(toast);
+      
+      // Auto remove after 4 seconds
+      setTimeout(() => {
+        toast.remove();
+      }, 4000);
+    }
+
+    // ==========================================
+    // SURAT TEMPLATE ACTIONS
+    // ==========================================
+
+    // Fetch and render templates
+    async function loadTemplates() {
+      try {
+        const response = await fetch('/surat');
+        const resData = await response.json();
+        
+        if (resData.status === 'success') {
+          allTemplates = resData.data || [];
+          renderDropdownTemplates();
+          renderAdminTemplates();
+        } else {
+          showToast(resData.message || 'Gagal memuat template surat', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi ke server gagal', 'error');
+      }
+    }
+
+    // Render templates into dropdown in Mahasiswa Form
+    function renderDropdownTemplates() {
+      const dropdown = document.getElementById('ajukan-template');
+      dropdown.innerHTML = '<option value="" disabled selected>-- Pilih Surat Keterangan --</option>';
+      
+      allTemplates.forEach(tpl => {
+        const option = document.createElement('option');
+        option.value = tpl.id;
+        option.textContent = `[${tpl.kode}] ${tpl.nama}`;
+        dropdown.appendChild(option);
+      });
+    }
+
+    // Dynamic requirements based on selected template
+    function updatePersyaratanView() {
+      const dropdown = document.getElementById('ajukan-template');
+      const selectedId = dropdown.value;
+      const template = allTemplates.find(t => t.id === selectedId);
+      
+      const reqBox = document.getElementById('persyaratan-box');
+      const reqList = document.getElementById('persyaratan-list');
+
+      if (template && template.persyaratan && template.persyaratan.length > 0) {
+        reqBox.style.display = 'block';
+        reqList.innerHTML = '';
+        template.persyaratan.forEach(req => {
+          if (req.trim() !== '') {
+            const tag = document.createElement('span');
+            tag.className = 'requirement-tag';
+            tag.textContent = req;
+            reqList.appendChild(tag);
+          }
+        });
+      } else {
+        reqBox.style.display = 'none';
+      }
+    }
+
+    // Render templates in Admin List
+    function renderAdminTemplates() {
+      const grid = document.getElementById('templates-admin-grid');
+      grid.innerHTML = '';
+
+      if (allTemplates.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <div class="empty-icon">📂</div>
+            <p>Belum ada template surat. Klik "Tambah Template" untuk membuatnya.</p>
+          </div>
+        `;
+        return;
+      }
+
+      allTemplates.forEach(tpl => {
+        const reqTags = (tpl.persyaratan || []).map(r => `<span class="requirement-tag">${r}</span>`).join('');
+        
+        const card = document.createElement('div');
+        card.className = 'template-card';
+        card.innerHTML = `
+          <div>
+            <h4>
+              <span>${tpl.nama}</span>
+              <span class="template-code">${tpl.kode}</span>
+            </h4>
+            <p>${tpl.deskripsi || 'Tidak ada deskripsi.'}</p>
+            <div class="requirements-list">
+              ${reqTags || '<span style="font-size:0.7rem;color:var(--text-muted);">Tanpa syarat khusus</span>'}
+            </div>
+          </div>
+          <div class="template-actions">
+            <button onclick="editTemplate('${tpl.id}')" class="btn btn-secondary btn-sm" style="flex:1;">Edit</button>
+            <button onclick="deleteTemplate('${tpl.id}')" class="btn btn-danger btn-sm" style="flex:1;">Hapus</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Open/Close Template Modals
+    function openTemplateModal(id = '') {
+      const modal = document.getElementById('template-modal');
+      const form = document.getElementById('form-template');
+      modal.classList.add('active');
+
+      if (id) {
+        document.getElementById('modal-title').textContent = 'Edit Template Surat';
+        const tpl = allTemplates.find(t => t.id === id);
+        if (tpl) {
+          document.getElementById('template-id').value = tpl.id;
+          document.getElementById('tpl-kode').value = tpl.kode;
+          document.getElementById('tpl-nama').value = tpl.nama;
+          document.getElementById('tpl-deskripsi').value = tpl.deskripsi || '';
+          document.getElementById('tpl-persyaratan').value = (tpl.persyaratan || []).join(', ');
+        }
+      } else {
+        document.getElementById('modal-title').textContent = 'Tambah Template Surat';
+        form.reset();
+        document.getElementById('template-id').value = '';
+      }
+    }
+
+    function closeTemplateModal() {
+      document.getElementById('template-modal').classList.remove('active');
+    }
+
+    // Save Template (Create / Update)
+    async function handleSaveTemplate(e) {
+      e.preventDefault();
+      const id = document.getElementById('template-id').value;
+      const kode = document.getElementById('tpl-kode').value;
+      const nama = document.getElementById('tpl-nama').value;
+      const deskripsi = document.getElementById('tpl-deskripsi').value;
+      const persyaratanStr = document.getElementById('tpl-persyaratan').value;
+      
+      const persyaratan = persyaratanStr.split(',').map(s => s.trim()).filter(s => s !== '');
+
+      const payload = { kode, nama, deskripsi, persyaratan };
+      
+      try {
+        let response;
+        if (id) {
+          response = await fetch(`/surat/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          response = await fetch('/surat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+
+        const resData = await response.json();
+        if (resData.status === 'success') {
+          showToast(id ? 'Template berhasil diperbarui' : 'Template berhasil ditambahkan');
+          closeTemplateModal();
+          loadTemplates();
+        } else {
+          showToast(resData.message || 'Proses gagal', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi ke server gagal', 'error');
+      }
+    }
+
+    // Edit Template
+    function editTemplate(id) {
+      openTemplateModal(id);
+    }
+
+    // Delete Template
+    async function deleteTemplate(id) {
+      if (!confirm('Apakah Anda yakin ingin menghapus template ini?')) return;
+
+      try {
+        const response = await fetch(`/surat/${id}`, { method: 'DELETE' });
+        const resData = await response.json();
+        
+        if (resData.status === 'success') {
+          showToast('Template berhasil dihapus');
+          loadTemplates();
+        } else {
+          showToast(resData.message || 'Gagal menghapus template', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi gagal', 'error');
+      }
+    }
+
+
+    // ==========================================
+    // PENGAJUAN SURAT MAHASISWA
+    // ==========================================
+
+    // Handle Submit Request
+    async function handleAjukan(e) {
+      e.preventDefault();
+      const templateId = document.getElementById('ajukan-template').value;
+      const npm = document.getElementById('ajukan-npm').value;
+      const nama = document.getElementById('ajukan-nama').value;
+      const prodi = document.getElementById('ajukan-prodi').value;
+      const keterangan = document.getElementById('ajukan-keterangan').value;
+
+      const template = allTemplates.find(t => t.id === templateId);
+      const suratNama = template ? template.nama : 'Surat Keterangan';
+
+      const payload = {
+        surat_id: templateId,
+        surat_nama: suratNama,
+        npm: npm,
+        nama_mahasiswa: nama,
+        prodi: prodi,
+        keterangan: keterangan
+      };
+
+      try {
+        const response = await fetch('/surat/ajukan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const resData = await response.json();
+        if (resData.status === 'success') {
+          showToast('Pengajuan surat berhasil dikirim!');
+          document.getElementById('form-ajukan').reset();
+          document.getElementById('persyaratan-box').style.display = 'none';
+          
+          // Auto load history for this NPM
+          document.getElementById('search-npm').value = npm;
+          fetchHistoryMhs();
+        } else {
+          showToast(resData.message || 'Gagal mengirim pengajuan', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi ke server gagal', 'error');
+      }
+    }
+
+    // Fetch and render Student history
+    async function fetchHistoryMhs() {
+      const npm = document.getElementById('search-npm').value.trim();
+      const container = document.getElementById('riwayat-mhs-list');
+
+      if (!npm) {
+        showToast('Harap isi NPM terlebih dahulu', 'error');
+        return;
+      }
+
+      container.innerHTML = `
+        <div style="text-align:center;padding:2rem;">
+          <span style="display:inline-block;animation:spin 1s linear infinite;font-size:1.5rem;">⏳</span>
+          <p>Mencari riwayat pengajuan...</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch(`/surat/pengajuan/${npm}`);
+        const resData = await response.json();
+
+        if (resData.status === 'success') {
+          const list = resData.data || [];
+          renderStudentHistory(list);
+        } else {
+          showToast(resData.message || 'Gagal mengambil riwayat', 'error');
+        }
+      } catch (err) {
+        showToast('Gagal memuat riwayat pengajuan', 'error');
+      }
+    }
+
+    // Render history card
+    function renderStudentHistory(list) {
+      const container = document.getElementById('riwayat-mhs-list');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>Tidak ditemukan riwayat pengajuan surat untuk NPM ini.</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.forEach(sub => {
+        const dateStr = new Date(sub.tanggal_pengajuan).toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        const statusClass = `badge-${sub.status}`;
+        let statusText = sub.status === 'proses' ? 'Sedang Diproses' : sub.status === 'selesai' ? 'Selesai' : 'Ditolak';
+
+        let noteHTML = '';
+        if (sub.catatan) {
+          const noteClass = sub.status === 'selesai' ? 'selesai' : sub.status === 'ditolak' ? 'ditolak' : '';
+          noteHTML = `
+            <div class="sub-note ${noteClass}">
+              <strong>Pesan Admin:</strong> ${sub.catatan}
+            </div>
+          `;
+        }
+
+        const item = document.createElement('div');
+        item.className = 'sub-item';
+        item.innerHTML = `
+          <div class="sub-header">
+            <div>
+              <div class="sub-title">${sub.surat_nama}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.15rem;">Diajukan pada: ${dateStr}</div>
+            </div>
+            <span class="badge ${statusClass}">${statusText}</span>
+          </div>
+          <div class="sub-reason">
+            <strong>Keterangan:</strong> ${sub.keterangan}
+          </div>
+          ${noteHTML}
+        `;
+        container.appendChild(item);
+      });
+    }
+
+
+    // ==========================================
+    // ADMIN ACTIONS: SUBMISSIONS & PROCESSING
+    // ==========================================
+
+    // Set filter for Admin Queue
+    function setAdminFilter(status, btn) {
+      currentAdminFilter = status;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      fetchAdminAntrean();
+    }
+
+    // Fetch admin queue list
+    async function fetchAdminAntrean() {
+      const container = document.getElementById('antrean-admin-list');
+      
+      try {
+        const response = await fetch(`/surat/pengajuan/status/${currentAdminFilter}`);
+        const resData = await response.json();
+
+        if (resData.status === 'success') {
+          renderAdminQueue(resData.data || []);
+        } else {
+          showToast(resData.message || 'Gagal memuat antrean', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi ke server gagal', 'error');
+      }
+    }
+
+    // Render admin submissions queue
+    function renderAdminQueue(list) {
+      const container = document.getElementById('antrean-admin-list');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🍃</div>
+            <p>Tidak ada pengajuan surat dalam antrean status ini.</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.forEach(sub => {
+        const dateStr = new Date(sub.tanggal_pengajuan).toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        let actionButtons = '';
+        if (sub.status === 'proses') {
+          actionButtons = `
+            <div class="admin-actions">
+              <div class="admin-actions-row">
+                <button onclick="openProsesModal('${sub.id}', 'selesai', '${sub.nama_mahasiswa}', '${sub.surat_nama}')" class="btn btn-sm" style="flex:1;background:var(--color-selesai);">Setujui & Selesai</button>
+                <button onclick="openProsesModal('${sub.id}', 'ditolak', '${sub.nama_mahasiswa}', '${sub.surat_nama}')" class="btn btn-danger btn-sm" style="flex:1;">Tolak Pengajuan</button>
+              </div>
+            </div>
+          `;
+        }
+
+        let noteHTML = '';
+        if (sub.catatan) {
+          const noteClass = sub.status === 'selesai' ? 'selesai' : sub.status === 'ditolak' ? 'ditolak' : '';
+          noteHTML = `
+            <div class="sub-note ${noteClass}" style="margin-top:0.75rem;">
+              <strong>Pesan Admin:</strong> ${sub.catatan}
+            </div>
+          `;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'sub-item';
+        card.innerHTML = `
+          <div class="sub-header">
+            <div>
+              <div class="sub-title">${sub.surat_nama}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.15rem;">Waktu Pengajuan: ${dateStr}</div>
+            </div>
+            <span class="badge badge-${sub.status}">${sub.status}</span>
+          </div>
+          <div class="sub-meta">
+            <span>Mahasiswa: <strong>${sub.nama_mahasiswa}</strong> (${sub.npm})</span>
+            <span>Prodi: <strong>${sub.prodi}</strong></span>
+          </div>
+          <div class="sub-reason">
+            <strong>Keterangan Keperluan:</strong> ${sub.keterangan}
+          </div>
+          ${noteHTML}
+          ${actionButtons}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Open/Close processing modal
+    function openProsesModal(id, status, mhsName, suratName) {
+      document.getElementById('proses-modal').classList.add('active');
+      document.getElementById('proses-id').value = id;
+      document.getElementById('proses-status').value = status;
+      document.getElementById('proses-catatan').value = '';
+
+      const btnSubmit = document.getElementById('proses-btn-submit');
+      if (status === 'selesai') {
+        document.getElementById('proses-desc').innerHTML = `Memproses pengajuan <strong>${suratName}</strong> untuk <strong>${mhsName}</strong> menjadi <strong style="color:var(--color-selesai)">SELESAI</strong>.`;
+        btnSubmit.textContent = 'Setujui & Tandai Selesai';
+        btnSubmit.style.background = 'var(--color-selesai)';
+      } else {
+        document.getElementById('proses-desc').innerHTML = `Menolak pengajuan <strong>${suratName}</strong> untuk <strong>${mhsName}</strong>. Harap berikan alasan penolakan.`;
+        btnSubmit.textContent = 'Tolak Pengajuan';
+        btnSubmit.style.background = 'var(--color-ditolak)';
+      }
+    }
+
+    function closeProsesModal() {
+      document.getElementById('proses-modal').classList.remove('active');
+    }
+
+    // Submit request process status
+    async function handleSaveProses(e) {
+      e.preventDefault();
+      const id = document.getElementById('proses-id').value;
+      const status = document.getElementById('proses-status').value;
+      const catatan = document.getElementById('proses-catatan').value;
+
+      try {
+        const response = await fetch(`/surat/pengajuan/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status, catatan })
+        });
+
+        const resData = await response.json();
+        if (resData.status === 'success') {
+          showToast('Status pengajuan berhasil diperbarui!');
+          closeProsesModal();
+          fetchAdminAntrean();
+        } else {
+          showToast(resData.message || 'Gagal memproses pengajuan', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi ke server gagal', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -20,11 +20,11 @@ func main() {
 	// CORS
 	app.Use(cors.New(config.CorsConfig()))
 
-	// Static files frontend
-	app.Static("/", "./frontend")
-
 	// Routes
 	url.Web(app)
+
+	// Static files frontend
+	app.Static("/", "./frontend")
 
 	log.Printf("Server running on %s", config.IPPort)
 	log.Fatal(app.Listen(config.IPPort))
