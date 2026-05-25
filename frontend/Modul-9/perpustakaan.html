@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Modul 9 - Perpustakaan & Peminjaman</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["Inter", "system-ui", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-slate-100 text-slate-800 min-h-screen font-sans">
+
+    <!-- NAVBAR -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center">
+                    <i class="ph ph-books text-2xl"></i>
+                </div>
+
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900">PerpusHub</h1>
+                    <p class="text-xs text-slate-500">Modul 9 — Perpustakaan & Peminjaman</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-2">
+                <button onclick="switchTab('katalog')" id="btnKatalog"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white">
+                    Katalog Buku
+                </button>
+
+                <button onclick="switchTab('riwayat')" id="btnRiwayat"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100">
+                    Riwayat
+                </button>
+
+                <a href="admin.html" class="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800">
+                    Admin
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+
+        <!-- HERO -->
+        <section class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-8 text-white shadow-lg mb-8">
+            <div class="max-w-3xl">
+                <p class="text-sm font-semibold text-blue-100 mb-2">Portal Akademik Kampus</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-3">
+                    Sistem Katalog dan Peminjaman Buku
+                </h2>
+                <p class="text-blue-100 leading-relaxed">
+                    Mahasiswa dapat mencari buku berdasarkan judul, melihat status ketersediaan,
+                    melakukan peminjaman, dan mengecek riwayat peminjaman berdasarkan NPM.
+                </p>
+            </div>
+        </section>
+
+        <!-- MOBILE TAB -->
+        <section class="md:hidden grid grid-cols-2 gap-3 mb-6">
+            <button onclick="switchTab('katalog')" id="btnMobileKatalog"
+                class="px-4 py-3 rounded-xl text-sm font-semibold bg-blue-600 text-white">
+                Katalog Buku
+            </button>
+
+            <button onclick="switchTab('riwayat')" id="btnMobileRiwayat"
+                class="px-4 py-3 rounded-xl text-sm font-semibold bg-white text-slate-600 border">
+                Riwayat
+            </button>
+        </section>
+
+        <!-- ALERT -->
+        <div id="alertBox" class="hidden mb-6 rounded-xl px-5 py-4 text-sm font-semibold"></div>
+
+        <!-- VIEW KATALOG -->
+        <section id="viewKatalog">
+
+            <!-- SEARCH CARD -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900">Cari Buku</h3>
+                        <p class="text-sm text-slate-500 mt-1">
+                            Masukkan judul buku untuk mencari koleksi perpustakaan.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                        <div class="relative flex-1 lg:w-96">
+                            <i class="ph ph-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                            <input type="text" id="searchInput" placeholder="Contoh: Algoritma"
+                                class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+
+                        <button onclick="loadBuku()"
+                            class="px-5 py-3 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLE CARD -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-slate-900">Daftar Buku</h3>
+                        <p class="text-xs text-slate-500">Data buku dari backend MongoDB</p>
+                    </div>
+
+                    <span class="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">
+                        Modul 9
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 text-slate-600">
+                            <tr>
+                                <th class="px-6 py-4 text-left font-bold">Buku</th>
+                                <th class="px-6 py-4 text-left font-bold">Penulis</th>
+                                <th class="px-6 py-4 text-center font-bold">Tahun</th>
+                                <th class="px-6 py-4 text-center font-bold">Stok</th>
+                                <th class="px-6 py-4 text-center font-bold">Status</th>
+                                <th class="px-6 py-4 text-right font-bold">Aksi</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="bukuTableBody" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="6" class="px-6 py-10 text-center text-slate-500">
+                                    Memuat data buku...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="emptyState" class="hidden px-6 py-16 text-center">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                        <i class="ph ph-books text-3xl text-slate-400"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">Buku tidak ditemukan</h4>
+                    <p class="text-sm text-slate-500 mt-1">Coba gunakan kata kunci lain.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW RIWAYAT -->
+        <section id="viewRiwayat" class="hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+                <h3 class="text-xl font-bold text-slate-900">Riwayat Peminjaman</h3>
+                <p class="text-sm text-slate-500 mt-1 mb-5">
+                    Masukkan NPM mahasiswa untuk melihat riwayat peminjaman buku.
+                </p>
+
+                <form id="formCariRiwayat" class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="riwayatNpmInput" placeholder="Masukkan NPM mahasiswa"
+                        class="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required />
+
+                    <button type="submit"
+                        class="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700">
+                        Cek Riwayat
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 id="riwayatTitle" class="font-bold text-slate-900 mb-4">
+                    Hasil Riwayat Peminjaman
+                </h3>
+
+                <div id="riwayatContainer" class="space-y-4">
+                    <div class="border border-dashed border-slate-300 rounded-2xl p-10 text-center text-slate-500">
+                        <i class="ph ph-identification-card text-4xl mb-2"></i>
+                        <p class="text-sm">Data riwayat akan tampil setelah NPM dicari.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL PINJAM -->
+    <div id="modalPinjam" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm px-5">
+        <div class="min-h-screen flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+
+                <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-slate-900">Form Peminjaman</h3>
+                        <p class="text-xs text-slate-500">Lengkapi data mahasiswa</p>
+                    </div>
+
+                    <button onclick="closeModal()" class="w-9 h-9 rounded-lg hover:bg-slate-100">
+                        <i class="ph ph-x text-xl"></i>
+                    </button>
+                </div>
+
+                <form id="formPinjam" class="p-6 space-y-4">
+                    <input type="hidden" id="pinjamBukuId" />
+
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                        <p class="text-xs font-semibold text-blue-700 mb-1">Buku yang dipilih</p>
+                        <h4 id="modalBookTitle" class="font-bold text-slate-900">Judul Buku</h4>
+                        <p id="modalBookAuthor" class="text-sm text-slate-500 mt-1">Penulis</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">NPM Mahasiswa</label>
+                        <input type="text" id="inputNpm"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Contoh: 714240000" required />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1">Nama Mahasiswa</label>
+                        <input type="text" id="inputNama"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Masukkan nama mahasiswa" required />
+                    </div>
+
+                    <div class="flex gap-3 pt-3">
+                        <button type="button" onclick="closeModal()"
+                            class="flex-1 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200">
+                            Batal
+                        </button>
+
+                        <button type="submit" id="btnSubmitPinjam"
+                            class="flex-1 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700">
+                            Pinjam
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL -->
+    <div id="modalDetail" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm px-5">
+        <div class="min-h-screen flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+
+                <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900">Detail Buku</h3>
+
+                    <button onclick="closeDetailModal()" class="w-9 h-9 rounded-lg hover:bg-slate-100">
+                        <i class="ph ph-x text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <i class="ph ph-book-open text-3xl"></i>
+                        </div>
+
+                        <div>
+                            <p id="detailId" class="text-xs text-slate-400 font-mono">ID Buku</p>
+                            <h4 id="detailJudul" class="font-bold text-slate-900">Judul Buku</h4>
+                        </div>
+                    </div>
+
+                    <div class="border rounded-xl overflow-hidden text-sm">
+                        <div class="flex justify-between px-4 py-3 border-b">
+                            <span class="text-slate-500">Penulis</span>
+                            <span id="detailPenulis" class="font-semibold text-right">-</span>
+                        </div>
+
+                        <div class="flex justify-between px-4 py-3 border-b">
+                            <span class="text-slate-500">Tahun</span>
+                            <span id="detailTahun" class="font-semibold">-</span>
+                        </div>
+
+                        <div class="flex justify-between px-4 py-3">
+                            <span class="text-slate-500">Stok</span>
+                            <span id="detailStok" class="font-semibold text-blue-600">-</span>
+                        </div>
+                    </div>
+
+                    <button onclick="closeDetailModal()"
+                        class="w-full py-3 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "";
+
+        const viewKatalog = document.getElementById("viewKatalog");
+        const viewRiwayat = document.getElementById("viewRiwayat");
+
+        const btnKatalog = document.getElementById("btnKatalog");
+        const btnRiwayat = document.getElementById("btnRiwayat");
+        const btnMobileKatalog = document.getElementById("btnMobileKatalog");
+        const btnMobileRiwayat = document.getElementById("btnMobileRiwayat");
+
+        const alertBox = document.getElementById("alertBox");
+        const bukuTableBody = document.getElementById("bukuTableBody");
+        const emptyState = document.getElementById("emptyState");
+        const searchInput = document.getElementById("searchInput");
+
+        const modalPinjam = document.getElementById("modalPinjam");
+        const modalDetail = document.getElementById("modalDetail");
+
+        const formPinjam = document.getElementById("formPinjam");
+        const formCariRiwayat = document.getElementById("formCariRiwayat");
+
+        function getId(data) {
+            return data.id || data._id || "";
+        }
+
+        function showAlert(message, type = "success") {
+            alertBox.classList.remove("hidden");
+
+            if (type === "success") {
+                alertBox.className = "mb-6 rounded-xl px-5 py-4 text-sm font-semibold bg-green-50 text-green-700 border border-green-200";
+            } else {
+                alertBox.className = "mb-6 rounded-xl px-5 py-4 text-sm font-semibold bg-red-50 text-red-700 border border-red-200";
+            }
+
+            alertBox.textContent = message;
+
+            setTimeout(() => {
+                alertBox.classList.add("hidden");
+            }, 3500);
+        }
+
+        function switchTab(tab) {
+            viewKatalog.classList.add("hidden");
+            viewRiwayat.classList.add("hidden");
+
+            [btnKatalog, btnRiwayat, btnMobileKatalog, btnMobileRiwayat].forEach(btn => {
+                btn.className = "px-4 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100";
+            });
+
+            btnMobileKatalog.className = "px-4 py-3 rounded-xl text-sm font-semibold bg-white text-slate-600 border";
+            btnMobileRiwayat.className = "px-4 py-3 rounded-xl text-sm font-semibold bg-white text-slate-600 border";
+
+            if (tab === "katalog") {
+                viewKatalog.classList.remove("hidden");
+                btnKatalog.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white";
+                btnMobileKatalog.className = "px-4 py-3 rounded-xl text-sm font-semibold bg-blue-600 text-white";
+                loadBuku();
+            } else {
+                viewRiwayat.classList.remove("hidden");
+                btnRiwayat.className = "px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white";
+                btnMobileRiwayat.className = "px-4 py-3 rounded-xl text-sm font-semibold bg-blue-600 text-white";
+            }
+        }
+
+        async function loadBuku() {
+            try {
+                const response = await fetch(`${API_BASE}/buku`);
+                const result = await response.json();
+
+                if (result.status !== "success") {
+                    renderBuku([]);
+                    showAlert(result.message || "Gagal mengambil data buku", "error");
+                    return;
+                }
+
+                renderBuku(result.data || []);
+            } catch (error) {
+                renderBuku([]);
+                showAlert("Tidak dapat terhubung ke backend", "error");
+            }
+        }
+
+        async function cariBuku(keyword) {
+            try {
+                const url = keyword.trim()
+                    ? `${API_BASE}/buku/cari?judul=${encodeURIComponent(keyword)}`
+                    : `${API_BASE}/buku`;
+
+                const response = await fetch(url);
+                const result = await response.json();
+
+                if (result.status !== "success") {
+                    renderBuku([]);
+                    return;
+                }
+
+                renderBuku(result.data || []);
+            } catch (error) {
+                renderBuku([]);
+            }
+        }
+
+        function renderBuku(data) {
+            bukuTableBody.innerHTML = "";
+
+            if (!data || data.length === 0) {
+                emptyState.classList.remove("hidden");
+                bukuTableBody.innerHTML = "";
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+
+            data.forEach(buku => {
+                const id = getId(buku);
+                const stok = Number(buku.stok || 0);
+                const tersedia = buku.tersedia === true || stok > 0;
+
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+
+                tr.innerHTML = `
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <i class="ph ph-book-open text-xl"></i>
+              </div>
+              <div>
+                <p class="font-bold text-slate-900">${buku.judul || "-"}</p>
+                <p class="text-xs text-slate-400 font-mono">${id}</p>
+              </div>
+            </div>
+          </td>
+
+          <td class="px-6 py-4 text-slate-600">${buku.penulis || "-"}</td>
+          <td class="px-6 py-4 text-center">${buku.tahun || "-"}</td>
+          <td class="px-6 py-4 text-center font-semibold">${stok}</td>
+
+          <td class="px-6 py-4 text-center">
+            <span class="px-3 py-1 rounded-full text-xs font-bold ${tersedia
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : "bg-red-50 text-red-700 border border-red-200"
+                    }">
+              ${tersedia ? "Tersedia" : "Habis"}
+            </span>
+          </td>
+
+          <td class="px-6 py-4 text-right">
+            <div class="flex justify-end gap-2">
+              <button onclick='openDetail(${JSON.stringify(buku)})'
+                class="px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">
+                Detail
+              </button>
+
+              <button onclick='openPinjam(${JSON.stringify(buku)})'
+                ${tersedia ? "" : "disabled"}
+                class="px-3 py-2 rounded-lg text-xs font-semibold ${tersedia
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                    }">
+                Pinjam
+              </button>
+            </div>
+          </td>
+        `;
+
+                bukuTableBody.appendChild(tr);
+            });
+        }
+
+        function openPinjam(buku) {
+            document.getElementById("pinjamBukuId").value = getId(buku);
+            document.getElementById("modalBookTitle").textContent = buku.judul || "-";
+            document.getElementById("modalBookAuthor").textContent = `${buku.penulis || "-"} (${buku.tahun || "-"})`;
+
+            modalPinjam.classList.remove("hidden");
+            document.getElementById("inputNpm").focus();
+        }
+
+        function closeModal() {
+            modalPinjam.classList.add("hidden");
+            formPinjam.reset();
+        }
+
+        function openDetail(buku) {
+            document.getElementById("detailId").textContent = getId(buku);
+            document.getElementById("detailJudul").textContent = buku.judul || "-";
+            document.getElementById("detailPenulis").textContent = buku.penulis || "-";
+            document.getElementById("detailTahun").textContent = buku.tahun || "-";
+            document.getElementById("detailStok").textContent = `${buku.stok || 0} Unit`;
+
+            modalDetail.classList.remove("hidden");
+        }
+
+        function closeDetailModal() {
+            modalDetail.classList.add("hidden");
+        }
+
+        formPinjam.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const payload = {
+                buku_id: document.getElementById("pinjamBukuId").value,
+                npm: document.getElementById("inputNpm").value.trim(),
+                nama_mahasiswa: document.getElementById("inputNama").value.trim(),
+            };
+
+            const button = document.getElementById("btnSubmitPinjam");
+            button.disabled = true;
+            button.textContent = "Memproses...";
+
+            try {
+                const response = await fetch(`${API_BASE}/peminjaman`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const result = await response.json();
+
+                if (result.status !== "success") {
+                    showAlert(result.message || "Gagal meminjam buku", "error");
+                    return;
+                }
+
+                closeModal();
+                showAlert("Peminjaman buku berhasil disimpan");
+                loadBuku();
+            } catch (error) {
+                showAlert("Tidak dapat terhubung ke backend", "error");
+            } finally {
+                button.disabled = false;
+                button.textContent = "Pinjam";
+            }
+        });
+
+        formCariRiwayat.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const npm = document.getElementById("riwayatNpmInput").value.trim();
+            const container = document.getElementById("riwayatContainer");
+            const title = document.getElementById("riwayatTitle");
+
+            title.textContent = `Riwayat Peminjaman NPM: ${npm}`;
+            container.innerHTML = `
+        <div class="p-6 text-center text-slate-500">
+          Memuat riwayat peminjaman...
+        </div>
+      `;
+
+            try {
+                const response = await fetch(`${API_BASE}/peminjaman/${npm}`);
+                const result = await response.json();
+
+                if (result.status !== "success") {
+                    container.innerHTML = `<p class="text-red-600">Gagal mengambil data riwayat.</p>`;
+                    return;
+                }
+
+                const data = result.data || [];
+
+                if (data.length === 0) {
+                    container.innerHTML = `
+            <div class="border border-dashed border-slate-300 rounded-2xl p-10 text-center text-slate-500">
+              Tidak ada riwayat peminjaman untuk NPM ini.
+            </div>
+          `;
+                    return;
+                }
+
+                container.innerHTML = "";
+
+                data.forEach(item => {
+                    const aktif = item.status === "aktif";
+
+                    const card = document.createElement("div");
+                    card.className = "border border-slate-200 rounded-2xl p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4";
+
+                    card.innerHTML = `
+            <div>
+              <p class="text-xs text-slate-400 font-mono">${getId(item)}</p>
+              <h4 class="font-bold text-slate-900">ID Buku: ${item.buku_id || "-"}</h4>
+              <p class="text-sm text-slate-500 mt-1">
+                ${item.nama_mahasiswa || "-"} — ${item.npm || "-"}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="px-3 py-1 rounded-full text-xs font-bold ${aktif
+                            ? "bg-orange-50 text-orange-700 border border-orange-200"
+                            : "bg-green-50 text-green-700 border border-green-200"
+                        }">
+                ${aktif ? "Aktif" : "Dikembalikan"}
+              </span>
+
+              ${aktif
+                            ? `<button onclick="kembalikanBuku('${getId(item)}')" class="px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800">
+                      Kembalikan
+                    </button>`
+                            : ""
+                        }
+            </div>
+          `;
+
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                container.innerHTML = `<p class="text-red-600">Tidak dapat terhubung ke backend.</p>`;
+            }
+        });
+
+        async function kembalikanBuku(id) {
+            const yakin = confirm("Yakin ingin mengembalikan buku ini?");
+
+            if (!yakin) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/peminjaman/${id}/kembali`, {
+                    method: "PUT",
+                });
+
+                const result = await response.json();
+
+                if (result.status !== "success") {
+                    showAlert(result.message || "Gagal mengembalikan buku", "error");
+                    return;
+                }
+
+                showAlert("Buku berhasil dikembalikan");
+
+                const npm = document.getElementById("riwayatNpmInput").value.trim();
+                if (npm) {
+                    formCariRiwayat.dispatchEvent(new Event("submit"));
+                }
+
+                loadBuku();
+            } catch (error) {
+                showAlert("Tidak dapat terhubung ke backend", "error");
+            }
+        }
+
+        let timer;
+        searchInput.addEventListener("input", function () {
+            clearTimeout(timer);
+
+            timer = setTimeout(() => {
+                cariBuku(this.value);
+            }, 400);
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadBuku();
+        });
+    </script>
+</body>
+
+</html>
