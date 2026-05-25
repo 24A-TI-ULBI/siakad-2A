@@ -15,6 +15,7 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: '1.22.x'
+        cache: false
 
     - name: Set Env for build CGO_ENABLED=0
       run: go env -w CGO_ENABLED=0
