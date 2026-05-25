@@ -11,8 +11,9 @@ import (
 // Untuk menambah modul baru, buat file [modul]Route.go lalu panggil fungsinya di sini.
 func Web(app *fiber.App) {
 	// Global
-	app.Get("/", controller.Homepage)
+	// GET / dihandle oleh static filesystem (frontend/index.html)
 	app.Get("/ip", controller.IPServer)
+	app.Get("/api", controller.Homepage) // info API tetap tersedia di /api
 
 	// Tambahkan route modul di bawah ini setelah PR di-merge
 	// Contoh: MahasiswaRoute(app)
