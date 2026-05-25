@@ -16,5 +16,6 @@ func MahasiswaRoute(app *fiber.App) {
 
 	// Auth
 	app.Post("/auth/login", controller.Login)
+	app.Get("/auth/me", controller.GetMe)
 	app.Get("/auth/profile/:phone", controller.GetProfile)
 }

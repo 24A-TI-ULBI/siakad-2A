@@ -4,6 +4,7 @@ import (
 	"backend/config"
 	"backend/helper"
 	"backend/model"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -53,6 +54,39 @@ func GetProfile(c *fiber.Ctx) error {
 
 	var mhs model.Mahasiswa
 	if err := col.FindOne(ctx, bson.M{"phone": phone}).Decode(&mhs); err != nil {
+		return helper.ErrorResponse(c, fiber.StatusNotFound, "Profil tidak ditemukan")
+	}
+	return helper.SuccessResponse(c, mhs)
+}
+
+// GetMe mengambil profil mahasiswa dari JWT token di header Authorization.
+func GetMe(c *fiber.Ctx) error {
+	authHeader := c.Get("Authorization")
+	if authHeader == "" {
+		return helper.ErrorResponse(c, fiber.StatusUnauthorized, "Token tidak ditemukan")
+	}
+
+	parts := strings.SplitN(authHeader, " ", 2)
+	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+		return helper.ErrorResponse(c, fiber.StatusUnauthorized, "Format token tidak valid")
+	}
+
+	claims, err := config.ValidateToken(parts[1])
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusUnauthorized, "Token tidak valid atau sudah expired")
+	}
+
+	npm, ok := claims["npm"].(string)
+	if !ok || npm == "" {
+		return helper.ErrorResponse(c, fiber.StatusUnauthorized, "Token tidak valid")
+	}
+
+	col := helper.GetCollection("mahasiswa")
+	ctx, cancel := helper.GetContext()
+	defer cancel()
+
+	var mhs model.Mahasiswa
+	if err := col.FindOne(ctx, bson.M{"npm": npm}).Decode(&mhs); err != nil {
 		return helper.ErrorResponse(c, fiber.StatusNotFound, "Profil tidak ditemukan")
 	}
 	return helper.SuccessResponse(c, mhs)
