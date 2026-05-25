@@ -16,6 +16,4 @@ func Web(app *fiber.App) {
 
 	// Tambahkan route modul di bawah ini setelah PR di-merge
 	// Contoh: MahasiswaRoute(app)
-
-	JadwalRoute(app)
 }
