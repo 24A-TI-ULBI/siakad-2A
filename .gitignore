@@ -1,0 +1,21 @@
+# Environment variables — JANGAN pernah commit file ini
+.env
+*.env
+
+# Binary hasil build
+gocroot
+app
+
+# Go build cache
+*.test
+*.out
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
