@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Berita Kampus</title>
+    <style>
+        :root {
+            --bg: #eff4ff;
+            --panel: rgba(255, 255, 255, 0.97);
+            --panel-soft: #f8fbff;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --text: #0f172a;
+            --muted: #5f6f84;
+            --border: #dbe5f5;
+            --shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(180deg, #eef4ff 0%, #f8fbff 56%, #ffffff 100%);
+            color: var(--text);
+        }
+
+        header {
+            padding: 28px 16px 34px;
+            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #38bdf8 100%);
+            color: #fff;
+        }
+
+        .header-shell {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .header-shell h1 {
+            margin: 0;
+            font-size: clamp(1.6rem, 2vw, 2rem);
+        }
+
+        .header-shell p {
+            margin: 10px 0 0;
+            max-width: 760px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .nav-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 800;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .nav-chip:hover {
+            transform: translateY(-1px);
+        }
+
+        .nav-chip.primary {
+            background: #ffffff;
+            color: var(--primary-dark);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.15);
+        }
+
+        .nav-chip.secondary {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        main {
+            max-width: 980px;
+            margin: -12px auto 48px;
+            padding: 0 16px;
+        }
+
+        section {
+            margin-bottom: 24px;
+            background: var(--panel);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(219, 229, 245, 0.95);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .form-stack {
+            display: grid;
+            gap: 12px;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 12px 14px;
+            margin-top: 10px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input, textarea {
+            background: #fff;
+            color: var(--text);
+        }
+
+        textarea {
+            min-height: 160px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        button {
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            border: none;
+            font-weight: 800;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.2);
+        }
+
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .card {
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: linear-gradient(180deg, #ffffff 0%, var(--panel-soft) 100%);
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: #bfd4ff;
+            box-shadow: 0 16px 30px rgba(37, 99, 235, 0.12);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 1.05rem;
+            color: var(--primary-dark);
+        }
+
+        .small {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .card p, #berita-detail p, .comment p {
+            line-height: 1.75;
+            color: #233047;
+        }
+
+        .comments {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #e8eef9;
+        }
+
+        .comment {
+            border-top: 1px solid #eef2f7;
+            padding: 14px 0;
+        }
+
+        .comment:first-of-type {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 22px 14px 28px;
+            }
+
+            main {
+                margin-top: 8px;
+            }
+
+            section {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-shell">
+            <h1>Portal Berita Kampus</h1>
+            <p>List berita terbaru dan kolom komentar dengan tampilan yang lebih nyaman dibaca dan mudah digunakan.</p>
+            <div class="nav-row">
+                <a href="/" class="nav-chip primary">← Kembali ke halaman awal</a>
+                <a href="/admin/berita" class="nav-chip secondary">Panel admin update/delete</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section>
+            <h2>Tambah Berita Baru</h2>
+            <form id="berita-form">
+                <input type="text" id="judul" placeholder="Judul berita" required />
+                <input type="text" id="penulis" placeholder="Penulis" required />
+                <textarea id="isi" rows="5" placeholder="Isi berita" required></textarea>
+                <button type="submit">Simpan Berita</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Daftar Berita</h2>
+            <div id="berita-list" class="grid"></div>
+        </section>
+
+        <section id="detail-section" class="hidden">
+            <h2>Detail Berita</h2>
+            <div id="berita-detail"></div>
+            <div class="comments">
+                <h3>Komentar</h3>
+                <div id="komentar-list"></div>
+                <form id="komentar-form">
+                    <input type="text" id="komentar-nama" placeholder="Nama" required />
+                    <textarea id="komentar-pesan" rows="3" placeholder="Tulis komentar" required></textarea>
+                    <button type="submit">Kirim Komentar</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script>
+        const beritaList = document.getElementById('berita-list');
+        const detailSection = document.getElementById('detail-section');
+        const beritaDetail = document.getElementById('berita-detail');
+        const komentarList = document.getElementById('komentar-list');
+        const beritaForm = document.getElementById('berita-form');
+        const komentarForm = document.getElementById('komentar-form');
+
+        let selectedBeritaId = null;
+
+        async function loadBerita() {
+            beritaList.innerHTML = '<p>Memuat berita...</p>';
+            const response = await fetch('/api/berita');
+            const result = await response.json();
+            if (result.status !== 'success') {
+                beritaList.innerHTML = '<p>Gagal memuat berita.</p>';
+                return;
+            }
+
+            if (!Array.isArray(result.data) || result.data.length === 0) {
+                beritaList.innerHTML = '<p>Belum ada berita.</p>';
+                return;
+            }
+
+            beritaList.innerHTML = '';
+            result.data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${item.judul}</h3>
+                    <p class="small">${new Date(item.tanggal).toLocaleString()} • ${item.penulis}</p>
+                    <p>${item.isi.substring(0, 160)}${item.isi.length > 160 ? '...' : ''}</p>
+                `;
+                card.addEventListener('click', () => showBeritaDetail(item.id));
+                beritaList.appendChild(card);
+            });
+        }
+
+        async function showBeritaDetail(id) {
+            selectedBeritaId = id;
+            detailSection.classList.remove('hidden');
+            beritaDetail.innerHTML = '<p>Memuat detail berita...</p>';
+            komentarList.innerHTML = '<p>Memuat komentar...</p>';
+
+            const [beritaRes, komentarRes] = await Promise.all([
+                fetch(`/api/berita/${id}`),
+                fetch(`/api/berita/${id}/komentar`),
+            ]);
+
+            const beritaData = await beritaRes.json();
+            const komentarData = await komentarRes.json();
+
+            if (beritaData.status !== 'success') {
+                beritaDetail.innerHTML = '<p>Gagal memuat detail berita.</p>';
+                return;
+            }
+
+            const berita = beritaData.data;
+            beritaDetail.innerHTML = `
+                <h3>${berita.judul}</h3>
+                <p class="small">${new Date(berita.tanggal).toLocaleString()} • ${berita.penulis}</p>
+                <p>${berita.isi}</p>
+            `;
+
+            if (komentarData.status !== 'success' || !Array.isArray(komentarData.data)) {
+                komentarList.innerHTML = '<p>Gagal memuat komentar.</p>';
+                return;
+            }
+
+            if (komentarData.data.length === 0) {
+                komentarList.innerHTML = '<p>Belum ada komentar.</p>';
+                return;
+            }
+
+            komentarList.innerHTML = '';
+            komentarData.data.forEach(item => {
+                const comment = document.createElement('div');
+                comment.className = 'comment';
+                comment.innerHTML = `
+                    <p><strong>${item.nama}</strong> <span class="small">${new Date(item.tanggal).toLocaleString()}</span></p>
+                    <p>${item.pesan}</p>
+                `;
+                komentarList.appendChild(comment);
+            });
+        }
+
+        beritaForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            const judul = document.getElementById('judul').value.trim();
+            const penulis = document.getElementById('penulis').value.trim();
+            const isi = document.getElementById('isi').value.trim();
+            if (!judul || !penulis || !isi) return;
+
+            await fetch('/api/berita', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ judul, penulis, isi }),
+            });
+
+            beritaForm.reset();
+            await loadBerita();
+        });
+
+        komentarForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            if (!selectedBeritaId) return;
+
+            const nama = document.getElementById('komentar-nama').value.trim();
+            const pesan = document.getElementById('komentar-pesan').value.trim();
+            if (!nama || !pesan) return;
+
+            await fetch(`/api/berita/${selectedBeritaId}/komentar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nama, pesan }),
+            });
+
+            document.getElementById('komentar-nama').value = '';
+            document.getElementById('komentar-pesan').value = '';
+            await showBeritaDetail(selectedBeritaId);
+        });
+
+        loadBerita();
+    </script>
+</body>
+</html>
