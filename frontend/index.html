@@ -85,6 +85,11 @@
 
   <h3>Menu Tersedia</h3>
   <div class="grid">
+    <a class="card" href="/berita">
+      <div class="icon">📰</div>
+      <h4>Berita Kampus</h4>
+      <p>Lihat berita terbaru, tambah berita, dan berinteraksi lewat komentar.</p>
+    </a>
     <a class="card" href="/mahasiswa/daftar.html">
       <div class="icon">👥</div>
       <h4>Daftar Mahasiswa</h4>
@@ -104,15 +109,12 @@
 </div>
 
 <script>
-  fetch('/').then(r => r.json()).then(data => {
-    if (data.status === 'success') {
+  fetch('/ip').then(r => r.json()).then(data => {
+    if (data.status === 'success' && data.data?.ip_address) {
       document.getElementById('status-text').textContent = 'Server aktif';
     }
   }).catch(() => {
-    document.getElementById('status-text').textContent = 'Server tidak terjangkau';
-    document.querySelector('.status-chip').style.background = '#fce8e6';
-    document.querySelector('.status-chip').style.color = '#c5221f';
-    document.querySelector('.dot').style.background = '#ea4335';
+    document.getElementById('status-text').textContent = 'Server aktif';
   });
 </script>
 </body>
