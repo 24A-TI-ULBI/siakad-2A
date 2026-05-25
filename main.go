@@ -21,7 +21,13 @@ func main() {
 	app.Use(cors.New(config.CorsConfig()))
 
 	// Static files frontend
-	app.Static("/", "./frontend")
+	app.Static("/frontend", "./frontend")
+	app.Get("/berita", func(c *fiber.Ctx) error {
+		return c.SendFile("./frontend/berita/index.html")
+	})
+	app.Get("/admin/berita", func(c *fiber.Ctx) error {
+		return c.SendFile("./frontend/admin/berita/index.html")
+	})
 
 	// Routes
 	url.Web(app)

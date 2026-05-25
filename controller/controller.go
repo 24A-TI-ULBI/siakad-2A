@@ -9,6 +9,10 @@ import (
 
 // Homepage handler
 func Homepage(c *fiber.Ctx) error {
+	if c.Accepts("html") != "" {
+		return c.SendFile("./frontend/index.html")
+	}
+
 	info := model.AppInfo{
 		Name:    "Portal Informasi Akademik Kampus",
 		Version: "1.0.0",

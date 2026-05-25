@@ -22,7 +22,7 @@ var IPPort, Net = helper.GetAddress()
 var FiberConfig = fiber.Config{
 	Prefork:       false, // set true di production untuk multi-core
 	CaseSensitive: true,
-	StrictRouting: true,
+	StrictRouting: false,
 	ServerHeader:  "SIAKAD",
 	AppName:       "Portal Informasi Akademik Kampus",
 	Network:       Net,
