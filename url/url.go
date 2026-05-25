@@ -15,6 +15,6 @@ func Web(app *fiber.App) {
 	app.Get("/ip", controller.IPServer)
 	app.Get("/api", controller.Homepage) // info API tetap tersedia di /api
 
-	// Tambahkan route modul di bawah ini setelah PR di-merge
-	// Contoh: MahasiswaRoute(app)
+	// Modul 1 - Mahasiswa & Auth (raditya)
+	MahasiswaRoute(app)
 }

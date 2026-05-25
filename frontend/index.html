@@ -3,119 +3,296 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIAKAD — Portal Akademik</title>
+  <title>SIAKAD — Portal Informasi Akademik Kampus</title>
+  <link rel="stylesheet" href="shared/style.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; min-height: 100vh; }
-
-    header {
-      background: #1a73e8;
-      color: white;
-      padding: 1rem 2rem;
+    /* ===== LANDING PAGE SPECIFIC ===== */
+    .landing-nav {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
     }
-    header h1 { font-size: 1.2rem; font-weight: 600; }
-    header p  { font-size: 0.82rem; opacity: 0.85; }
+    .landing-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .landing-nav-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(249,115,22,0.35);
+    }
+    .landing-nav-icon svg { color: white; }
+    .landing-nav-label { font-size: 11px; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .landing-nav-title { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+    .landing-nav-right { display: flex; align-items: center; gap: 10px; }
+    .server-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: white;
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    .server-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); }
+    .server-dot.online { background: var(--success); }
+    .server-dot.offline { background: var(--danger); }
 
+    /* ===== HERO ===== */
     .hero {
-      background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, #f59e0b 100%);
+      color: white;
+      padding: 56px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('https://www.transparenttextures.com/patterns/topography.png');
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5em; color: rgba(255,255,255,0.8); font-weight: 600; margin-bottom: 12px; }
+    .hero-title { font-size: 36px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+    .hero-desc { font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.7; max-width: 480px; margin-bottom: 24px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-btn-primary {
+      background: white;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: opacity 0.15s;
+    }
+    .hero-btn-primary:hover { opacity: 0.9; }
+    .hero-btn-secondary {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: white;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .hero-btn-secondary:hover { background: rgba(255,255,255,0.25); }
+    .hero-panel {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+    }
+    .hero-panel-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.4em; color: rgba(255,255,255,0.7); font-weight: 600; margin-bottom: 12px; }
+    .hero-panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .hero-panel-item {
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
       color: white;
       text-align: center;
-      padding: 4rem 2rem;
     }
-    .hero h2 { font-size: 2rem; margin-bottom: 0.5rem; }
-    .hero p  { font-size: 1rem; opacity: 0.9; }
 
-    .modules {
-      max-width: 900px;
-      margin: 2.5rem auto;
-      padding: 0 1.5rem;
-    }
-    .modules h3 { font-size: 1rem; color: #555; margin-bottom: 1.2rem; font-weight: 600; }
-
-    .grid {
+    /* ===== MODULES SECTION ===== */
+    .section { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+    .section-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4em; color: var(--primary); font-weight: 600; margin-bottom: 4px; }
+    .section-title { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-bottom: 24px; }
+    .modules-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.2rem;
+      gap: 16px;
     }
-
-    .card {
+    .module-card {
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
       text-decoration: none;
       color: inherit;
-      transition: transform 0.15s, box-shadow 0.15s;
-      display: block;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.15s, border-color 0.15s;
+      box-shadow: var(--shadow-sm);
     }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-    .card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
-    .card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; color: #1a73e8; }
-    .card p  { font-size: 0.8rem; color: #888; line-height: 1.4; }
-
-    .status-chip {
-      display: inline-flex;
+    .module-card:hover { box-shadow: var(--shadow-md); border-color: var(--primary); }
+    .module-card.active { border-color: var(--primary); border-width: 2px; }
+    .module-card.inactive { opacity: 0.55; cursor: default; }
+    .module-card.inactive:hover { box-shadow: var(--shadow-sm); border-color: var(--border); }
+    .module-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
       align-items: center;
-      gap: 0.4rem;
-      background: #e6f4ea;
-      color: #1e7e34;
-      font-size: 0.8rem;
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-weight: 500;
-      margin-bottom: 1.5rem;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
     }
-    .dot { width: 7px; height: 7px; background: #34a853; border-radius: 50%; display: inline-block; }
+    .module-card.inactive .module-num { background: #f3f4f6; color: var(--text-muted); }
+    .module-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .module-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .module-link { font-size: 12px; font-weight: 600; color: var(--primary); margin-top: auto; display: flex; align-items: center; gap: 4px; }
+    .module-soon { font-size: 12px; color: var(--text-muted); margin-top: auto; }
+
+    /* ===== FOOTER ===== */
+    .landing-footer {
+      border-top: 1px solid var(--border);
+      background: white;
+      padding: 20px 24px;
+    }
+    .landing-footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-panel { display: none; }
+      .hero-title { font-size: 26px; }
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>SIAKAD</h1>
-  <p>Portal Informasi Akademik Kampus</p>
-</header>
-
-<div class="hero">
-  <h2>Selamat Datang</h2>
-  <p>Sistem Informasi Akademik — Modul Data Mahasiswa</p>
-</div>
-
-<div class="modules">
-  <div class="status-chip"><span class="dot"></span> <span id="status-text">Mengecek server...</span></div>
-
-  <h3>Menu Tersedia</h3>
-  <div class="grid">
-    <a class="card" href="/mahasiswa/daftar.html">
-      <div class="icon">👥</div>
-      <h4>Daftar Mahasiswa</h4>
-      <p>Lihat semua data mahasiswa terdaftar dan hapus data.</p>
+  <!-- Navbar -->
+  <nav class="landing-nav">
+    <a href="index.html" class="landing-nav-brand">
+      <img src="https://raw.githubusercontent.com/saripudin14/img/refs/heads/main/logo.png"
+           alt="Logo SIAKAD"
+           style="width:40px;height:40px;border-radius:10px;object-fit:contain;background:white;padding:4px;box-shadow:0 4px 12px rgba(249,115,22,0.25);">
+      <div>
+        <div class="landing-nav-label">Portal Akademik</div>
+        <div class="landing-nav-title">SIAKAD</div>
+      </div>
     </a>
-    <a class="card" href="/mahasiswa/tambah.html">
-      <div class="icon">➕</div>
-      <h4>Tambah Mahasiswa</h4>
-      <p>Input data mahasiswa baru ke dalam sistem.</p>
-    </a>
-    <a class="card" href="/mahasiswa/login.html">
-      <div class="icon">🔐</div>
-      <h4>Login Mahasiswa</h4>
-      <p>Autentikasi menggunakan nomor HP dan dapatkan token.</p>
-    </a>
+    <div class="landing-nav-right">
+      <a href="mahasiswa/login.html" class="btn btn-primary btn-sm">Login</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-eyebrow">Sistem Informasi Akademik</p>
+        <h1 class="hero-title">Portal Informasi<br>Akademik Kampus</h1>
+        <p class="hero-desc">Kelola data akademik kampus secara digital. Akses informasi mahasiswa, dosen, mata kuliah, jadwal, nilai, dan berbagai layanan akademik lainnya dalam satu platform terpadu.</p>
+        <div class="hero-actions">
+          <a href="mahasiswa/daftar.html" class="hero-btn-primary">Lihat Data Mahasiswa</a>
+          <a href="mahasiswa/login.html" class="hero-btn-secondary">Login</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modules -->
+  <div class="section">
+    <p class="section-eyebrow">Direktori Modul</p>
+    <h2 class="section-title">Akses semua layanan akademik</h2>
+    <div class="modules-grid">
+
+      <a href="mahasiswa/daftar.html" class="module-card active">
+        <div class="module-num">1</div>
+        <div class="module-name">Data Mahasiswa</div>
+        <div class="module-desc">CRUD mahasiswa & autentikasi berbasis nomor HP.</div>
+        <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+      </a>
+
+      <div class="module-card inactive">
+        <div class="module-num">2</div>
+        <div class="module-name">Data Dosen</div>
+        <div class="module-desc">CRUD dosen & jabatan fungsional.</div>
+        <div class="module-soon">Segera hadir</div>
+      </div>
+
+      <div class="module-card inactive">
+        <div class="module-num">3</div>
+        <div class="module-name">Mata Kuliah</div>
+        <div class="module-desc">CRUD mata kuliah & KRS mahasiswa.</div>
+        <div class="module-soon">Segera hadir</div>
+      </div>
+
+      <div class="module-card inactive">
+        <div class="module-num">4</div>
+        <div class="module-name">Jadwal Kuliah</div>
+        <div class="module-desc">Jadwal perkuliahan & ketersediaan ruangan.</div>
+        <div class="module-soon">Segera hadir</div>
+      </div>
+
+      <div class="module-card inactive">
+        <div class="module-num">5</div>
+        <div class="module-name">Nilai & Transkrip</div>
+        <div class="module-desc">Input nilai & rekap IPK mahasiswa.</div>
+        <div class="module-soon">Segera hadir</div>
+      </div>
+
+      <div class="module-card inactive">
+        <div class="module-num">6</div>
+        <div class="module-name">Absensi</div>
+        <div class="module-desc">Rekap kehadiran mahasiswa per matkul.</div>
+        <div class="module-soon">Segera hadir</div>
+      </div>
+
+      <div class="module-card inactive">
+        <div class="module-num">7</div>
+        <div class="module-name">Pengumuman</div>
+        <div class="module-desc">Board pengumuman kampus dengan kategori.</div>
+        <div class="module-soon">Segera hadir</div>
+      </div>
+
+      <div class="module-card inactive">
+        <div class="module-num">8+</div>
+        <div class="module-name">12 Modul Lainnya</div>
+        <div class="module-desc">Beasiswa, perpustakaan, prestasi, SPP, dan lainnya.</div>
+        <div class="module-soon">Segera hadir</div>
+      </div>
+
+    </div>
   </div>
-</div>
 
-<script>
-  const API_BASE = 'https://dituniverse.alwaysdata.net';
-
-  fetch(API_BASE + '/api').then(r => r.json()).then(data => {
-    if (data.status === 'success') {
-      document.getElementById('status-text').textContent = 'Server aktif';
-    }
-  }).catch(() => {
-    document.getElementById('status-text').textContent = 'Server tidak terjangkau';
-    document.querySelector('.status-chip').style.background = '#fce8e6';
-    document.querySelector('.status-chip').style.color = '#c5221f';
-    document.querySelector('.dot').style.background = '#ea4335';
-  });
-</script>
+  <script src="shared/utils.js"></script>
+  <script></script>
 </body>
 </html>
