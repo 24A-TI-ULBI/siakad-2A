@@ -2,6 +2,101 @@
 
 ---
 
+## Dokumentasi Hasil Pekerjaan Modul 13
+
+| Keterangan | Isi |
+|---|---|
+| Nama | Ridwan Hakim Ramadhan |
+| NPM | 714240050 |
+| Mata Kuliah | Pemrograman 3 - WEB SERVICE |
+| Modul | Modul 13 - Notifikasi & Riwayat Notifikasi |
+
+### Ringkasan Pekerjaan
+
+Modul 13 berisi sistem notifikasi kampus untuk mengirim informasi penting kepada mahasiswa, menampilkan riwayat notifikasi, melihat notifikasi yang belum dibaca, menandai notifikasi sebagai sudah dibaca, dan menghapus data notifikasi.
+
+### Fitur Backend
+
+| Method | Endpoint | Keterangan |
+|---|---|---|
+| GET | `/notifikasi` | Mengambil semua data notifikasi |
+| GET | `/notifikasi/:npm` | Mengambil notifikasi berdasarkan NPM mahasiswa |
+| POST | `/notifikasi` | Mengirim atau menambahkan notifikasi baru |
+| PUT | `/notifikasi/:id/baca` | Menandai notifikasi sebagai sudah dibaca |
+| DELETE | `/notifikasi/:id` | Menghapus satu notifikasi berdasarkan ID |
+| GET | `/notifikasi/riwayat/:npm` | Mengambil seluruh riwayat notifikasi mahasiswa |
+| GET | `/notifikasi/belum-baca/:npm` | Mengambil notifikasi yang belum dibaca |
+| DELETE | `/notifikasi/riwayat/:npm` | Menghapus semua riwayat notifikasi mahasiswa |
+
+Selain endpoint utama di atas, frontend menggunakan alias `/api/notifikasi` dengan struktur endpoint yang sama. Alias ini dibuat agar halaman `frontend/notifikasi/index.html` tetap bisa dibuka tanpa bentrok dengan static route Fiber.
+
+### Struktur Data Notifikasi
+
+| Field | Keterangan |
+|---|---|
+| `id` | ID unik dari MongoDB |
+| `npm` | NPM mahasiswa penerima notifikasi |
+| `judul` | Judul notifikasi |
+| `pesan` | Isi pesan notifikasi |
+| `tipe` | Kategori notifikasi, misalnya Akademik, Administrasi, Keuangan, Sistem, atau Umum |
+| `prioritas` | Prioritas notifikasi, misalnya Rendah, Normal, atau Tinggi |
+| `dibaca` | Status apakah notifikasi sudah dibaca |
+| `dibuat_pada` | Waktu notifikasi dibuat |
+| `dibaca_pada` | Waktu notifikasi ditandai sudah dibaca |
+| `dikirim_oleh` | Pengirim notifikasi |
+
+### File yang Dikerjakan
+
+| File | Keterangan |
+|---|---|
+| `model/notifikasi.go` | Struct data notifikasi |
+| `controller/notifikasiController.go` | Handler CRUD notifikasi dan riwayat |
+| `url/notifikasiRoute.go` | Daftar route Modul 13 |
+| `url/url.go` | Menambahkan pemanggilan `NotifikasiRoute(app)` |
+| `frontend/notifikasi/index.html` | Halaman dashboard notifikasi |
+
+### Tampilan Frontend
+
+Halaman frontend dibuat dalam bentuk dashboard riwayat notifikasi. Fitur pada halaman:
+
+- Kartu ringkasan total notifikasi, belum dibaca, dikirim hari ini, dan prioritas tinggi
+- Filter berdasarkan NPM, status baca, tipe notifikasi, dan pencarian kata kunci
+- Tabel riwayat notifikasi dengan status dan prioritas
+- Form untuk mengirim notifikasi baru
+- Tombol refresh data
+- Tombol tandai semua notifikasi pada filter aktif sebagai sudah dibaca
+- Tombol hapus riwayat berdasarkan NPM
+
+Halaman dapat dibuka melalui:
+
+```text
+http://localhost:8080/notifikasi/index.html
+```
+
+### Cara Menjalankan
+
+```bash
+go mod tidy
+go run main.go
+```
+
+Setelah server berjalan, buka browser ke:
+
+```text
+http://localhost:8080/notifikasi/index.html
+```
+
+### Verifikasi
+
+Project sudah dicek dengan perintah:
+
+```bash
+go test -mod=readonly ./...
+go build -mod=readonly ./...
+```
+
+---
+
 ## 1. Deskripsi Aplikasi
 
 **Portal Informasi Akademik Kampus** adalah aplikasi web fullstack berbasis REST API yang memudahkan pengelolaan data akademik kampus. Aplikasi ini dibangun menggunakan **Go Fiber** sebagai backend dan **MongoDB** sebagai database, di-deploy di **Alwaysdata** dengan CI/CD otomatis via GitHub Actions.
@@ -542,10 +637,10 @@ Frontend **Halaman Portal Berita**
 | 10 | Prestasi (CRUD) | Kategori Prestasi | Halaman Input Prestasi | isa |
 | 11 | Alumni (CRUD) | Lowongan Kerja (CRUD) | Halaman Alumni & Lowongan | Faris |
 | 12 | Ormawa (CRUD) | Kegiatan Ormawa (CRUD) | Halaman Data Ormawa | arip |
-| 13 | Notifikasi (CRUD) | Riwayat Notifikasi | Halaman Notifikasi | ridwan |
-| 14 | Kuesioner (CRUD) | Jawaban Kuesioner | Halaman Kuesioner | samsi |
-| 15 | Pembayaran SPP (CRUD) | Riwayat Pembayaran | Halaman Tagihan SPP | rashid |
-| 16 | Surat Keterangan (CRUD) | Pengajuan Surat | Halaman Pengajuan Surat | zakwan |
+| 13 | Notifikasi (CRUD) | Riwayat Notifikasi | Halaman Notifikasi | - |
+| 14 | Kuesioner (CRUD) | Jawaban Kuesioner | Halaman Kuesioner | - |
+| 15 | Pembayaran SPP (CRUD) | Riwayat Pembayaran | Halaman Tagihan SPP | - |
+| 16 | Surat Keterangan (CRUD) | Pengajuan Surat | Halaman Pengajuan Surat | - |
 | 17 | PKL (CRUD) | Laporan PKL | Halaman Data PKL | - |
 | 18 | Skripsi (CRUD) | Bimbingan (CRUD) | Halaman Progress Skripsi | - |
 | 19 | Fasilitas (CRUD) | Peminjaman Fasilitas | Halaman Booking Fasilitas | - |
