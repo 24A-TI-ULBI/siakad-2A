@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIAKAD — Evaluasi & Kuesioner Akademik</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: #e0e7ff;
+      --secondary: #0f172a;
+      --background: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--background);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--secondary) 0%, #1e293b 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .header-logo svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--primary);
+    }
+
+    .header-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .header-title p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.07);
+      padding: 0.25rem;
+      border-radius: var(--radius-md);
+      gap: 0.25rem;
+    }
+
+    .nav-tab {
+      color: #94a3b8;
+      background: transparent;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.875rem;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+
+    .nav-tab.active {
+      color: white;
+      background: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background: var(--success-light);
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .alert-error {
+      background: var(--danger-light);
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Profile Card */
+    .profile-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .profile-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .profile-details h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .profile-details p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-icon {
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Modal Form Identitas */
+    .identity-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .identity-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.95);
+      transition: var(--transition);
+    }
+
+    .identity-modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .modal-header p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .form-control {
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 0.625rem 0.875rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      outline: none;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    /* Kuesioner Grid */
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kuesioner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .kuesioner-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.5rem;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kuesioner-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+      border-color: #cbd5e1;
+    }
+
+    .kuesioner-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .kuesioner-info h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .kuesioner-info p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .status-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .status-sudah {
+      background: var(--success-light);
+      color: #047857;
+    }
+
+    .status-belum {
+      background: var(--warning-light);
+      color: #b45309;
+    }
+
+    .kuesioner-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .kuesioner-actions .btn {
+      flex: 1;
+    }
+
+    /* Modal Form / Answer sheet */
+    .full-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--background);
+      z-index: 500;
+      overflow-y: auto;
+      display: none;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .full-modal.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .sheet-container {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .sheet-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+
+    .sheet-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--secondary);
+    }
+
+    .sheet-header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .question-box {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .question-box:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .question-text .required-star {
+      color: var(--danger);
+      margin-left: 0.25rem;
+    }
+
+    /* Rating buttons */
+    .rating-group {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .rating-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: white;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .rating-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .rating-btn.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Choice list */
+    .choices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .choice-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .choice-item:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .choice-item input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .choice-item.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary-hover);
+    }
+
+    /* Manage Kuesioner (Builder) */
+    .builder-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .builder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .kuesioner-table-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .kuesioner-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .kuesioner-table th {
+      background: #f1f5f9;
+      padding: 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .kuesioner-table td {
+      padding: 1rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .kuesioner-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .action-icons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Form Builder */
+    .builder-form-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+    }
+
+    .question-builder-item {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .remove-question-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--danger-light);
+      color: var(--danger);
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .option-pill {
+      background: var(--primary-light);
+      color: var(--primary-hover);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-right: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Recap Dashboard */
+    .recap-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .recap-grid {
+        grid-template-columns: 3fr 2fr;
+      }
+    }
+
+    .analytics-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .analytics-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .bar-chart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .chart-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .chart-bar-label {
+      width: 120px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .chart-bar-bg {
+      flex: 1;
+      height: 12px;
+      background: var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .chart-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 6px;
+    }
+
+    .text-responses-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 0.75rem;
+      padding-right: 0.5rem;
+    }
+
+    .text-response-item {
+      background: white;
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .respondents-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .respondent-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: #f8fafc;
+    }
+
+    .respondent-info h5 {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .respondent-info p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      background: white;
+      padding: 1.5rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    /* Helpers */
+    .text-center {
+      text-align: center;
+    }
+
+    .mt-4 {
+      margin-top: 1.5rem;
+    }
+
+    .mb-4 {
+      margin-bottom: 1.5rem;
+    }
+
+    .loading-spinner {
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border-left-color: var(--primary);
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty-state {
+      padding: 3rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      fill: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-logo">
+      <a href="/"
+        style="color: white; text-decoration: none; margin-right: 0.5rem; display: flex; align-items: center; padding: 0.5rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.1); transition: all 0.2s;"
+        onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+        onmouseout="this.style.background='rgba(255,255,255,0.1)'" title="Kembali ke Beranda">
+        <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24">
+          <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+      </a>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path
+          d="M12 2L1 9l11 7 9-5.73V17h2V9L12 2zm0 11.5L5.26 9 12 5.5 18.74 9 12 13.5zM12 18c-3.1 0-6-1.1-6-2.5V17c0 1.4 2.9 2.5 6 2.5s6-1.1 6-2.5v-1.5c0 1.4-2.9 2.5-6 2.5z" />
+      </svg>
+      <div class="header-title">
+        <h1>SIAKAD</h1>
+        <p>Evaluasi & Kuesioner Akademik</p>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('isi')">Isi Kuesioner</button>
+      <button class="nav-tab" onclick="switchTab('kelola')">Kelola Kuesioner</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Alert Area -->
+    <div id="alert-area"></div>
+
+    <!-- Student Identity Profile Card (Tab: Isi) -->
+    <div id="profile-section" class="profile-card" style="display: none;">
+      <div class="profile-info">
+        <div class="profile-avatar" id="profile-avatar">S</div>
+        <div class="profile-details">
+          <h3 id="profile-nama">Samsi</h3>
+          <p>NPM: <span id="profile-npm" style="font-weight: 500;">714240012</span> • Mahasiswa Aktif</p>
+        </div>
+      </div>
+      <button class="btn btn-secondary" onclick="openIdentityModal()">
+        <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24">
+          <path
+            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+        </svg>
+        Ubah Identitas
+      </button>
+    </div>
+
+    <!-- Content Area for Tab: Isi -->
+    <div id="tab-isi-content" class="tab-content">
+      <div class="section-title">
+        <h2>Kuesioner Tersedia</h2>
+        <span id="kuesioner-count" class="status-badge status-sudah" style="font-size:0.85rem">0 Kuesioner</span>
+      </div>
+
+      <div class="kuesioner-grid" id="kuesioner-list-container">
+        <!-- Will be loaded dynamically -->
+      </div>
+    </div>
+
+    <!-- Content Area for Tab: Kelola (Admin Builder) -->
+    <div id="tab-kelola-content" class="tab-content" style="display: none;">
+      <div class="builder-container">
+        <div class="builder-header">
+          <h2>Daftar Kuesioner (Admin)</h2>
+          <button class="btn btn-primary" onclick="openBuilderForm()">
+            <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            Buat Kuesioner Baru
+          </button>
+        </div>
+
+        <div class="kuesioner-table-card">
+          <table class="kuesioner-table">
+            <thead>
+              <tr>
+                <th>Judul Kuesioner</th>
+                <th>Deskripsi</th>
+                <th>Jumlah Pertanyaan</th>
+                <th>Tanggal Dibuat</th>
+                <th style="text-align: right;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="builder-table-body">
+              <!-- Will be loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 Portal Informasi Akademik Kampus — Modul 14 Kuesioner & Jawaban</p>
+  </footer>
+
+  <!-- Modal Identitas Mahasiswa -->
+  <div class="identity-modal" id="identity-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Identitas Mahasiswa</h2>
+        <p>Masukkan NPM dan nama lengkap Anda untuk memulai pengisian kuesioner</p>
+      </div>
+      <form id="identity-form" onsubmit="saveIdentity(event)">
+        <div class="form-group">
+          <label for="input-npm">NPM (Nomor Pokok Mahasiswa)</label>
+          <input type="text" id="input-npm" class="form-control" placeholder="Contoh: 714240012" required>
+        </div>
+        <div class="form-group">
+          <label for="input-nama">Nama Lengkap</label>
+          <input type="text" id="input-nama" class="form-control" placeholder="Masukkan nama lengkap Anda" required>
+        </div>
+        <div class="mt-4" style="display:flex; justify-content:flex-end; gap:0.5rem">
+          <button type="button" class="btn btn-secondary" onclick="closeIdentityModal()" id="btn-cancel-identity"
+            style="display:none;">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan & Lanjutkan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Full Modal Kuesioner Sheet (Pengisian) -->
+  <div class="full-modal" id="sheet-modal">
+    <div class="sheet-container">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <button class="btn btn-secondary" onclick="closeSheetModal()">
+          <svg style="width:16px;height:16px;fill:currentColor;transform:rotate(180deg)" viewBox="0 0 24 24">
+            <path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z" />
+          </svg>
+          Kembali ke Dashboard
+        </button>
+        <span class="status-badge status-belum" id="sheet-indicator">Pengisian</span>
+      </div>
+
+      <div class="sheet-card">
+        <div class="sheet-header">
+          <h2 id="sheet-title">Evaluasi Kinerja Dosen</h2>
+          <p id="sheet-desc">Evaluasi terhadap proses belajar mengajar dosen pada semester genap</p>
+        </div>
+      </div>
+
+      <form id="sheet-form" onsubmit="submitAnswers(event)">
+        <div class="sheet-card mt-4" id="sheet-questions-container">
+          <!-- Questions will load here -->
+        </div>
+
+        <div class="mt-4 text-center mb-4">
+          <button type="submit" class="btn btn-primary"
+            style="padding: 0.8rem 2.5rem; font-size:1rem; border-radius: var(--radius-lg)">
+            Kirim Jawaban Kuesioner
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Full Modal Builder Form (Buat/Edit Kuesioner) -->
+  <div class="full-modal" id="builder-form-modal">
+    <div class="sheet-container">
+      <div>
+        <button class="btn btn-secondary" onclick="closeBuilderForm()">
+          <svg style="width:16px;height:16px;fill:currentColor;transform:rotate(180deg)" viewBox="0 0 24 24">
+            <path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z" />
+          </svg>
+          Kembali
+        </button>
+      </div>
+
+      <div class="builder-form-card">
+        <div class="modal-header">
+          <h2 id="builder-form-title">Buat Kuesioner Baru</h2>
+          <p>Rancang kuesioner, tambahkan pertanyaan, dan publikasikan untuk diisi mahasiswa.</p>
+        </div>
+
+        <form id="kuesioner-builder-form" onsubmit="saveKuesioner(event)">
+          <input type="hidden" id="builder-kuesioner-id">
+
+          <div class="form-group">
+            <label for="builder-title">Judul Kuesioner</label>
+            <input type="text" id="builder-title" class="form-control"
+              placeholder="Contoh: Kuesioner Evaluasi Layanan Akademik" required>
+          </div>
+
+          <div class="form-group">
+            <label for="builder-desc">Deskripsi / Petunjuk Pengisian</label>
+            <textarea id="builder-desc" class="form-control" rows="3"
+              placeholder="Berikan instruksi pengisian kuesioner ini..."></textarea>
+          </div>
+
+          <div class="mt-4">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+              <h3>Daftar Pertanyaan</h3>
+              <button type="button" class="btn btn-secondary" onclick="addQuestionField()">
+                <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24">
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                </svg>
+                Tambah Pertanyaan
+              </button>
+            </div>
+
+            <div id="builder-questions-container">
+              <!-- Question fieldsets will go here -->
+            </div>
+          </div>
+
+          <div class="mt-4" style="display:flex; justify-content:flex-end; gap:0.5rem">
+            <button type="button" class="btn btn-secondary" onclick="closeBuilderForm()">Batal</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-kuesioner">Simpan Kuesioner</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Modal Rekap Jawaban (Analytics) -->
+  <div class="full-modal" id="recap-modal">
+    <div class="sheet-container" style="max-width:1000px">
+      <div>
+        <button class="btn btn-secondary" onclick="closeRecapModal()">
+          <svg style="width:16px;height:16px;fill:currentColor;transform:rotate(180deg)" viewBox="0 0 24 24">
+            <path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z" />
+          </svg>
+          Kembali ke Dashboard
+        </button>
+      </div>
+
+      <div class="sheet-card">
+        <h2 id="recap-kuesioner-title">Rekap Kuesioner</h2>
+        <p id="recap-kuesioner-desc" style="color:var(--text-muted); margin-bottom:1rem;"></p>
+        <div style="display:flex; gap:1.5rem; flex-wrap:wrap">
+          <div class="status-badge status-sudah" id="recap-total-responses">0 Responden</div>
+        </div>
+      </div>
+
+      <div class="recap-grid">
+        <!-- Analytics summary -->
+        <div class="sheet-card">
+          <h3 class="mb-4">Analisis Jawaban per Pertanyaan</h3>
+          <div id="recap-analytics-container">
+            <!-- Analytics for each question will go here -->
+          </div>
+        </div>
+
+        <!-- Respondent list -->
+        <div class="sheet-card">
+          <h3 class="mb-4">Daftar Pengisi Kuesioner</h3>
+          <div class="respondents-list" id="recap-respondents-container">
+            <!-- Respondents list will go here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Logic -->
+  <script>
+    // Configuration
+    const API_BASE = window.location.origin; // dynamic base matching local or deployed server
+
+    // State management
+    let currentTab = 'isi';
+    let studentNPM = '';
+    let studentNama = '';
+    let questionnaires = [];
+    let currentActiveKuesioner = null;
+
+    // Initialize Page
+    document.addEventListener('DOMContentLoaded', () => {
+      loadIdentityFromStorage();
+      if (!studentNPM) {
+        openIdentityModal();
+      } else {
+        showProfileHeader();
+        fetchKuesioners();
+      }
+    });
+
+    // Alert helper
+    function showAlert(message, type = 'success') {
+      const container = document.getElementById('alert-area');
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.innerHTML = `
+        <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24">
+          ${type === 'success' ?
+          '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>' :
+          '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>'
+        }
+        </svg>
+        <span>${message}</span>
+      `;
+      container.appendChild(alert);
+      setTimeout(() => {
+        alert.style.opacity = '0';
+        alert.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => alert.remove(), 500);
+      }, 4000);
+    }
+
+    // Switch between Student Fill tab and Admin Manage tab
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(cont => cont.style.display = 'none');
+
+      if (tab === 'isi') {
+        document.querySelector('button[onclick="switchTab(\'isi\')"]').classList.add('active');
+        document.getElementById('tab-isi-content').style.display = 'block';
+        document.getElementById('profile-section').style.display = 'flex';
+        fetchKuesioners();
+      } else {
+        document.querySelector('button[onclick="switchTab(\'kelola\')"]').classList.add('active');
+        document.getElementById('tab-kelola-content').style.display = 'block';
+        document.getElementById('profile-section').style.display = 'none';
+        fetchKuesionersForAdmin();
+      }
+    }
+
+    // Identity functions
+    function loadIdentityFromStorage() {
+      studentNPM = localStorage.getItem('npm') || '';
+      studentNama = localStorage.getItem('nama') || '';
+    }
+
+    function showProfileHeader() {
+      const pSec = document.getElementById('profile-section');
+      pSec.style.display = 'flex';
+
+      document.getElementById('profile-nama').textContent = studentNama;
+      document.getElementById('profile-npm').textContent = studentNPM;
+      document.getElementById('profile-avatar').textContent = studentNama.charAt(0).toUpperCase();
+      document.getElementById('btn-cancel-identity').style.display = 'inline-flex';
+    }
+
+    function openIdentityModal() {
+      document.getElementById('input-npm').value = studentNPM;
+      document.getElementById('input-nama').value = studentNama;
+
+      const btnCancel = document.getElementById('btn-cancel-identity');
+      if (studentNPM) {
+        btnCancel.style.display = 'inline-flex';
+      } else {
+        btnCancel.style.display = 'none';
+      }
+
+      document.getElementById('identity-modal').classList.add('active');
+    }
+
+    function closeIdentityModal() {
+      if (!studentNPM) {
+        showAlert('Anda harus memasukkan identitas terlebih dahulu', 'error');
+        return;
+      }
+      document.getElementById('identity-modal').classList.remove('active');
+    }
+
+    function saveIdentity(e) {
+      e.preventDefault();
+      const npm = document.getElementById('input-npm').value.trim();
+      const nama = document.getElementById('input-nama').value.trim();
+
+      if (!npm || !nama) {
+        showAlert('NPM dan Nama Lengkap wajib diisi', 'error');
+        return;
+      }
+
+      studentNPM = npm;
+      studentNama = nama;
+      localStorage.setItem('npm', npm);
+      localStorage.setItem('nama', nama);
+
+      showProfileHeader();
+      document.getElementById('identity-modal').classList.remove('active');
+      showAlert('Identitas disimpan secara lokal');
+      fetchKuesioners();
+    }
+
+    // API fetches: STUDENT LIST VIEW
+    async function fetchKuesioners() {
+      if (!studentNPM) return;
+
+      const container = document.getElementById('kuesioner-list-container');
+      container.innerHTML = `
+        <div style="grid-column: 1/-1" class="text-center mt-4">
+          <div class="loading-spinner"></div>
+          <p style="margin-top:0.5rem;color:var(--text-muted);">Memuat daftar kuesioner...</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch(`${API_BASE}/kuesioner/status/${studentNPM}`);
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          questionnaires = result.data || [];
+          document.getElementById('kuesioner-count').textContent = `${questionnaires.length} Kuesioner`;
+          renderKuesionerList(questionnaires);
+        } else {
+          container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">Gagal memuat kuesioner: ${result.message}</div>`;
+        }
+      } catch (err) {
+        container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">Gagal terhubung ke server. Hubungi admin.</div>`;
+      }
+    }
+
+    function renderKuesionerList(list) {
+      const container = document.getElementById('kuesioner-list-container');
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
+            <p>Belum ada kuesioner yang dibuat oleh dosen/admin.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const isFilled = item.status === 'sudah';
+        const badgeClass = isFilled ? 'status-sudah' : 'status-belum';
+        const badgeText = isFilled ? 'Sudah Diisi' : 'Belum Diisi';
+
+        return `
+          <div class="kuesioner-card">
+            <div class="kuesioner-header">
+              <div class="kuesioner-info">
+                <h4>${escapeHTML(item.title)}</h4>
+                <p>${escapeHTML(item.description || 'Tidak ada deskripsi.')}</p>
+              </div>
+              <span class="status-badge ${badgeClass}">${badgeText}</span>
+            </div>
+            
+            <div class="kuesioner-actions">
+              <button class="btn btn-primary" onclick="openQuestionnaireSheet('${item.kuesioner_id}')">
+                ${isFilled ? 'Isi Ulang' : 'Mulai Isi'}
+              </button>
+              <button class="btn btn-secondary" onclick="viewAnalytics('${item.kuesioner_id}')">
+                Rekap Hasil
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Questionnaire filling sheet
+    async function openQuestionnaireSheet(id) {
+      if (!studentNPM || !studentNama) {
+        openIdentityModal();
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/kuesioner/${id}`);
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          currentActiveKuesioner = result.data;
+
+          document.getElementById('sheet-title').textContent = currentActiveKuesioner.title;
+          document.getElementById('sheet-desc').textContent = currentActiveKuesioner.description || 'Petunjuk: Isilah semua pertanyaan kuesioner ini dengan jujur dan lengkap.';
+
+          // Check if this student already filled it to show "Isi Ulang" indicator
+          const statusItem = questionnaires.find(q => q.kuesioner_id === id);
+          const indicator = document.getElementById('sheet-indicator');
+          if (statusItem && statusItem.status === 'sudah') {
+            indicator.className = 'status-badge status-sudah';
+            indicator.textContent = 'Memperbarui Jawaban';
+          } else {
+            indicator.className = 'status-badge status-belum';
+            indicator.textContent = 'Pengisian Baru';
+          }
+
+          renderQuestionsForm(currentActiveKuesioner.questions);
+          document.getElementById('sheet-modal').classList.add('active');
+        } else {
+          showAlert('Gagal mengambil detail kuesioner: ' + result.message, 'error');
+        }
+      } catch (err) {
+        showAlert('Gagal terhubung ke server', 'error');
+      }
+    }
+
+    function closeSheetModal() {
+      document.getElementById('sheet-modal').classList.remove('active');
+      currentActiveKuesioner = null;
+    }
+
+    function renderQuestionsForm(questions) {
+      const container = document.getElementById('sheet-questions-container');
+
+      if (!questions || questions.length === 0) {
+        container.innerHTML = '<div class="empty-state">Tidak ada pertanyaan dalam kuesioner ini.</div>';
+        return;
+      }
+
+      container.innerHTML = questions.map((q, idx) => {
+        const star = q.is_required ? '<span class="required-star">*</span>' : '';
+        let inputHtml = '';
+
+        if (q.type === 'text') {
+          inputHtml = `<textarea name="q_${q.id}" class="form-control" rows="3" placeholder="Tuliskan ulasan / masukan Anda di sini..." ${q.is_required ? 'required' : ''}></textarea>`;
+        } else if (q.type === 'rating') {
+          inputHtml = `
+            <div class="rating-group" data-qid="${q.id}" data-required="${q.is_required}">
+              <input type="hidden" name="q_${q.id}" id="input_q_${q.id}" ${q.is_required ? 'required' : ''}>
+              ${[1, 2, 3, 4, 5].map(val => `
+                <button type="button" class="rating-btn" onclick="selectRating('${q.id}', ${val})">${val}</button>
+              `).join('')}
+              <span style="font-size:0.8rem;color:var(--text-muted);margin-left:0.5rem">(1 = Sangat Kurang, 5 = Sangat Baik)</span>
+            </div>
+          `;
+        } else if (q.type === 'choice') {
+          const options = q.options || [];
+          inputHtml = `
+            <div class="choices-list" data-qid="${q.id}">
+              ${options.map((opt, optIdx) => `
+                <label class="choice-item" id="label_q_${q.id}_${optIdx}">
+                  <input type="radio" name="q_${q.id}" value="${escapeHTML(opt)}" ${q.is_required ? 'required' : ''} onchange="selectChoice('${q.id}', ${optIdx})">
+                  <span>${escapeHTML(opt)}</span>
+                </label>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="question-box">
+            <div class="question-text">${idx + 1}. ${escapeHTML(q.text)}${star}</div>
+            ${inputHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectRating(qid, val) {
+      const hiddenInput = document.getElementById(`input_q_${qid}`);
+      hiddenInput.value = val;
+
+      const group = document.querySelector(`.rating-group[data-qid="${qid}"]`);
+      group.querySelectorAll('.rating-btn').forEach(btn => {
+        if (parseInt(btn.textContent) === val) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+    }
+
+    function selectChoice(qid, optIdx) {
+      const list = document.querySelector(`.choices-list[data-qid="${qid}"]`);
+      list.querySelectorAll('.choice-item').forEach((item, idx) => {
+        if (idx === optIdx) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+    }
+
+    async function submitAnswers(e) {
+      e.preventDefault();
+      if (!currentActiveKuesioner) return;
+
+      const answers = [];
+      const questions = currentActiveKuesioner.questions;
+
+      for (const q of questions) {
+        let val = '';
+        if (q.type === 'text') {
+          val = document.querySelector(`[name="q_${q.id}"]`).value.trim();
+        } else if (q.type === 'rating') {
+          val = document.getElementById(`input_q_${q.id}`).value;
+        } else if (q.type === 'choice') {
+          const checked = document.querySelector(`[name="q_${q.id}"]:checked`);
+          val = checked ? checked.value : '';
+        }
+
+        if (q.is_required && !val) {
+          showAlert(`Pertanyaan "${q.text}" wajib diisi!`, 'error');
+          return;
+        }
+
+        answers.push({
+          question_id: q.id,
+          value: val
+        });
+      }
+
+      const bodyData = {
+        kuesioner_id: currentActiveKuesioner.id,
+        npm: studentNPM,
+        nama: studentNama,
+        answers: answers
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}/kuesioner/jawab`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyData)
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          showAlert('Terima kasih! Jawaban kuesioner berhasil dikirim.');
+          closeSheetModal();
+          fetchKuesioners();
+        } else {
+          showAlert('Gagal mengirim jawaban: ' + result.message, 'error');
+        }
+      } catch (err) {
+        showAlert('Gagal mengirim jawaban. Cek koneksi Anda.', 'error');
+      }
+    }
+
+    // Recap dashboard
+    async function viewAnalytics(kuesionerId) {
+      try {
+        // Fetch questionnaire details
+        const qResponse = await fetch(`${API_BASE}/kuesioner/${kuesionerId}`);
+        const qResult = await qResponse.json();
+
+        // Fetch responses
+        const aResponse = await fetch(`${API_BASE}/kuesioner/jawaban/${kuesionerId}`);
+        const aResult = await aResponse.json();
+
+        if (qResult.status === 'success' && aResult.status === 'success') {
+          const qData = qResult.data;
+          const responses = aResult.data || [];
+
+          document.getElementById('recap-kuesioner-title').textContent = `Hasil Rekap: ${qData.title}`;
+          document.getElementById('recap-kuesioner-desc').textContent = qData.description || 'Tidak ada deskripsi.';
+          document.getElementById('recap-total-responses').textContent = `${responses.length} Responden`;
+
+          // Process and render respondents
+          renderRespondentsList(responses);
+
+          // Process and render question analytics
+          renderAnalyticsData(qData.questions, responses);
+
+          document.getElementById('recap-modal').classList.add('active');
+        } else {
+          showAlert('Gagal mengambil data rekap', 'error');
+        }
+      } catch (err) {
+        showAlert('Gagal terhubung ke server', 'error');
+      }
+    }
+
+    function closeRecapModal() {
+      document.getElementById('recap-modal').classList.remove('active');
+    }
+
+    function renderRespondentsList(responses) {
+      const container = document.getElementById('recap-respondents-container');
+      if (responses.length === 0) {
+        container.innerHTML = '<div class="empty-state">Belum ada mahasiswa yang mengisi kuesioner ini.</div>';
+        return;
+      }
+
+      container.innerHTML = responses.map(r => {
+        const date = new Date(r.submitted_at).toLocaleDateString('id-ID', {
+          day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        return `
+          <div class="respondent-card">
+            <div class="respondent-info">
+              <h5>${escapeHTML(r.nama)}</h5>
+              <p>NPM: ${escapeHTML(r.npm)}</p>
+            </div>
+            <span style="font-size:0.75rem;color:var(--text-muted);">${date}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAnalyticsData(questions, responses) {
+      const container = document.getElementById('recap-analytics-container');
+      if (!questions || questions.length === 0) {
+        container.innerHTML = '<div class="empty-state">Tidak ada pertanyaan.</div>';
+        return;
+      }
+
+      container.innerHTML = questions.map((q, idx) => {
+        // Collect all answers for this specific question
+        const answersForQ = responses.map(r => {
+          const matched = r.answers.find(a => a.question_id === q.id);
+          return matched ? matched.value : '';
+        }).filter(val => val !== '');
+
+        let analysisHtml = '';
+
+        if (q.type === 'text') {
+          analysisHtml = `
+            <div class="text-responses-list">
+              ${answersForQ.length === 0 ?
+              '<p class="text-center" style="font-size:0.8rem;color:var(--text-muted)">Belum ada tanggapan teks.</p>' :
+              answersForQ.map(ans => `<div class="text-response-item">${escapeHTML(ans)}</div>`).join('')
+            }
+            </div>
+          `;
+        } else if (q.type === 'rating') {
+          // Count ratings
+          const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+          let sum = 0;
+          answersForQ.forEach(ans => {
+            const num = parseInt(ans);
+            if (num >= 1 && num <= 5) {
+              counts[num]++;
+              sum += num;
+            }
+          });
+
+          const avg = answersForQ.length > 0 ? (sum / answersForQ.length).toFixed(1) : '0.0';
+
+          analysisHtml = `
+            <div>
+              <div style="font-weight: 500; font-size: 0.9rem; color: var(--primary);">Nilai Rata-rata: ${avg} / 5.0</div>
+              <div class="bar-chart-container">
+                ${[5, 4, 3, 2, 1].map(star => {
+            const cnt = counts[star];
+            const pct = answersForQ.length > 0 ? Math.round((cnt / answersForQ.length) * 100) : 0;
+            return `
+                    <div class="chart-bar-row">
+                      <div class="chart-bar-label">Skala ${star} (${cnt} org)</div>
+                      <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: ${pct}%"></div>
+                      </div>
+                      <div style="width:30px;text-align:right">${pct}%</div>
+                    </div>
+                  `;
+          }).join('')}
+              </div>
+            </div>
+          `;
+        } else if (q.type === 'choice') {
+          const counts = {};
+          q.options.forEach(opt => counts[opt] = 0);
+          answersForQ.forEach(ans => {
+            if (counts[ans] !== undefined) counts[ans]++;
+          });
+
+          analysisHtml = `
+            <div class="bar-chart-container">
+              ${q.options.map(opt => {
+            const cnt = counts[opt] || 0;
+            const pct = answersForQ.length > 0 ? Math.round((cnt / answersForQ.length) * 100) : 0;
+            return `
+                  <div class="chart-bar-row">
+                    <div class="chart-bar-label" title="${escapeHTML(opt)}">${escapeHTML(opt)}</div>
+                    <div class="chart-bar-bg">
+                      <div class="chart-bar-fill" style="width: ${pct}%"></div>
+                    </div>
+                    <div style="width:40px;text-align:right">${cnt} (${pct}%)</div>
+                  </div>
+                `;
+          }).join('')}
+            </div>
+          `;
+        }
+
+        return `
+          <div class="analytics-box">
+            <div class="analytics-title">
+              <span>${idx + 1}. ${escapeHTML(q.text)}</span>
+              <span class="status-badge status-sudah" style="background:#e0e7ff; color:#312e81">${q.type.toUpperCase()}</span>
+            </div>
+            ${analysisHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // ADMIN / KELOLA TAB FUNCTIONS (CRUD)
+    // ==========================================
+    let builderQuestions = [];
+
+    async function fetchKuesionersForAdmin() {
+      const tbody = document.getElementById('builder-table-body');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center">
+            <div class="loading-spinner"></div>
+            <p style="margin-top:0.5rem;color:var(--text-muted);">Memuat data admin...</p>
+          </td>
+        </tr>
+      `;
+
+      try {
+        const response = await fetch(`${API_BASE}/kuesioner/all`);
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          renderAdminTable(result.data || []);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat: ${result.message}</td></tr>`;
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal terhubung ke server. Cek koneksi Anda.</td></tr>`;
+      }
+    }
+
+    function renderAdminTable(list) {
+      const tbody = document.getElementById('builder-table-body');
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center" style="padding:3rem 1rem; color:var(--text-muted)">
+              Belum ada kuesioner. Klik "Buat Kuesioner Baru" di atas untuk membuat.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const date = new Date(item.created_at).toLocaleDateString('id-ID', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        });
+        const qCount = item.questions ? item.questions.length : 0;
+
+        return `
+          <tr>
+            <td style="font-weight:600; color:var(--secondary)">${escapeHTML(item.title)}</td>
+            <td style="color:var(--text-muted); max-width:250px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap">
+              ${escapeHTML(item.description || 'Tidak ada deskripsi.')}
+            </td>
+            <td>${qCount} pertanyaan</td>
+            <td>${date}</td>
+            <td style="text-align: right;">
+              <div class="action-icons" style="justify-content: flex-end;">
+                <button class="btn btn-secondary btn-icon" onclick="viewAnalytics('${item.id}')" title="Lihat Rekap">
+                  📊
+                </button>
+                <button class="btn btn-secondary btn-icon" onclick="editKuesioner('${item.id}')" title="Edit Kuesioner">
+                  ✏️
+                </button>
+                <button class="btn btn-danger btn-icon" onclick="deleteKuesioner('${item.id}')" title="Hapus Kuesioner">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openBuilderForm() {
+      // Clear form for new
+      document.getElementById('builder-form-title').textContent = 'Buat Kuesioner Baru';
+      document.getElementById('builder-kuesioner-id').value = '';
+      document.getElementById('builder-title').value = '';
+      document.getElementById('builder-desc').value = '';
+
+      builderQuestions = [];
+      document.getElementById('builder-questions-container').innerHTML = '';
+
+      // Add one empty question as default
+      addQuestionField();
+
+      document.getElementById('builder-form-modal').classList.add('active');
+    }
+
+    function closeBuilderForm() {
+      document.getElementById('builder-form-modal').classList.remove('active');
+    }
+
+    function addQuestionField(data = null) {
+      const container = document.getElementById('builder-questions-container');
+      const idx = container.children.length;
+
+      const qId = data ? data.id : `q_${Date.now()}_${idx}`;
+      const qText = data ? data.text : '';
+      const qType = data ? data.type : 'rating';
+      const qRequired = data ? data.is_required : true;
+      const qOptions = data && data.options ? data.options.join(', ') : '';
+
+      const fieldHtml = `
+        <div class="question-builder-item" id="builder_q_box_${idx}" data-qid="${qId}">
+          <button type="button" class="remove-question-btn" onclick="removeQuestionField(${idx})">Hapus</button>
+          
+          <div class="form-group">
+            <label>Teks Pertanyaan #${idx + 1}</label>
+            <input type="text" class="form-control q-text" value="${escapeHTML(qText)}" placeholder="Tuliskan teks pertanyaan..." required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label>Tipe Pertanyaan</label>
+              <select class="form-control q-type" onchange="toggleOptionsField(${idx})" required>
+                <option value="rating" ${qType === 'rating' ? 'selected' : ''}>Skala Rating (1-5)</option>
+                <option value="text" ${qType === 'text' ? 'selected' : ''}>Teks Bebas / Esai</option>
+                <option value="choice" ${qType === 'choice' ? 'selected' : ''}>Pilihan Ganda</option>
+              </select>
+            </div>
+            
+            <div class="form-group" style="flex-direction:row; align-items:center; gap:0.5rem; margin-top:1.5rem">
+              <input type="checkbox" class="q-required" id="req_${idx}" ${qRequired ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--primary)">
+              <label for="req_${idx}" style="cursor:pointer">Wajib Diisi</label>
+            </div>
+          </div>
+
+          <div class="form-group q-options-container" id="options_container_${idx}" style="display: ${qType === 'choice' ? 'block' : 'none'};">
+            <label>Pilihan Ganda (Pisahkan dengan koma)</label>
+            <input type="text" class="form-control q-options" value="${escapeHTML(qOptions)}" placeholder="Sangat Setuju, Setuju, Kurang Setuju, Tidak Setuju">
+          </div>
+        </div>
+      `;
+
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = fieldHtml;
+      container.appendChild(wrapper.firstElementChild);
+    }
+
+    function removeQuestionField(idx) {
+      const box = document.getElementById(`builder_q_box_${idx}`);
+      if (box) {
+        box.remove();
+        // Re-number labels
+        const container = document.getElementById('builder-questions-container');
+        Array.from(container.children).forEach((child, i) => {
+          child.querySelector('label').textContent = `Teks Pertanyaan #${i + 1}`;
+          // update ID and index attributes to prevent conflicts
+          child.id = `builder_q_box_${i}`;
+          child.querySelector('.remove-question-btn').setAttribute('onclick', `removeQuestionField(${i})`);
+          child.querySelector('.q-type').setAttribute('onchange', `toggleOptionsField(${i})`);
+          const checkbox = child.querySelector('.q-required');
+          checkbox.id = `req_${i}`;
+          child.querySelector('label[for^="req_"]').setAttribute('for', `req_${i}`);
+          const optCont = child.querySelector('.q-options-container');
+          optCont.id = `options_container_${i}`;
+        });
+      }
+    }
+
+    function toggleOptionsField(idx) {
+      const typeSelect = document.querySelector(`#builder_q_box_${idx} .q-type`);
+      const optContainer = document.getElementById(`options_container_${idx}`);
+      if (typeSelect.value === 'choice') {
+        optContainer.style.display = 'block';
+      } else {
+        optContainer.style.display = 'none';
+      }
+    }
+
+    async function editKuesioner(id) {
+      try {
+        const response = await fetch(`${API_BASE}/kuesioner/${id}`);
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          const item = result.data;
+
+          document.getElementById('builder-form-title').textContent = 'Edit Kuesioner';
+          document.getElementById('builder-kuesioner-id').value = item.id;
+          document.getElementById('builder-title').value = item.title;
+          document.getElementById('builder-desc').value = item.description || '';
+
+          const container = document.getElementById('builder-questions-container');
+          container.innerHTML = '';
+
+          if (item.questions && item.questions.length > 0) {
+            item.questions.forEach(q => addQuestionField(q));
+          } else {
+            addQuestionField();
+          }
+
+          document.getElementById('builder-form-modal').classList.add('active');
+        } else {
+          showAlert('Gagal mengambil kuesioner: ' + result.message, 'error');
+        }
+      } catch (err) {
+        showAlert('Gagal menghubungi server', 'error');
+      }
+    }
+
+    async function saveKuesioner(e) {
+      e.preventDefault();
+
+      const qId = document.getElementById('builder-kuesioner-id').value;
+      const title = document.getElementById('builder-title').value.trim();
+      const desc = document.getElementById('builder-desc').value.trim();
+
+      const container = document.getElementById('builder-questions-container');
+      const questionBoxes = container.querySelectorAll('.question-builder-item');
+
+      if (questionBoxes.length === 0) {
+        showAlert('Kuesioner minimal harus memiliki 1 pertanyaan', 'error');
+        return;
+      }
+
+      const questions = [];
+      for (let i = 0; i < questionBoxes.length; i++) {
+        const box = questionBoxes[i];
+        const qid = box.getAttribute('data-qid');
+        const text = box.querySelector('.q-text').value.trim();
+        const type = box.querySelector('.q-type').value;
+        const isRequired = box.querySelector('.q-required').checked;
+
+        let options = [];
+        if (type === 'choice') {
+          const optVal = box.querySelector('.q-options').value;
+          options = optVal.split(',').map(s => s.trim()).filter(s => s !== '');
+          if (options.length === 0) {
+            showAlert(`Pertanyaan #${i + 1} bertipe Pilihan Ganda tapi opsi kosong!`, 'error');
+            return;
+          }
+        }
+
+        questions.push({
+          id: qid,
+          text: text,
+          type: type,
+          is_required: isRequired,
+          options: options
+        });
+      }
+
+      const bodyData = {
+        title: title,
+        description: desc,
+        questions: questions
+      };
+
+      const url = qId ? `${API_BASE}/kuesioner/${qId}` : `${API_BASE}/kuesioner`;
+      const method = qId ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bodyData)
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          showAlert(qId ? 'Kuesioner berhasil diperbarui!' : 'Kuesioner baru berhasil dibuat!');
+          closeBuilderForm();
+          fetchKuesionersForAdmin();
+        } else {
+          showAlert('Gagal menyimpan: ' + result.message, 'error');
+        }
+      } catch (err) {
+        showAlert('Gagal terhubung ke server', 'error');
+      }
+    }
+
+    async function deleteKuesioner(id) {
+      if (!confirm('Apakah Anda yakin ingin menghapus kuesioner ini beserta seluruh jawaban responden di dalamnya? Tindakan ini tidak bisa dibatalkan.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/kuesioner/${id}`, {
+          method: 'DELETE'
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          showAlert('Kuesioner berhasil dihapus.');
+          fetchKuesionersForAdmin();
+        } else {
+          showAlert('Gagal menghapus: ' + result.message, 'error');
+        }
+      } catch (err) {
+        showAlert('Gagal terhubung ke server', 'error');
+      }
+    }
+
+    // Helper to escape HTML characters
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+
+</html>

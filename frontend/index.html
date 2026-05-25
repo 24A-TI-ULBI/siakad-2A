@@ -100,11 +100,16 @@
       <h4>Login Mahasiswa</h4>
       <p>Autentikasi menggunakan nomor HP dan dapatkan token.</p>
     </a>
+    <a class="card" href="/kuesioner/index.html">
+      <div class="icon">📝</div>
+      <h4>Kuesioner & Evaluasi</h4>
+      <p>Isi kuesioner pembelajaran dan kelola hasil evaluasi akademik.</p>
+    </a>
   </div>
 </div>
 
 <script>
-  fetch('/').then(r => r.json()).then(data => {
+  fetch('/ip').then(r => r.json()).then(data => {
     if (data.status === 'success') {
       document.getElementById('status-text').textContent = 'Server aktif';
     }
