@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Akademik - Manajemen Mata Kuliah & KRS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome untuk Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',   // Hijau muda soft
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',  // Hijau utama
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Desain scrollbar yang minimalis dan bersih */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Animasi transisi halus */
+        .tab-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50/60 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
+
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="bg-white border-b border-slate-100 sticky top-0 z-40 shadow-sm shadow-slate-100/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-brand-100 text-brand-700 rounded-xl">
+                        <i class="fa-solid fa-graduation-cap text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-base font-bold text-slate-900 tracking-tight">Portal Akademik</span>
+                        <span class="hidden sm:inline-block text-xs text-slate-400 ml-2 border-l border-slate-200 pl-2">Modul Manajemen Mata Kuliah & KRS</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-xs font-medium text-slate-500 hidden md:flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+                        Server Terhubung
+                    </span>
+                    <div class="h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-700 font-semibold text-sm border border-brand-100">
+                        ADM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
+        
+        <!-- HEADER MODULE -->
+        <div class="mb-8 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        Pengelolaan Kurikulum & Rencana Studi
+                    </h1>
+                    <p class="text-slate-500 mt-1.5 text-sm sm:text-base max-w-xl">
+                        Aplikasi administrasi data mata kuliah mahasiswa dan pendaftaran KRS dinamis yang terintegrasi secara real-time.
+                    </p>
+                </div>
+                
+                <!-- Info Statistik Ringkas -->
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center space-x-3 min-w-[150px]">
+                        <div class="p-2.5 bg-brand-50 rounded-lg text-brand-600">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">MATA KULIAH</p>
+                            <h3 id="stat-total-matkul" class="text-lg font-bold text-slate-800">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center space-x-3 min-w-[150px]">
+                        <div class="p-2.5 bg-emerald-50 rounded-lg text-emerald-600">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">MAHASISWA KRS</p>
+                            <h3 id="stat-total-mhs" class="text-lg font-bold text-slate-800">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="flex border-b border-slate-200 mb-8 overflow-x-auto space-x-2">
+            <button onclick="switchTab('tab-matkul')" id="btn-tab-matkul" class="tab-btn px-5 py-3 text-brand-600 font-semibold text-sm flex items-center space-x-2 focus:outline-none whitespace-nowrap transition-all duration-200 border-b-2 border-brand-500">
+                <i class="fa-solid fa-database"></i>
+                <span>Master Data Mata Kuliah</span>
+            </button>
+            <button onclick="switchTab('tab-krs')" id="btn-tab-krs" class="tab-btn px-5 py-3 text-slate-500 hover:text-slate-800 font-medium text-sm flex items-center space-x-2 focus:outline-none whitespace-nowrap transition-all duration-200 border-b-2 border-transparent">
+                <i class="fa-solid fa-id-card"></i>
+                <span>Pengisian KRS Mahasiswa</span>
+            </button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 1: MATA KULIAH SECTION                     -->
+        <!-- ============================================== -->
+        <div id="tab-matkul" class="tab-content block space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- COLUMN 1: FORM TAMBAH MATA KULIAH -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white border border-slate-150 rounded-2xl p-6 shadow-sm sticky top-24">
+                        <div class="flex items-center space-x-3 mb-5">
+                            <div class="p-2 bg-brand-50 rounded-lg text-brand-700">
+                                <i class="fa-solid fa-circle-plus text-base"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-slate-800">Tambah Mata Kuliah</h2>
+                                <p class="text-xs text-slate-400">Buat data kurikulum baru di sistem</p>
+                            </div>
+                        </div>
+                        
+                        <form id="form-add-matkul" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2">Kode Mata Kuliah</label>
+                                <input type="text" id="add-kode" required placeholder="Contoh: IF102" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-medium text-slate-800 placeholder-slate-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2">Nama Mata Kuliah</label>
+                                <input type="text" id="add-nama" required placeholder="Contoh: Desain Web Responsif" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-medium text-slate-800 placeholder-slate-400">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2">Jumlah SKS</label>
+                                    <select id="add-sks" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-medium text-slate-800">
+                                        <option value="1">1 SKS</option>
+                                        <option value="2">2 SKS</option>
+                                        <option value="3" selected>3 SKS</option>
+                                        <option value="4">4 SKS</option>
+                                        <option value="6">6 SKS</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2">Semester</label>
+                                    <input type="number" id="add-semester" min="1" max="8" value="1" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-medium text-slate-800">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="w-full mt-4 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-250 flex items-center justify-center space-x-2 cursor-pointer">
+                                <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                                <span>Simpan Mata Kuliah</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- COLUMN 2: TABEL LIST MATA KULIAH -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white border border-slate-150 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-800">Daftar Mata Kuliah Tersedia</h3>
+                                <p class="text-xs text-slate-400 font-medium">Klik aksi untuk mengedit atau menghapus entri.</p>
+                            </div>
+                            <div class="relative max-w-xs w-full">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-455">
+                                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                                </span>
+                                <input type="text" id="search-matkul" placeholder="Cari mata kuliah..." oninput="renderMatkulTable()" class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 text-sm transition-all text-slate-800 placeholder-slate-400">
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-wider font-semibold border-b border-slate-100">
+                                    <tr>
+                                        <th class="py-3.5 px-6">Kode</th>
+                                        <th class="py-3.5 px-6">Nama Mata Kuliah</th>
+                                        <th class="py-3.5 px-6 text-center">SKS</th>
+                                        <th class="py-3.5 px-6 text-center">Semester</th>
+                                        <th class="py-3.5 px-6 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-matkul-body" class="divide-y divide-slate-100 text-sm">
+                                    <!-- Dinamis dari JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="matkul-empty-state" class="hidden p-16 text-center">
+                            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-slate-50 border border-slate-100 text-slate-400 mb-4">
+                                <i class="fa-solid fa-folder text-xl"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-slate-800">Daftar Kosong</h4>
+                            <p class="text-slate-400 text-xs mt-1 max-w-xs mx-auto">Silakan tambahkan data mata kuliah baru menggunakan modul formulir di sebelah kiri.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 2: KRS SECTION                             -->
+        <!-- ============================================== -->
+        <div id="tab-krs" class="tab-content hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- COLUMN 1: FORM INPUT & DAFTARKAN KRS -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white border border-slate-150 rounded-2xl p-6 shadow-sm space-y-6">
+                        
+                        <!-- Form 1: Pilih / Cari Mahasiswa -->
+                        <div>
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="p-2 bg-brand-50 rounded-lg text-brand-700">
+                                    <i class="fa-solid fa-user-check text-base"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-slate-800">Pencarian Mahasiswa</h2>
+                                    <p class="text-xs text-slate-400">Gunakan nomor induk untuk sinkronisasi krs</p>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2">Nomor Pokok Mahasiswa (NPM)</label>
+                                    <div class="flex space-x-2">
+                                        <input type="text" id="krs-search-npm" placeholder="Masukkan NPM..." class="flex-grow px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-semibold tracking-wide text-slate-800">
+                                        <button onclick="searchKrsMahasiswa()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 rounded-xl flex items-center justify-center shadow-sm transition-all cursor-pointer">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
+                                    <p class="text-[11px] text-slate-450 mt-2"><i class="fa-solid fa-circle-info mr-1 text-brand-600"></i>Masukkan NPM & klik cari untuk menarik data.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Separator Line -->
+                        <div class="border-t border-slate-100"></div>
+
+                        <!-- Form 2: Daftarkan Mata Kuliah ke KRS -->
+                        <div id="form-enrollment-section" class="opacity-40 pointer-events-none transition-all duration-300">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <div class="p-2 bg-brand-50 rounded-lg text-brand-700">
+                                    <i class="fa-solid fa-book-open text-base"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-slate-800">Registrasi KRS</h2>
+                                    <p class="text-xs text-slate-400">Tambahkan mata kuliah ke lembar studi</p>
+                                </div>
+                            </div>
+
+                            <form id="form-add-krs" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2">NPM Terpilih</label>
+                                    <input type="text" id="krs-npm-display" readonly class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-500 cursor-not-allowed">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2">Pilih Mata Kuliah</label>
+                                    <select id="krs-select-matkul" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-medium text-slate-800">
+                                        <!-- Diisi dinamis oleh JS -->
+                                    </select>
+                                </div>
+                                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 rounded-xl shadow-sm flex items-center justify-center space-x-2 transition-all cursor-pointer">
+                                    <i class="fa-solid fa-plus text-sm"></i>
+                                    <span>Masukkan ke KRS</span>
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- COLUMN 2: TABEL LIST KRS MAHASISWA -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white border border-slate-150 rounded-2xl shadow-sm overflow-hidden">
+                        
+                        <!-- Panel Info Kartu Mahasiswa (Modern White & Soft Green Header) -->
+                        <div class="p-6 bg-gradient-to-r from-brand-900 to-brand-800 text-white relative">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-white/10 text-brand-100 border border-white/10 rounded text-[10px] font-semibold tracking-wider uppercase">Sesi Pengisian KRS</span>
+                                    <h3 id="current-mhs-title" class="text-xl font-bold mt-1.5 tracking-tight text-white">Memasuki Tahap Autentikasi</h3>
+                                    <p id="current-mhs-sub" class="text-xs text-brand-100/80 mt-1">Silakan masukkan NPM mahasiswa untuk mengelola entri Rencana Studi.</p>
+                                </div>
+                                
+                                <div class="bg-black/10 border border-white/5 rounded-xl p-3 min-w-[130px] flex flex-col justify-center">
+                                    <p class="text-[9px] text-brand-100 font-semibold tracking-wider uppercase text-center sm:text-right">Beban SKS Aktif</p>
+                                    <h2 id="current-total-sks" class="text-2xl font-black text-center sm:text-right text-white">0 <span class="text-xs font-semibold text-brand-100">/ 24 SKS</span></h2>
+                                    <!-- Progress Bar -->
+                                    <div class="w-full bg-white/20 h-1 rounded-full mt-2 overflow-hidden">
+                                        <div id="sks-progress-bar" class="bg-brand-200 h-full w-0 transition-all duration-300"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table KRS -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] tracking-wider font-semibold border-b border-slate-100">
+                                    <tr>
+                                        <th class="py-3.5 px-6">Kode</th>
+                                        <th class="py-3.5 px-6">Nama Mata Kuliah</th>
+                                        <th class="py-3.5 px-6 text-center">SKS</th>
+                                        <th class="py-3.5 px-6 text-center">Semester</th>
+                                        <th class="py-3.5 px-6 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-krs-body" class="divide-y divide-slate-100 text-sm">
+                                    <!-- Dinamis dari JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="krs-empty-state" class="p-16 text-center">
+                            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-slate-50 border border-slate-100 text-slate-400 mb-4">
+                                <i class="fa-solid fa-signature text-xl"></i>
+                            </div>
+                            <h4 id="krs-empty-title" class="text-sm font-bold text-slate-800">Menunggu Penelusuran</h4>
+                            <p id="krs-empty-sub" class="text-slate-400 text-xs mt-1 max-w-sm mx-auto font-medium">Lakukan pencarian NPM untuk memunculkan lembar pengisian Kartu Rencana Studi.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- EDIT MATA KULIAH MODAL                         -->
+    <!-- ============================================== -->
+    <div id="modal-edit-matkul" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300">
+        <div class="bg-white border border-slate-150 rounded-2xl shadow-xl max-w-md w-full overflow-hidden transform scale-95 transition-all duration-300">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center space-x-2.5">
+                    <div class="p-2 bg-brand-50 rounded-lg text-brand-700">
+                        <i class="fa-solid fa-edit text-xs"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Sunting Konfigurasi Mata Kuliah</h3>
+                </div>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 transition-colors focus:outline-none">
+                    <i class="fa-solid fa-times text-lg"></i>
+                </button>
+            </div>
+            <form id="form-edit-matkul" class="p-6 space-y-4">
+                <input type="hidden" id="edit-original-kode">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">Kode Mata Kuliah</label>
+                    <input type="text" id="edit-kode" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-semibold text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">Nama Mata Kuliah</label>
+                    <input type="text" id="edit-nama" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm text-slate-850">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">Bobot SKS</label>
+                        <select id="edit-sks" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-semibold text-slate-800">
+                            <option value="1">1 SKS</option>
+                            <option value="2">2 SKS</option>
+                            <option value="3">3 SKS</option>
+                            <option value="4">4 SKS</option>
+                            <option value="6">6 SKS</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">Semester</label>
+                        <input type="number" id="edit-semester" min="1" max="8" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm text-slate-800">
+                    </div>
+                </div>
+                <div class="flex space-x-3 pt-4 border-t border-slate-100 mt-6">
+                    <button type="button" onclick="closeEditModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 px-4 rounded-xl transition-all text-xs">
+                        Batal
+                    </button>
+                    <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm transition-all text-xs">
+                        Perbarui Data
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- CUSTOM TOAST CONTAINER                         -->
+    <!-- ============================================== -->
+    <div id="toast-container" class="fixed top-20 right-6 z-50 space-y-2 pointer-events-none max-w-sm w-full"></div>
+
+
+    <!-- ============================================== -->
+    <!-- JAVASCRIPT SYSTEM & SIMULATED DB ENGINE        -->
+    <!-- ============================================== -->
+    <script>
+        // --- 1. MOCK DATA INITIALIZATION ---
+        let defaultCourses = [
+            { kode: "IF101", nama: "Dasar Pemrograman", sks: 3, semester: 1 },
+            { kode: "IF102", nama: "Pemrograman Web", sks: 3, semester: 2 },
+            { kode: "IF103", nama: "Struktur Data", sks: 4, semester: 3 },
+            { kode: "IF104", nama: "Basis Data", sks: 3, semester: 3 },
+            { kode: "IF105", nama: "Sistem Operasi", sks: 3, semester: 4 }
+        ];
+
+        let defaultKrs = [
+            { id: "krs-1", npm: "221063117001", kode_matkul: "IF101" },
+            { id: "krs-2", npm: "221063117001", kode_matkul: "IF102" },
+            { id: "krs-3", npm: "221063117002", kode_matkul: "IF103" },
+            { id: "krs-4", npm: "221063117002", kode_matkul: "IF104" }
+        ];
+
+        // Memuat dari LocalStorage jika sudah ada, jika tidak, gunakan default
+        let DB = {
+            courses: JSON.parse(localStorage.getItem('sys_courses')) || defaultCourses,
+            krs: JSON.parse(localStorage.getItem('sys_krs')) || defaultKrs
+        };
+
+        // Simpan ke LocalStorage helper
+        function saveDb() {
+            localStorage.setItem('sys_courses', JSON.stringify(DB.courses));
+            localStorage.setItem('sys_krs', JSON.stringify(DB.krs));
+            updateDashboardStats();
+        }
+
+        // Variabel penampung NPM yang sedang dicari/aktif di tab KRS
+        let activeNpm = "";
+
+        // --- 2. BACKEND API LOGGER UTILITY (Dinonaktifkan) ---
+        function logApiCall(method, endpoint, statusCode, detail = "") {
+            // Pengiriman log disembunyikan agar tampilan bersih dan profesional
+        }
+
+        // --- 3. TOAST NOTIFICATION UTILITY ---
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center space-x-3 p-3.5 rounded-xl shadow-md border text-xs font-semibold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300`;
+            
+            if (type === "success") {
+                toast.classList.add('bg-white', 'text-slate-800', 'border-emerald-200');
+                toast.innerHTML = `<div class="p-1 bg-emerald-100 rounded-lg text-emerald-700"><i class="fa-solid fa-circle-check text-xs"></i></div> <span>${message}</span>`;
+            } else if (type === "error") {
+                toast.classList.add('bg-white', 'text-slate-800', 'border-rose-250');
+                toast.innerHTML = `<div class="p-1 bg-rose-100 rounded-lg text-rose-700"><i class="fa-solid fa-circle-xmark text-xs"></i></div> <span>${message}</span>`;
+            } else {
+                toast.classList.add('bg-white', 'text-slate-800', 'border-amber-200');
+                toast.innerHTML = `<div class="p-1 bg-amber-100 rounded-lg text-amber-700"><i class="fa-solid fa-circle-info text-xs"></i></div> <span>${message}</span>`;
+            }
+
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Auto-remove
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- 4. NAVIGATION TAB CONTROL ---
+        function switchTab(tabId) {
+            // Sembunyikan semua tab content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Deaktivasi style semua tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-brand-500', 'text-brand-600', 'font-semibold');
+                btn.classList.add('border-transparent', 'text-slate-500', 'font-medium');
+            });
+
+            // Tampilkan tab terpilih
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Aktifkan style button tab terpilih
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500', 'font-medium');
+            activeBtn.classList.add('border-brand-500', 'text-brand-600', 'font-semibold');
+
+            // Log Tab HTTP request simulation
+            if (tabId === "tab-matkul") {
+                logApiCall("GET", "/matkul", 200, "Mengambil list semua data master mata kuliah.");
+                renderMatkulTable();
+            } else {
+                logApiCall("GET", `/krs/${activeNpm || ":npm"}`, 200, "Menuju antarmuka pendaftaran KRS mahasiswa.");
+                populateKrsDropdown();
+                renderKrsTable();
+            }
+        }
+
+        // --- 5. DASHBOARD STATS CALCULATOR ---
+        function updateDashboardStats() {
+            document.getElementById('stat-total-matkul').innerText = DB.courses.length;
+            
+            // Hitung total mahasiswa unik di sistem KRS
+            const uniqueNpm = [...new Set(DB.krs.map(item => item.npm))];
+            document.getElementById('stat-total-mhs').innerText = uniqueNpm.length;
+        }
+
+        // =========================================================================
+        // BACKEND SIMULATION & RENDER ENGINE (MATA KULIAH)
+        // =========================================================================
+
+        // GET /matkul -> Render data tabel mata kuliah master
+        function renderMatkulTable() {
+            const tableBody = document.getElementById('table-matkul-body');
+            const emptyState = document.getElementById('matkul-empty-state');
+            const searchVal = document.getElementById('search-matkul').value.toLowerCase();
+            
+            const filtered = DB.courses.filter(c => 
+                c.kode.toLowerCase().includes(searchVal) || 
+                c.nama.toLowerCase().includes(searchVal)
+            );
+
+            tableBody.innerHTML = "";
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(course => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/50 transition-colors border-b border-slate-100 group";
+                tr.innerHTML = `
+                    <td class="py-3.5 px-6 font-mono font-bold text-brand-700">${course.kode}</td>
+                    <td class="py-3.5 px-6 text-slate-700 font-semibold group-hover:text-slate-900 transition-colors">${course.nama}</td>
+                    <td class="py-3.5 px-6 text-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-100">
+                            ${course.sks} SKS
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-6 text-center text-slate-500 font-medium">Semester ${course.semester}</td>
+                    <td class="py-3.5 px-6 text-right">
+                        <div class="flex items-center justify-end space-x-1">
+                            <button onclick="openEditModal('${course.kode}')" class="p-1.5 bg-white border border-slate-200 hover:border-amber-450 hover:bg-amber-50 rounded-xl text-amber-600 transition-all duration-200" title="Edit Data">
+                                <i class="fa-solid fa-edit text-xs"></i>
+                            </button>
+                            <button onclick="apiDeleteMatkul('${course.kode}')" class="p-1.5 bg-white border border-slate-200 hover:border-rose-450 hover:bg-rose-50 rounded-xl text-rose-600 transition-all duration-200" title="Hapus Data">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // POST /matkul -> Menyimpan mata kuliah baru
+        document.getElementById('form-add-matkul').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const kode = document.getElementById('add-kode').value.trim();
+            const nama = document.getElementById('add-nama').value.trim();
+            const sks = parseInt(document.getElementById('add-sks').value);
+            const semester = parseInt(document.getElementById('add-semester').value);
+
+            // Validasi duplikasi kode mata kuliah
+            const isExist = DB.courses.some(c => c.kode.toLowerCase() === kode.toLowerCase());
+            
+            if (isExist) {
+                logApiCall("POST", "/matkul", 400, `Kesalahan validasi: Kode '${kode}' sudah teralokasi.`);
+                showToast("Kode mata kuliah sudah ada!", "error");
+                return;
+            }
+
+            const newMatkul = { kode, nama, sks, semester };
+            DB.courses.push(newMatkul);
+            saveDb();
+            
+            logApiCall("POST", "/matkul", 201, `Berhasil menyimpan mata kuliah: '${kode} - ${nama}'`);
+            showToast("Mata kuliah berhasil ditambahkan!", "success");
+
+            // Reset formulir
+            this.reset();
+            document.getElementById('add-sks').value = 3;
+            document.getElementById('add-semester').value = 1;
+
+            renderMatkulTable();
+        });
+
+        // PUT /matkul/:kode -> Penanganan Modal & Update data
+        function openEditModal(kode) {
+            const course = DB.courses.find(c => c.kode === kode);
+            if (!course) {
+                logApiCall("GET", `/matkul/${kode}`, 404, "Data tidak ditemukan di database.");
+                showToast("Data mata kuliah tidak ditemukan!", "error");
+                return;
+            }
+
+            // Simulasi pengambilan data spesifik (GET)
+            logApiCall("GET", `/matkul/${kode}`, 200, `Berhasil menarik detail data: '${kode}'`);
+
+            document.getElementById('edit-original-kode').value = course.kode;
+            document.getElementById('edit-kode').value = course.kode;
+            document.getElementById('edit-nama').value = course.nama;
+            document.getElementById('edit-sks').value = course.sks;
+            document.getElementById('edit-semester').value = course.semester;
+
+            // Memunculkan Modal dengan animasi lembut
+            const modal = document.getElementById('modal-edit-matkul');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('modal-edit-matkul');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
+        }
+
+        // Submit form edit matkul (simulasi PUT /matkul/:kode)
+        document.getElementById('form-edit-matkul').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const originalKode = document.getElementById('edit-original-kode').value;
+            const newKode = document.getElementById('edit-kode').value.trim();
+            const nama = document.getElementById('edit-nama').value.trim();
+            const sks = parseInt(document.getElementById('edit-sks').value);
+            const semester = parseInt(document.getElementById('edit-semester').value);
+
+            // Validasi tabrakan kode unik mata kuliah baru
+            if (newKode.toLowerCase() !== originalKode.toLowerCase()) {
+                const isExist = DB.courses.some(c => c.kode.toLowerCase() === newKode.toLowerCase());
+                if (isExist) {
+                    logApiCall("PUT", `/matkul/${originalKode}`, 400, `Gagal perbarui: Kode '${newKode}' sudah terpakai.`);
+                    showToast("Kode baru sudah terpakai!", "error");
+                    return;
+                }
+            }
+
+            // Eksekusi pembaruan record di database simulator
+            const index = DB.courses.findIndex(c => c.kode === originalKode);
+            if (index !== -1) {
+                DB.courses[index] = { kode: newKode, nama, sks, semester };
+
+                // Auto-sync / Cascade perubahan kode ke tabel relasi KRS mahasiswa
+                if (newKode !== originalKode) {
+                    DB.krs = DB.krs.map(item => {
+                        if (item.kode_matkul === originalKode) {
+                            return { ...item, kode_matkul: newKode };
+                        }
+                        return item;
+                    });
+                }
+
+                saveDb();
+                logApiCall("PUT", `/matkul/${originalKode}`, 200, `Sukses memperbarui '${originalKode}' menjadi '${newKode}'`);
+                showToast("Perubahan data berhasil disimpan!", "success");
+                closeEditModal();
+                renderMatkulTable();
+            } else {
+                logApiCall("PUT", `/matkul/${originalKode}`, 404, "Kesalahan: Entitas original tidak terdaftar.");
+                showToast("Terjadi kesalahan teknis pemrosesan.", "error");
+            }
+        });
+
+        // DELETE /matkul/:kode -> Simulasi penghapusan data kurikulum
+        function apiDeleteMatkul(kode) {
+            // Dialog konfirmasi terintegrasi
+            const confirmDelete = confirm(`Apakah kamu yakin ingin menghapus data mata kuliah [${kode}]? \nSemua data KRS mahasiswa terkait mata kuliah ini otomatis akan terhapus.`);
+            if (!confirmDelete) return;
+
+            const index = DB.courses.findIndex(c => c.kode === kode);
+            if (index !== -1) {
+                const deletedName = DB.courses[index].nama;
+                
+                // Hapus data utama
+                DB.courses.splice(index, 1);
+                
+                // Cascade delete dari KRS
+                const initialKrsLen = DB.krs.length;
+                DB.krs = DB.krs.filter(item => item.kode_matkul !== kode);
+                const cascadeDeletedCount = initialKrsLen - DB.krs.length;
+
+                saveDb();
+                
+                logApiCall("DELETE", `/matkul/${kode}`, 200, `Berhasil menghapus '${kode} - ${deletedName}'. Terjadi cascade delete pada ${cascadeDeletedCount} baris KRS.`);
+                showToast("Mata kuliah berhasil dihapus!", "success");
+                
+                renderMatkulTable();
+            } else {
+                logApiCall("DELETE", `/matkul/${kode}`, 404, "Gagal request hapus: Data target tidak valid.");
+                showToast("Mata kuliah tidak dapat ditemukan!", "error");
+            }
+        }
+
+
+        // =========================================================================
+        // BACKEND SIMULATION & RENDER ENGINE (KRS)
+        // =========================================================================
+
+        // Mengisi pilihan drop-down mata kuliah KRS secara dinamis
+        function populateKrsDropdown() {
+            const select = document.getElementById('krs-select-matkul');
+            select.innerHTML = '<option value="" disabled selected>-- Pilih Mata Kuliah --</option>';
+
+            if (DB.courses.length === 0) {
+                select.innerHTML = '<option value="" disabled>Belum ada mata kuliah terdaftar</option>';
+                return;
+            }
+
+            DB.courses.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.kode;
+                opt.innerText = `[${c.kode}] ${c.nama} (${c.sks} SKS - Smt ${c.semester})`;
+                select.appendChild(opt);
+            });
+        }
+
+        // GET /krs/:npm -> Menarik KRS berdasarkan parameter NPM
+        function searchKrsMahasiswa() {
+            const inputNpm = document.getElementById('krs-search-npm').value.trim();
+            if (!inputNpm) {
+                showToast("Harap ketik NPM terlebih dahulu!", "warning");
+                return;
+            }
+
+            activeNpm = inputNpm;
+            
+            // Simulasikan Request GET /krs/:npm
+            const foundKrs = DB.krs.filter(item => item.npm === activeNpm);
+            logApiCall("GET", `/krs/${activeNpm}`, 200, `Berhasil memuat KRS mahasiswa. Ditemukan ${foundKrs.length} data.`);
+            
+            // Aktifkan form pengisian data KRS
+            const enrollSection = document.getElementById('form-enrollment-section');
+            enrollSection.classList.remove('opacity-40', 'pointer-events-none');
+            document.getElementById('krs-npm-display').value = activeNpm;
+
+            // Memperbarui visual kartu info mahasiswa aktif
+            document.getElementById('current-mhs-title').innerText = `Rencana Studi NPM: ${activeNpm}`;
+            document.getElementById('current-mhs-sub').innerText = `Sesi aktif terbuka. Batas pendaftaran mata kuliah baru adalah 24 SKS.`;
+
+            renderKrsTable();
+            showToast(`Data KRS mahasiswa NPM ${activeNpm} siap dikelola!`, "success");
+        }
+
+        // Merender isi tabel KRS untuk NPM aktif
+        function renderKrsTable() {
+            const tableBody = document.getElementById('table-krs-body');
+            const emptyState = document.getElementById('krs-empty-state');
+            const emptyTitle = document.getElementById('krs-empty-title');
+            const emptySub = document.getElementById('krs-empty-sub');
+            const progressBar = document.getElementById('sks-progress-bar');
+
+            tableBody.innerHTML = "";
+
+            if (!activeNpm) {
+                emptyState.classList.remove('hidden');
+                emptyTitle.innerText = "Menunggu Penelusuran";
+                emptySub.innerText = "Lakukan pencarian NPM untuk memunculkan lembar pengisian Kartu Rencana Studi.";
+                document.getElementById('current-total-sks').innerHTML = `0 <span class="text-xs font-semibold text-brand-100">/ 24 SKS</span>`;
+                progressBar.style.width = "0%";
+                return;
+            }
+
+            const studentKrs = DB.krs.filter(item => item.npm === activeNpm);
+            
+            if (studentKrs.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyTitle.innerText = "Kartu Studi Kosong";
+                emptySub.innerText = "Mahasiswa ini belum mendaftarkan mata kuliah apa pun pada semester ini.";
+                document.getElementById('current-total-sks').innerHTML = `0 <span class="text-xs font-semibold text-brand-100">/ 24 SKS</span>`;
+                progressBar.style.width = "0%";
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            let totalSks = 0;
+
+            studentKrs.forEach(krsItem => {
+                // Melakukan simulasi JOIN relasi data antara tabel KRS & master Mata Kuliah
+                const course = DB.courses.find(c => c.kode === krsItem.kode_matkul);
+                
+                if (course) {
+                    totalSks += course.sks;
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50/50 transition-colors border-b border-slate-100 group";
+                    tr.innerHTML = `
+                        <td class="py-3.5 px-6 font-mono font-bold text-brand-700">${course.kode}</td>
+                        <td class="py-3.5 px-6 text-slate-700 font-semibold group-hover:text-slate-900 transition-colors">${course.nama}</td>
+                        <td class="py-3.5 px-6 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-100">
+                                ${course.sks} SKS
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-6 text-center text-slate-500 font-medium">Semester ${course.semester}</td>
+                        <td class="py-3.5 px-6 text-right">
+                            <button onclick="apiDeleteKrs('${krsItem.id}', '${course.kode}')" class="p-1.5 px-2.5 bg-white border border-slate-200 hover:border-rose-400 hover:bg-rose-50 rounded-xl text-rose-600 font-medium text-xs transition-all duration-200">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Batalkan
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                } else {
+                    // Penanganan fallback integrasi jika data master diubah saat KRS masih menempel
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-rose-50/50 text-rose-600 border-b border-slate-100";
+                    tr.innerHTML = `
+                        <td class="py-3.5 px-6 font-mono">${krsItem.kode_matkul}</td>
+                        <td class="py-3.5 px-6 italic font-medium text-slate-450">Relasi Kurikulum Terhapus</td>
+                        <td class="py-3.5 px-6 text-center">-</td>
+                        <td class="py-3.5 px-6 text-center">-</td>
+                        <td class="py-3.5 px-6 text-right">
+                            <button onclick="apiDeleteKrs('${krsItem.id}', '${krsItem.kode_matkul}')" class="p-1.5 px-2.5 bg-white border border-slate-200 hover:border-rose-450 hover:bg-rose-50 rounded-xl text-rose-600 font-medium text-xs transition-all">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Bersihkan
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                }
+            });
+
+            // Memperbarui live total beban SKS mahasiswa & Bar meter
+            document.getElementById('current-total-sks').innerHTML = `${totalSks} <span class="text-xs font-semibold text-brand-100">/ 24 SKS</span>`;
+            
+            // Hitung persentase pendaran bar (Maksimum 24 SKS)
+            const percentage = Math.min((totalSks / 24) * 100, 100);
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // POST /krs -> Menambahkan pendaftaran mata kuliah baru ke dalam KRS
+        document.getElementById('form-add-krs').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!activeNpm) {
+                showToast("Pilih & Otentikasi NPM mahasiswa terlebih dahulu!", "error");
+                return;
+            }
+
+            const kodeMatkul = document.getElementById('krs-select-matkul').value;
+            if (!kodeMatkul) {
+                showToast("Pilih mata kuliah terlebih dahulu!", "warning");
+                return;
+            }
+
+            // Validasi: Apakah mata kuliah ini sudah diambil sebelumnya?
+            const isAlreadyTaken = DB.krs.some(item => item.npm === activeNpm && item.kode_matkul === kodeMatkul);
+            if (isAlreadyTaken) {
+                logApiCall("POST", "/krs", 400, `Validasi Gagal: Kode '${kodeMatkul}' sudah terdaftar di KRS NPM ${activeNpm}`);
+                showToast("Mata kuliah sudah diambil oleh mahasiswa ini!", "error");
+                return;
+            }
+
+            // Validasi SKS Maksimum: Hitung beban SKS aktif
+            const currentStudentKrs = DB.krs.filter(item => item.npm === activeNpm);
+            let currentSksTotal = 0;
+            currentStudentKrs.forEach(item => {
+                const c = DB.courses.find(course => course.kode === item.kode_matkul);
+                if (c) currentSksTotal += c.sks;
+            });
+
+            const targetCourse = DB.courses.find(c => c.kode === kodeMatkul);
+            const additionalSks = targetCourse ? targetCourse.sks : 0;
+
+            // Batas limit aturan akademik (24 SKS)
+            if (currentSksTotal + additionalSks > 24) {
+                logApiCall("POST", "/krs", 400, `Validasi Gagal: SKS terkontrak (${currentSksTotal + additionalSks}) melampaui regulasi 24 SKS.`);
+                showToast("Beban SKS melebihi ambang batas maksimum!", "error");
+                return;
+            }
+
+            // Inisiasi ID baru untuk entri KRS baru
+            const newKrsId = "krs-" + Date.now();
+            const newKrsRecord = {
+                id: newKrsId,
+                npm: activeNpm,
+                kode_matkul: kodeMatkul
+            };
+
+            DB.krs.push(newKrsRecord);
+            saveDb();
+
+            logApiCall("POST", "/krs", 201, `Berhasil mengontrak mata kuliah '${kodeMatkul}' ke KRS mahasiswa ${activeNpm}`);
+            showToast("Berhasil terdaftar ke lembar studi mahasiswa!", "success");
+
+            // Reset seleksi pilihan mata kuliah setelah berhasil menyimpan
+            document.getElementById('krs-select-matkul').value = "";
+
+            renderKrsTable();
+        });
+
+        // DELETE /krs/:id -> Batalkan atau hapus entri mata kuliah dari KRS mahasiswa
+        function apiDeleteKrs(id, kodeMatkul) {
+            const index = DB.krs.findIndex(item => item.id === id);
+            
+            if (index !== -1) {
+                DB.krs.splice(index, 1);
+                saveDb();
+
+                logApiCall("DELETE", `/krs/${id}`, 200, `Berhasil menghapus entri '${kodeMatkul}' dari KRS NPM ${activeNpm}`);
+                showToast("Mata kuliah dibatalkan dari KRS!", "success");
+
+                renderKrsTable();
+            } else {
+                logApiCall("DELETE", `/krs/${id}`, 404, "Data KRS target tidak sah.");
+                showToast("Entri KRS gagal dihapus.", "error");
+            }
+        }
+
+
+        // --- 6. WINDOW ONLOAD INITIALIZER ---
+        window.onload = function() {
+            updateDashboardStats();
+            renderMatkulTable();
+        }
+    </script>
+</body>
+</html>
