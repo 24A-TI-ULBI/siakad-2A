@@ -104,7 +104,9 @@
 </div>
 
 <script>
-  fetch('/').then(r => r.json()).then(data => {
+  const API_BASE = 'https://dituniverse.alwaysdata.net';
+
+  fetch(API_BASE + '/api').then(r => r.json()).then(data => {
     if (data.status === 'success') {
       document.getElementById('status-text').textContent = 'Server aktif';
     }
