@@ -104,8 +104,8 @@ async function daftarBeasiswa(){
   );
 
   const result = await response.json();
-
-  alert(result.message);
+  console.log(result);
+  alert(result.message || "Pendaftaran berhasil");
 }
 
 async function cekStatus(){
@@ -134,19 +134,18 @@ async function cekStatus(){
   hasil.innerHTML = `
     <div class="status-result">
 
-      <h3>${result.nama}</h3>
+      <h3>${result.data.nama}</h3>
 
-      <p><strong>NPM:</strong> ${result.npm}</p>
+      <p><strong>NPM:</strong> ${result.data.npm}</p>
 
-      <p><strong>Scholarship:</strong> ${result.beasiswa}</p>
+      <p><strong>Scholarship:</strong> ${result.data.beasiswa}</p>
 
-      <p><strong>Status:</strong> ${result.status}</p>
-
-    </div>
+      <p><strong>Status:</strong> ${result.data.status}</p>
+          </div>
   `;
 }
 
-async function updateStatus(){
+async function updateStatus() {
 
   const npm =
     document.getElementById("updateNpm").value;
@@ -154,33 +153,65 @@ async function updateStatus(){
   const status =
     document.getElementById("updateStatus").value;
 
-  const response = await fetch(
-    `http://127.0.0.1:8080/beasiswa/status/${npm}?status=${status}`,
-    {
-      method:"PUT"
-    }
-  );
+  try {
 
-  const result = await response.json();
+    const response = await fetch(
+      `http://127.0.0.1:8080/beasiswa/status/${npm}`,
+      {
+        method: "PUT",
 
-  alert(result.message);
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          status: status
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    console.log(result);
+
+    alert(result.message || "Status berhasil diupdate");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert("Gagal update status");
+
+  }
+
 }
 
-
-async function deletePendaftaran(){
+async function deletePendaftaran() {
 
   const npm =
     document.getElementById("deleteNpm").value;
 
-  const response = await fetch(
-    `http://127.0.0.1:8080/beasiswa/${npm}`,
-    {
-      method:"DELETE"
-    }
-  );
+  try {
 
-  const result = await response.json();
+    const response = await fetch(
+      `http://127.0.0.1:8080/beasiswa/${npm}`,
+      {
+        method: "DELETE"
+      }
+    );
 
-  alert(result.message);
+    const result = await response.json();
+
+    console.log(result);
+
+    alert("Data berhasil dihapus");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert("Gagal menghapus data");
+
+  }
+
 }
-

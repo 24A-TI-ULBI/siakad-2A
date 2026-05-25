@@ -73,48 +73,101 @@ func AddBeasiswa(c *fiber.Ctx) error {
 
 // UpdateBeasiswa — PUT /beasiswa/:id
 func UpdateBeasiswa(c *fiber.Ctx) error {
-	id, err := primitive.ObjectIDFromHex(c.Params("id"))
-	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "ID tidak valid")
-	}
+
+	npm := c.Params("npm")
 
 	var body bson.M
-	if err := c.BodyParser(&body); err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "Format request tidak valid")
-	}
-	delete(body, "_id")
 
-	col := helper.GetCollection("beasiswa")
+	if err := c.BodyParser(&body); err != nil {
+
+		return helper.ErrorResponse(
+			c,
+			fiber.StatusBadRequest,
+			"Format request tidak valid",
+		)
+
+	}
+
+	col := helper.GetCollection("pendaftaran")
+
 	ctx, cancel := helper.GetContext()
 	defer cancel()
 
-	result, err := col.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": body})
+	result, err := col.UpdateOne(
+		ctx,
+		bson.M{"npm": npm},
+		bson.M{"$set": body},
+	)
+
 	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Gagal mengupdate data beasiswa")
+
+		return helper.ErrorResponse(
+			c,
+			fiber.StatusInternalServerError,
+			"Gagal update status",
+		)
+
 	}
+
 	if result.MatchedCount == 0 {
-		return helper.ErrorResponse(c, fiber.StatusNotFound, "Beasiswa tidak ditemukan")
+
+		return helper.ErrorResponse(
+			c,
+			fiber.StatusNotFound,
+			"Data tidak ditemukan",
+		)
+
 	}
-	return helper.SuccessResponse(c, fiber.Map{"updated": result.ModifiedCount})
+
+	return helper.SuccessResponse(
+		c,
+		fiber.Map{
+			"updated": result.ModifiedCount,
+		},
+	)
+
 }
 
 // DeleteBeasiswa — DELETE /beasiswa/:id
 func DeleteBeasiswa(c *fiber.Ctx) error {
-	id, err := primitive.ObjectIDFromHex(c.Params("id"))
-	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "ID tidak valid")
-	}
 
-	col := helper.GetCollection("beasiswa")
+	npm := c.Params("npm")
+
+	col := helper.GetCollection("pendaftaran")
+
 	ctx, cancel := helper.GetContext()
 	defer cancel()
 
-	result, err := col.DeleteOne(ctx, bson.M{"_id": id})
+	result, err := col.DeleteOne(
+		ctx,
+		bson.M{"npm": npm},
+	)
+
 	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Gagal menghapus data beasiswa")
+
+		return helper.ErrorResponse(
+			c,
+			fiber.StatusInternalServerError,
+			"Gagal menghapus data",
+		)
+
 	}
+
 	if result.DeletedCount == 0 {
-		return helper.ErrorResponse(c, fiber.StatusNotFound, "Beasiswa tidak ditemukan")
+
+		return helper.ErrorResponse(
+			c,
+			fiber.StatusNotFound,
+			"Data tidak ditemukan",
+		)
+
 	}
-	return helper.SuccessResponse(c, fiber.Map{"deleted": result.DeletedCount})
+
+	return helper.SuccessResponse(
+		c,
+		fiber.Map{
+			"deleted": result.DeletedCount,
+		},
+	)
+
 }

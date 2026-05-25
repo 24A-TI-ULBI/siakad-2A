@@ -102,21 +102,35 @@ func UpdateStatus(c *fiber.Ctx) error {
 
 // DeletePendaftaran — DELETE /beasiswa/pendaftaran/:id
 func DeletePendaftaran(c *fiber.Ctx) error {
-	id, err := primitive.ObjectIDFromHex(c.Params("id"))
-	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusBadRequest, "ID tidak valid")
-	}
+
+	npm := c.Params("npm")
 
 	col := helper.GetCollection("pendaftaran")
+
 	ctx, cancel := helper.GetContext()
 	defer cancel()
 
-	result, err := col.DeleteOne(ctx, bson.M{"_id": id})
+	result, err := col.DeleteOne(ctx, bson.M{
+		"npm": npm,
+	})
+
 	if err != nil {
-		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Gagal menghapus data pendaftaran")
+		return helper.ErrorResponse(
+			c,
+			fiber.StatusInternalServerError,
+			"Gagal menghapus data pendaftaran",
+		)
 	}
+
 	if result.DeletedCount == 0 {
-		return helper.ErrorResponse(c, fiber.StatusNotFound, "Data pendaftaran tidak ditemukan")
+		return helper.ErrorResponse(
+			c,
+			fiber.StatusNotFound,
+			"Data pendaftaran tidak ditemukan",
+		)
 	}
-	return helper.SuccessResponse(c, fiber.Map{"deleted": result.DeletedCount})
+
+	return helper.SuccessResponse(c, fiber.Map{
+		"deleted": result.DeletedCount,
+	})
 }
