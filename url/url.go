@@ -2,6 +2,7 @@ package url
 
 import (
 	"backend/controller"
+	"backend/controller/modul9"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,4 +17,6 @@ func Web(app *fiber.App) {
 
 	// Tambahkan route modul di bawah ini setelah PR di-merge
 	// Contoh: MahasiswaRoute(app)
+	modul9.RegisterRoutes(app)
+
 }
