@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIAKAD - Sistem Absensi & Rekap Mahasiswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ea5329;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 pointer-events-none"></div>
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm shadow-slate-100/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 bg-white rounded-lg flex items-center justify-center p-1 border border-slate-100 shadow-sm overflow-hidden">
+                    <img src="logo.png" alt="Logo" class="h-full w-full object-contain">
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-[#00277f] tracking-tight text-sm sm:text-base leading-none">SIAKAD</h1>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Universitas Logistik & Bisnis Internasional</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="toggleConfigModal(true)" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition relative group">
+                    <i class="fa-solid fa-gears text-lg"></i>
+                    <span class="absolute right-1 top-1 w-2.5 h-2.5 rounded-full border-2 border-white bg-amber-500" id="api-status-dot"></span>
+                </button>
+                <div class="flex items-center gap-3 border-l border-slate-100 pl-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase leading-none">Akses Operator</p>
+                        <p class="text-xs font-bold text-slate-800 mt-1">Administrator</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-orange-50 text-[#ea5329] border border-orange-100 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user-shield text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow space-y-6">
+        <div class="bg-white border-l-8 border-[#ea5329] rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100/80 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="bg-orange-50 text-[#ea5329] text-[10px] font-extrabold px-3 py-1 rounded-md uppercase tracking-wider border border-orange-100">Sistem Presensi Keaktifan</span>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-[#00277f] tracking-tight mt-2.5">Sistem Absensi & Rekap Mahasiswa</h2>
+                <p class="text-xs text-slate-500 mt-1 max-w-xl">Portal pencatatan presensi perkuliahan mahasiswa Informatika secara terpadu di lingkungan kampus ULBI.</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200/60 w-full md:w-auto">
+                <button id="tab-dashboard-btn" onclick="switchTab('dashboard')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-[#00277f] text-white shadow-sm">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </button>
+                <button id="tab-hariini-btn" onclick="switchTab('hariini')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-200/60">
+                    <i class="fa-solid fa-calendar-day"></i> Log Hari Ini
+                </button>
+                <button id="tab-kelas-btn" onclick="switchTab('kelas')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-200/60">
+                    <i class="fa-solid fa-users-rectangle"></i> Rekap Kelas
+                </button>
+            </div>
+        </div>
+        <div id="tab-dashboard" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-4 bg-white rounded-xl p-6 shadow-sm border border-slate-100 h-fit">
+                    <div class="flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                        <div class="w-8 h-8 rounded-lg bg-orange-50 text-[#ea5329] flex items-center justify-center">
+                            <i class="fa-solid fa-clipboard-user"></i>
+                        </div>
+                        <h3 class="font-bold text-[#00277f] text-sm">Form Input Absensi Mahasiswa</h3>
+                    </div>
+
+                    <form id="form-absensi" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Pilih Mahasiswa</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-user-graduate text-xs"></i>
+                                </span>
+                                <select id="form-npm" onchange="handleStudentSelectChange()" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-slate-700 bg-white focus:ring-2 focus:ring-orange-500/15 focus:border-[#ea5329] outline-none transition text-xs font-semibold" required>
+                                    <option value="714240015">714240015 - ADITYA FIRMANSYAH</option>
+                                    <option value="714240001">714240001 - AFFIFAH PUTRI DEZA</option>
+                                    <option value="714240014">714240014 - AL YASMIN ASSA'DIYAH</option>
+                                    <option value="714240005">714240005 - ALIF SATRIA RAGHIB</option>
+                                    <option value="714240011">714240011 - ALIFYA AZZAHRA</option>
+                                    <option value="714240010">714240010 - DZAKWAN ARYA JOUZA RENDYANA</option>
+                                    <option value="714240007">714240007 - FAIDIL ZAHPAR</option>
+                                    <option value="714240048">714240048 - KEYLA SUN</option>
+                                    <option value="714240066">714240066 - MOCHAMMAD RAIHAN HAMDAN AL FARUQ</option>
+                                    <option value="714240013">714240013 - MOHAMMAD ISA WIDIANTO</option>
+                                    <option value="714240008">714240008 - MUHAMMAD ARIF RIVALDI</option>
+                                    <option value="714240004">714240004 - MUHAMMAD FARIS RODJA</option>
+                                    <option value="714240049">714240049 - MUHAMMAD RADHI RABBANI</option>
+                                    <option value="714240006">714240006 - MUHAMMAD RASHID AL SAVERO</option>
+                                    <option value="714240002">714240002 - NADI AZZADA AKBAR</option>
+                                    <option value="714240041">714240041 - RADITYA RIZKI RAHARJA</option>
+                                    <option value="714240051">714240051 - RAFLI PUTRA PRATAMA</option>
+                                    <option value="714240050">714240050 - RIDWAN HAKIM RAMADHAN</option>
+                                    <option value="714240012">714240012 - SAMSHI YUDHA PRATAMA NUR ISLAM</option>
+                                    <option value="714240064">714240064 - SAMUEL RO ITAN SIDABUTAR</option>
+                                    <option value="714240052" selected>714240052 - ZAHRA NUR'AZIJAH LUTFIANI</option>
+                                    <option value="714240003">714240003 - ZAHRA RAMANAYSHILLA SOPIAN</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Pilih Mata Kuliah</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-book-bookmark text-xs"></i>
+                                </span>
+                                <select id="form-matkul" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-slate-700 bg-white focus:ring-2 focus:ring-orange-500/15 focus:border-[#ea5329] outline-none transition text-xs font-semibold" required>
+                                    <option value="IF401" selected>IF401 - Pemrograman Berorientasi Objek</option>
+                                    <option value="IF402">IF402 - Sistem Operasi</option>
+                                    <option value="IF403">IF403 - Desain & Analisis Algoritma</option>
+                                    <option value="IF404">IF404 - Analisis & Perancangan Sistem</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tanggal Absensi</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-regular fa-calendar text-xs"></i>
+                                </span>
+                                <input type="date" id="form-tanggal" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-slate-700 focus:ring-2 focus:ring-orange-500/15 focus:border-[#ea5329] outline-none transition text-xs font-semibold" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Status Kehadiran</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="border border-slate-200 rounded-lg p-2.5 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-slate-50 has-[:checked]:border-[#ea5329] has-[:checked]:bg-orange-50/20 text-slate-500 has-[:checked]:text-[#ea5329] transition">
+                                    <input type="radio" name="status" value="Hadir" class="hidden" checked>
+                                    <i class="fa-regular fa-circle-check text-base"></i>
+                                    <span class="text-[9px] font-bold uppercase">Hadir</span>
+                                </label>
+                                <label class="border border-slate-200 rounded-lg p-2.5 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-slate-50.has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50/20 text-slate-500 has-[:checked]:text-amber-700 transition">
+                                    <input type="radio" name="status" value="Izin" class="hidden">
+                                    <i class="fa-regular fa-envelope text-base"></i>
+                                    <span class="text-[9px] font-bold uppercase">Izin</span>
+                                </label>
+                                <label class="border border-slate-200 rounded-lg p-2.5 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-slate-50.has-[:checked]:border-rose-500 has-[:checked]:bg-rose-50/20 text-slate-500 has-[:checked]:text-rose-700 transition">
+                                    <input type="radio" name="status" value="Alpha" class="hidden">
+                                    <i class="fa-regular fa-circle-xmark text-base"></i>
+                                    <span class="text-[9px] font-bold uppercase">Alpha</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-[#ea5329] hover:bg-[#d4431b] text-white font-bold py-2.5 px-4 rounded-lg transition shadow-md shadow-orange-500/10 flex items-center justify-center gap-2 mt-4 text-xs sm:text-sm">
+                            <i class="fa-solid fa-right-to-bracket"></i> Kirim Absensi
+                        </button>
+                    </form>
+                </div>
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4 mb-4">
+                            <div>
+                                <h3 class="font-extrabold text-[#00277f] text-base" id="rekap-summary-title">Rekap Kehadiran Mahasiswa</h3>
+                                <p class="text-xs font-semibold text-slate-400 mt-0.5">Analisis persentase dan keaktifan mahasiswa berdasarkan mata kuliah semester 4.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Periode</span>
+                                <select id="rekap-periode" class="px-3 py-1.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none bg-slate-50">
+                                    <option value="2026-05" selected>Mei 2026</option>
+                                    <option value="2026-04">April 2026</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                            <div class="md:col-span-7 grid grid-cols-2 gap-4">
+                                <div class="bg-slate-50 rounded-xl p-4 flex flex-col justify-center border border-slate-100">
+                                    <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Total Sesi</span>
+                                    <span class="text-xl sm:text-2xl font-extrabold text-[#00277f] mt-1" id="stat-total-pertemuan">0</span>
+                                </div>
+                                <div class="bg-emerald-50/30 rounded-xl p-4 flex flex-col justify-center border border-emerald-100/60">
+                                    <span class="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider block">Hadir</span>
+                                    <span class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1" id="stat-hadir">0</span>
+                                </div>
+                                <div class="bg-amber-50/30 rounded-xl p-4 flex flex-col justify-center border border-amber-100/60">
+                                    <span class="text-[10px] font-extrabold text-amber-600 uppercase tracking-wider block">Izin</span>
+                                    <span class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1" id="stat-izin">0</span>
+                                </div>
+                                <div class="bg-rose-50/30 rounded-xl p-4 flex flex-col justify-center border border-rose-100/60">
+                                    <span class="text-[10px] font-extrabold text-rose-500 uppercase tracking-wider block">Alpha</span>
+                                    <span class="text-xl sm:text-2xl font-extrabold text-rose-500 mt-1" id="stat-alpha">0</span>
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-5 flex flex-col items-center justify-center py-2">
+                                <div class="relative w-36 h-36 flex items-center justify-center">
+                                    <svg class="absolute w-full h-full transform -rotate-90">
+                                        <circle cx="72" cy="72" r="60" stroke="#f1f5f9" stroke-width="12" fill="transparent"/>
+                                        <circle id="gauge-circle" cx="72" cy="72" r="60" stroke="#cbd5e1" stroke-width="12" fill="transparent"
+                                                stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round" class="transition-all duration-700 ease-out"/>
+                                    </svg>
+                                    <div class="text-center z-10">
+                                        <p class="text-xs font-bold text-slate-400">Kehadiran</p>
+                                        <p id="gauge-percentage-text" class="text-2xl font-black text-slate-800 mt-0.5">0%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-lg bg-orange-50 text-[#ea5329] flex items-center justify-center">
+                                    <i class="fa-solid fa-list-check"></i>
+                                </div>
+                                <h3 class="font-extrabold text-[#00277f] text-sm">Tabel Rekap Kehadiran per Mata Kuliah</h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="resetSimulationData()" class="px-3 py-2 border border-rose-100 rounded-lg hover:bg-rose-50 text-xs font-bold text-rose-600 transition flex items-center gap-1.5" title="Reset semua data ke data demo bawaan">
+                                    <i class="fa-solid fa-rotate-left"></i> Reset Demo Data
+                                </button>
+                                <button onclick="simulatePdfDownload()" class="px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-xs font-bold text-slate-600 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-download"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto rounded-xl border border-slate-100">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-400 text-[10px] font-bold uppercase tracking-wider border-b border-slate-100">
+                                        <th class="py-3 px-4">Mata Kuliah</th>
+                                        <th class="py-3 px-4 text-center">Jumlah Hadir</th>
+                                        <th class="py-3 px-4 text-center">Jumlah Izin</th>
+                                        <th class="py-3 px-4 text-center">Jumlah Alpha</th>
+                                        <th class="py-3 px-4 text-center">Total Sesi</th>
+                                        <th class="py-3 px-4 text-right">Persentase</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-rekap-rows" class="divide-y divide-slate-100 text-xs sm:text-sm font-semibold text-slate-600">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-hariini" class="hidden space-y-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100 space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <h3 class="font-extrabold text-[#00277f] text-base">Absensi yang Masuk Hari Ini</h3>
+                        </div>
+                    </div>
+                    <span class="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1.5 rounded-full" id="hariini-count-badge">0 Data Terdeteksi</span>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-400 text-[10px] font-bold uppercase tracking-wider border-b border-slate-100">
+                                <th class="py-3 px-4">Waktu Input</th>
+                                <th class="py-3 px-4">Mahasiswa</th>
+                                <th class="py-3 px-4">Mata Kuliah</th>
+                                <th class="py-3 px-4">Tanggal Input</th>
+                                <th class="py-3 px-4 text-center">Status</th>
+                                <th class="py-3 px-4 text-center">Ubah Status</th>
+                                <th class="py-3 px-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hariini-rows" class="divide-y divide-slate-100 text-sm font-semibold text-slate-600">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-kelas" class="hidden space-y-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100 space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-orange-50 text-[#ea5329] flex items-center justify-center">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <h3 class="font-extrabold text-[#00277f] text-base">Rekap Kehadiran Semua Mahasiswa</h3>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-400 mt-1">Mengambil rekap kumulatif seluruh mahasiswa terdaftar berdasarkan mata kuliah pilihan.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Mata Kuliah:</span>
+                        <select id="kelas-matkul-filter" onchange="renderRekapKelas()" class="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none bg-slate-50">
+                            <option value="IF401" selected>IF401 - Pemrograman Berorientasi Objek</option>
+                            <option value="IF402">IF402 - Sistem Operasi</option>
+                            <option value="IF403">IF403 - Desain & Analisis Algoritma</option>
+                            <option value="IF404">IF404 - Analisis & Perancangan Sistem</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-100">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-400 text-[10px] font-bold uppercase tracking-wider border-b border-slate-100">
+                                <th class="py-3 px-4">Mahasiswa</th>
+                                <th class="py-3 px-4 text-center">Jumlah Hadir</th>
+                                <th class="py-3 px-4 text-center">Jumlah Izin</th>
+                                <th class="py-3 px-4 text-center">Jumlah Alpha</th>
+                                <th class="py-3 px-4 text-center">Total Sesi</th>
+                                <th class="py-3 px-4 text-right">Persentase Keaktifan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kelas-rekap-rows" class="divide-y divide-slate-100 text-sm font-semibold text-slate-600">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-bold text-slate-400">
+            <div>
+                <span>Sistem Absensi & Rekap</span>
+            </div>
+            <div>
+                <span>SIAKAD Portal &copy; 2026 • Universitas Logistik & Bisnis Internasional</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="config-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4 relative transform transition">
+            <button onclick="toggleConfigModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-server"></i>
+                </div>
+                <div>
+                    <h4 class="font-extrabold text-[#00277f] text-base">Koneksi Backend Go & Paseto</h4>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Konfigurasi Integrasi Kelas</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-1">Mode Layanan</label>
+                    <select id="config-mode" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 outline-none" onchange="handleConfigModeChange()">
+                        <option value="local" selected>Local Storage (Simulasi Offline)</option>
+                        <option value="live">Live API Mode (Backend Go Kelas)</option>
+                    </select>
+                </div>
+
+                <div id="live-config-fields" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-1">Base URL Backend Go</label>
+                        <input type="text" id="config-url" placeholder="https://api-kelas.render.com" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 outline-none focus:border-[#ea5329]">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-1">Paseto V4 Public Token</label>
+                        <textarea id="config-token" rows="3" placeholder="v4.public.ey..." class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-mono text-slate-700 outline-none focus:border-[#ea5329]"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-3">
+                <button onclick="toggleConfigModal(false)" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-xs transition">
+                    Tutup
+                </button>
+                <button onclick="saveApiConfig()" class="w-1/2 bg-[#ea5329] hover:bg-[#d4431b] text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md shadow-orange-500/10">
+                    Simpan Konfigurasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const INITIAL_STUDENTS = {
+            "714240001": { nama: "AFFIFAH PUTRI DEZA" },
+            "714240002": { nama: "NADI AZZADA AKBAR" },
+            "714240003": { nama: "ZAHRA RAMANAYSHILLA SOPIAN" },
+            "714240004": { nama: "MUHAMMAD FARIS RODJA" },
+            "714240005": { nama: "ALIF SATRIA RAGHIB" },
+            "714240006": { nama: "MUHAMMAD RASHID AL SAVERO" },
+            "714240007": { nama: "FAIDIL ZAHPAR" },
+            "714240008": { nama: "MUHAMMAD ARIF RIVALDI" },
+            "714240010": { nama: "DZAKWAN ARYA JOUZA RENDYANA" },
+            "714240011": { nama: "ALIFYA AZZAHRA" },
+            "714240012": { nama: "SAMSHI YUDHA PRATAMA NUR ISLAM" },
+            "714240013": { nama: "MOHAMMAD ISA WIDIANTO" },
+            "714240014": { nama: "AL YASMIN ASSA'DIYAH" },
+            "714240015": { nama: "ADITYA FIRMANSYAH" },
+            "714240041": { nama: "RADITYA RIZKI RAHARJA" },
+            "714240048": { nama: "KEYLA SUN" },
+            "714240049": { nama: "MUHAMMAD RADHI RABBANI" },
+            "714240050": { nama: "RIDWAN HAKIM RAMADHAN" },
+            "714240051": { nama: "RAFLI PUTRA PRATAMA" },
+            "714240052": { nama: "ZAHRA NUR'AZIJAH LUTFIANI" },
+            "714240064": { nama: "SAMUEL RO ITAN SIDABUTAR" },
+            "714240066": { nama: "MOCHAMMAD RAIHAN HAMDAN AL FARUQ" }
+        };
+
+        const INITIAL_COURSES = {
+            "IF401": "Pemrograman Berorientasi Objek",
+            "IF402": "Sistem Operasi",
+            "IF403": "Desain & Analisis Algoritma",
+            "IF404": "Analisis & Perancangan Sistem"
+        };
+
+        function getLocalTodayString() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function generateDemoAttendances() {
+            const todayStr = getLocalTodayString();
+            return [
+                { id: "log-1", npm: "714240052", matkulCode: "IF401", tanggal: todayStr, status: "Hadir", timestamp: "08:15" },
+                { id: "log-2", npm: "714240052", matkulCode: "IF402", tanggal: todayStr, status: "Izin", timestamp: "09:30" },
+                { id: "log-3", npm: "714240002", matkulCode: "IF401", tanggal: todayStr, status: "Hadir", timestamp: "08:20" },
+                { id: "log-4", npm: "714240003", matkulCode: "IF404", tanggal: todayStr, status: "Izin", timestamp: "10:05" },
+                { id: "log-5", npm: "714240004", matkulCode: "IF403", tanggal: todayStr, status: "Hadir", timestamp: "10:15" },
+                { id: "log-6", npm: "714240005", matkulCode: "IF401", tanggal: todayStr, status: "Hadir", timestamp: "08:10" },
+                { id: "log-7", npm: "714240006", matkulCode: "IF404", tanggal: todayStr, status: "Hadir", timestamp: "09:05" },
+                
+                { id: "log-hist-1", npm: "714240052", matkulCode: "IF401", tanggal: "2026-05-18", status: "Hadir", timestamp: "08:05" },
+                { id: "log-hist-2", npm: "714240052", matkulCode: "IF403", tanggal: "2026-05-15", status: "Hadir", timestamp: "10:10" },
+                { id: "log-hist-3", npm: "714240002", matkulCode: "IF402", tanggal: "2026-05-18", status: "Alpha", timestamp: "09:45" }
+            ];
+        }
+
+        let state = {
+            config: { mode: "local", apiUrl: "https://github.com/24A-TI-ULBI/backend.git", token: "" },
+            attendances: [],
+            activeTab: "dashboard",
+            selectedNpm: "714240052"
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("form-tanggal").value = getLocalTodayString();
+            
+            loadSavedConfig();
+            loadAttendanceData();
+            renderActiveTab();
+            updateApiStatusBadge();
+        });
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = `p-4 rounded-2xl shadow-lg border text-xs font-bold flex items-center gap-3 translate-y-2 opacity-0 transition-all duration-300 pointer-events-auto w-72 sm:w-80`;
+            
+            if (type === "success") {
+                toast.className += ` bg-[#f0fdf4] border-emerald-100 text-emerald-800`;
+                toast.innerHTML = `<i class="fa-solid fa-circle-check text-base text-emerald-600"></i> <span>${message}</span>`;
+            } else if (type === "error") {
+                toast.className += ` bg-[#fef2f2] border-rose-100 text-rose-800`;
+                toast.innerHTML = `<i class="fa-solid fa-circle-xmark text-base text-rose-600"></i> <span>${message}</span>`;
+            } else {
+                toast.className += ` bg-[#eff6ff] border-blue-100 text-blue-800`;
+                toast.innerHTML = `<i class="fa-solid fa-circle-info text-base text-blue-600"></i> <span>${message}</span>`;
+            }
+
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove("translate-y-2", "opacity-0"); }, 50);
+            setTimeout(() => {
+                toast.classList.add("translate-y-2", "opacity-0");
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            
+            document.getElementById("tab-dashboard").classList.add("hidden");
+            document.getElementById("tab-hariini").classList.add("hidden");
+            document.getElementById("tab-kelas").classList.add("hidden");
+            
+            document.getElementById(`tab-${tabId}`).classList.remove("hidden");
+
+            const tabs = ["dashboard", "hariini", "kelas"];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}-btn`);
+                if (t === tabId) {
+                    btn.className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-[#00277f] text-white shadow-sm";
+                } else {
+                    btn.className = "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-200/60";
+                }
+            });
+
+            renderActiveTab();
+        }
+
+        function renderActiveTab() {
+            if (state.activeTab === "dashboard") {
+                renderDashboardData();
+            } else if (state.activeTab === "hariini") {
+                renderHariIniData();
+            } else if (state.activeTab === "kelas") {
+                renderRekapKelas();
+            }
+        }
+
+        function toggleConfigModal(show) {
+            const modal = document.getElementById("config-modal");
+            if (show) {
+                document.getElementById("config-mode").value = state.config.mode;
+                document.getElementById("config-url").value = state.config.apiUrl;
+                document.getElementById("config-token").value = state.config.token;
+                handleConfigModeChange();
+                modal.classList.remove("hidden");
+            } else {
+                modal.classList.add("hidden");
+            }
+        }
+
+        function handleConfigModeChange() {
+            const mode = document.getElementById("config-mode").value;
+            const fields = document.getElementById("live-config-fields");
+            if (mode === "live") { fields.classList.remove("hidden"); } else { fields.classList.add("hidden"); }
+        }
+
+        function saveApiConfig() {
+            const mode = document.getElementById("config-mode").value;
+            const url = document.getElementById("config-url").value;
+            const token = document.getElementById("config-token").value;
+
+            state.config = { mode, apiUrl: url, token };
+            localStorage.setItem("absensi_mod6_config", JSON.stringify(state.config));
+            
+            toggleConfigModal(false);
+            updateApiStatusBadge();
+            showToast("Konfigurasi integrasi berhasil disimpan!", "success");
+            
+            loadAttendanceData();
+            renderActiveTab();
+        }
+
+        function loadSavedConfig() {
+            const saved = localStorage.getItem("absensi_mod6_config");
+            if (saved) { state.config = JSON.parse(saved); }
+        }
+
+        function updateApiStatusBadge() {
+            const dot = document.getElementById("api-status-dot");
+            if (state.config.mode === "live") {
+                dot.className = "absolute right-1 top-1 w-2.5 h-2.5 rounded-full border-2 border-white bg-emerald-500";
+            } else {
+                dot.className = "absolute right-1 top-1 w-2.5 h-2.5 rounded-full border-2 border-white bg-amber-500";
+            }
+        }
+
+        function loadAttendanceData() {
+            if (state.config.mode === "live") {
+                showToast("Menghubungkan ke API Backend Live...", "info");
+                fetchLiveAttendances();
+            } else {
+                loadLocalDatabase();
+            }
+        }
+
+        // ... Sisa fungsi JavaScript tetap sama
+        function loadLocalDatabase() {
+            const localData = localStorage.getItem("absensi_mod6_db");
+            if (localData && JSON.parse(localData).length > 0) {
+                state.attendances = JSON.parse(localData);
+            } else {
+                const demoData = generateDemoAttendances();
+                state.attendances = demoData;
+                localStorage.setItem("absensi_mod6_db", JSON.stringify(demoData));
+            }
+        }
+
+        function resetSimulationData() {
+            if (confirm("Apakah anda yakin ingin mengosongkan perubahan lokal dan mereset ke data demo bawaan kampus?")) {
+                localStorage.removeItem("absensi_mod6_db");
+                const demoData = generateDemoAttendances();
+                state.attendances = demoData;
+                localStorage.setItem("absensi_mod6_db", JSON.stringify(demoData));
+                renderActiveTab();
+                showToast("Database simulasi berhasil dipulihkan!", "success");
+            }
+        }
+
+        function saveToLocalDb() {
+            localStorage.setItem("absensi_mod6_db", JSON.stringify(state.attendances));
+        }
+
+        function handleStudentSelectChange() {
+            state.selectedNpm = document.getElementById("form-npm").value;
+            renderDashboardData();
+        }
+
+        function renderDashboardData() {
+            const currentNpm = state.selectedNpm;
+            const currentStudent = INITIAL_STUDENTS[currentNpm];
+            if (!currentStudent) return;
+            
+            const studentLogs = state.attendances.filter(log => log.npm === currentNpm);
+            document.getElementById("rekap-summary-title").innerText = `Rekap Kehadiran: ${currentStudent.nama} (${currentNpm})`;
+
+            const total = studentLogs.length;
+            const hadir = studentLogs.filter(l => l.status === "Hadir").length;
+            const izin = studentLogs.filter(l => l.status === "Izin").length;
+            const alpha = studentLogs.filter(l => l.status === "Alpha").length;
+
+            document.getElementById("stat-total-pertemuan").innerText = total;
+            document.getElementById("stat-hadir").innerText = hadir;
+            document.getElementById("stat-izin").innerText = izin;
+            document.getElementById("stat-alpha").innerText = alpha;
+
+            const persentase = total > 0 ? Math.round((hadir / total) * 100) : 0;
+            document.getElementById("gauge-percentage-text").innerText = `${persentase}%`;
+            
+            const strokeOffset = 377 - (377 * persentase) / 100;
+            document.getElementById("gauge-circle").setAttribute("stroke-dashoffset", strokeOffset);
+
+            const circle = document.getElementById("gauge-circle");
+            if (total === 0) {
+                circle.setAttribute("stroke", "#cbd5e1"); 
+            } else if (persentase < 80) {
+                circle.setAttribute("stroke", "#f43f5e");
+            } else if (persentase < 90) {
+                circle.setAttribute("stroke", "#f59e0b");
+            } else {
+                circle.setAttribute("stroke", "#ea5329"); // SIAKAD Orange
+            }
+
+            const tableBody = document.getElementById("dashboard-rekap-rows");
+            tableBody.innerHTML = "";
+
+            Object.keys(INITIAL_COURSES).forEach(kode => {
+                const matkulName = INITIAL_COURSES[kode];
+                const matkulLogs = studentLogs.filter(l => l.matkulCode === kode);
+
+                const mTotal = matkulLogs.length;
+                const mHadir = matkulLogs.filter(l => l.status === "Hadir").length;
+                const mIzin = matkulLogs.filter(l => l.status === "Izin").length;
+                const mAlpha = matkulLogs.filter(l => l.status === "Alpha").length;
+
+                const mPersentase = mTotal > 0 ? Math.round((mHadir / mTotal) * 100) : 0;
+                
+                let badgeStyle = "text-slate-500 bg-slate-100";
+                if (mTotal > 0) {
+                    if (mPersentase < 80) badgeStyle = "text-rose-600 bg-rose-50";
+                    else if (mPersentase < 90) badgeStyle = "text-amber-600 bg-amber-50";
+                    else badgeStyle = "text-[#ea5329] bg-orange-50";
+                }
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-3 px-4">
+                            <span class="text-xs font-bold text-[#00277f] block">${kode}</span>
+                            <span class="text-slate-800 text-xs sm:text-sm font-semibold">${matkulName}</span>
+                        </td>
+                        <td class="py-3 px-4 text-center text-emerald-600 font-extrabold">${mHadir}</td>
+                        <td class="py-3 px-4 text-center text-amber-600 font-extrabold">${mIzin}</td>
+                        <td class="py-3 px-4 text-center text-rose-500 font-extrabold">${mAlpha}</td>
+                        <td class="py-3 px-4 text-center text-slate-700 font-extrabold">${mTotal}</td>
+                        <td class="py-3 px-4 text-right">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${badgeStyle}">${mPersentase}%</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderHariIniData() {
+            const todayStr = getLocalTodayString();
+            const listBody = document.getElementById("hariini-rows");
+            listBody.innerHTML = "";
+
+            const todayLogs = state.attendances.filter(log => log.tanggal === todayStr);
+            document.getElementById("hariini-count-badge").innerText = `${todayLogs.length} Data Terinput Hari Ini`;
+
+            if (todayLogs.length === 0) {
+                listBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-xs font-semibold text-slate-400">
+                            <i class="fa-regular fa-folder-open text-xl block mb-2 text-slate-300"></i>
+                            Belum ada absensi mahasiswa yang masuk hari ini (${todayStr}).
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            todayLogs.forEach(log => {
+                const student = INITIAL_STUDENTS[log.npm] || { nama: "Siswa Luar" };
+                const matkulName = INITIAL_COURSES[log.matkulCode] || "Matkul Asing";
+
+                let statusBadge = "text-orange-700 bg-orange-50";
+                if (log.status === "Izin") statusBadge = "text-amber-700 bg-amber-50";
+                else if (log.status === "Alpha") statusBadge = "text-rose-700 bg-rose-50";
+
+                listBody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-3.5 px-4 font-mono text-[11px] text-slate-400">${log.timestamp || "08:00"}</td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-orange-50 text-[#ea5329] flex items-center justify-center border border-orange-100">
+                                    <i class="fa-solid fa-user-graduate text-[10px]"></i>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800">${student.nama}</span>
+                                <span class="text-[10px] font-semibold text-slate-400 font-mono">(${log.npm})</span>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <span class="text-xs font-bold text-slate-500 block">${log.matkulCode}</span>
+                            <span class="text-xs text-slate-700 font-semibold">${matkulName}</span>
+                        </td>
+                        <td class="py-3.5 px-4 font-mono text-xs text-slate-500">${log.tanggal}</td>
+                        <td class="py-3.5 px-4 text-center">
+                            <span id="status-badge-${log.id}" class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase ${statusBadge}">${log.status}</span>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <button onclick="updateAttendanceStatus('${log.id}', 'Hadir')" class="px-2 py-1 text-[10px] font-bold border border-orange-100 rounded-lg text-[#ea5329] hover:bg-orange-50 transition">H</button>
+                                <button onclick="updateAttendanceStatus('${log.id}', 'Izin')" class="px-2 py-1 text-[10px] font-bold border border-amber-100 rounded-lg text-amber-600 hover:bg-amber-50 transition">I</button>
+                                <button onclick="updateAttendanceStatus('${log.id}', 'Alpha')" class="px-2 py-1 text-[10px] font-bold border border-rose-100 rounded-lg text-rose-500 hover:bg-rose-50 transition">A</button>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-right">
+                            <button onclick="deleteAttendance('${log.id}')" class="text-rose-500 hover:bg-rose-50 w-7 h-7 rounded-lg transition inline-flex items-center justify-center text-xs">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderRekapKelas() {
+            const filterCode = document.getElementById("kelas-matkul-filter").value;
+            const tableBody = document.getElementById("kelas-rekap-rows");
+            tableBody.innerHTML = "";
+
+            const classLogs = state.attendances.filter(log => log.matkulCode === filterCode);
+
+            Object.keys(INITIAL_STUDENTS).forEach(npm => {
+                const student = INITIAL_STUDENTS[npm];
+                const studentClassLogs = classLogs.filter(log => log.npm === npm);
+
+                const cTotal = studentClassLogs.length;
+                const cHadir = studentClassLogs.filter(l => l.status === "Hadir").length;
+                const cIzin = studentClassLogs.filter(l => l.status === "Izin").length;
+                const cAlpha = studentClassLogs.filter(l => l.status === "Alpha").length;
+
+                const cPersentase = cTotal > 0 ? Math.round((cHadir / cTotal) * 100) : 0;
+                
+                let badgeStyle = "text-slate-500 bg-slate-100";
+                if (cTotal > 0) {
+                    if (cPersentase < 80) badgeStyle = "text-rose-600 bg-rose-50";
+                    else if (cPersentase < 90) badgeStyle = "text-amber-600 bg-amber-50";
+                    else badgeStyle = "text-orange-600 bg-orange-50";
+                }
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-xl bg-orange-50 text-[#ea5329] flex items-center justify-center border border-orange-100 shadow-sm">
+                                    <i class="fa-solid fa-user-graduate text-xs"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-bold text-slate-800 block">${student.nama}</span>
+                                    <span class="text-xs font-semibold text-slate-400 font-mono">NPM: ${npm}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-center text-emerald-600 font-extrabold">${cHadir}</td>
+                        <td class="py-3.5 px-4 text-center text-amber-600 font-extrabold">${cIzin}</td>
+                        <td class="py-3.5 px-4 text-center text-rose-500 font-extrabold">${cAlpha}</td>
+                        <td class="py-3.5 px-4 text-center text-slate-700 font-extrabold">${cTotal}</td>
+                        <td class="py-3.5 px-4 text-right">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${badgeStyle}">${cPersentase}%</span>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const npm = document.getElementById("form-npm").value;
+            const matkulCode = document.getElementById("form-matkul").value;
+            const tanggalInput = document.getElementById("form-tanggal").value;
+            const statusSelected = document.querySelector('input[name="status"]:checked').value;
+
+            const now = new Date();
+            const jamStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            const newAbsen = {
+                id: `log-${Date.now()}`,
+                npm: npm,
+                matkulCode: matkulCode,
+                tanggal: tanggalInput,
+                status: statusSelected,
+                timestamp: jamStr
+            };
+
+            if (state.config.mode === "live") {
+                fetch(`${state.config.apiUrl}/absensi`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${state.config.token}`
+                    },
+                    body: JSON.stringify(newAbsen)
+                })
+                .then(res => { if (!res.ok) throw new Error("Gagal menyimpan ke server"); return res.json(); })
+                .then(() => {
+                    showToast("Absensi berhasil terkirim ke server Go!", "success");
+                    state.attendances.unshift(newAbsen);
+                    saveToLocalDb();
+                    renderActiveTab();
+                })
+                .catch(err => { 
+                    showToast("Koneksi gagal! Menyimpan data secara lokal.", "error"); 
+                    state.attendances.unshift(newAbsen);
+                    saveToLocalDb();
+                    renderActiveTab();
+                });
+            } else {
+                state.attendances.unshift(newAbsen);
+                saveToLocalDb();
+                showToast("Absensi berhasil diinput (Simulasi Lokal)!", "success");
+                renderActiveTab();
+            }
+        }
+
+        function updateAttendanceStatus(logId, newStatus) {
+            const index = state.attendances.findIndex(l => l.id === logId);
+            if (index === -1) return;
+
+            const oldStatus = state.attendances[index].status;
+            state.attendances[index].status = newStatus;
+
+            if (state.config.mode === "live") {
+                fetch(`${state.config.apiUrl}/absensi/${logId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${state.config.token}` },
+                    body: JSON.stringify({ status: newStatus })
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error("Gagal mengupdate ke server");
+                    showToast("Status absensi sukses di-PUT ke server Go!", "success");
+                    saveToLocalDb();
+                    renderActiveTab();
+                })
+                .catch(err => {
+                    showToast("Gagal kirim update ke server, status diubah secara lokal.", "error");
+                    saveToLocalDb();
+                    renderActiveTab();
+                });
+            } else {
+                saveToLocalDb();
+                renderActiveTab();
+                showToast("Status absensi berhasil diperbarui (PUT)!", "success");
+            }
+        }
+
+        function deleteAttendance(logId) {
+            if (!confirm("Apakah Anda yakin ingin membatalkan & menghapus log kehadiran ini?")) return;
+
+            const index = state.attendances.findIndex(l => l.id === logId);
+            if (index === -1) return;
+
+            const deletedItem = state.attendances[index];
+
+            if (state.config.mode === "live") {
+                fetch(`${state.config.apiUrl}/absensi/${logId}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${state.config.token}` }
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error("Gagal menghapus data di server");
+                    showToast("Absensi berhasil dihapus dari server kelas!", "success");
+                    state.attendances.splice(index, 1);
+                    saveToLocalDb();
+                    renderActiveTab();
+                })
+                .catch(err => { 
+                    showToast("Gagal hapus di server, data dihapus secara lokal.", "error"); 
+                    state.attendances.splice(index, 1);
+                    saveToLocalDb();
+                    renderActiveTab();
+                });
+            } else {
+                state.attendances.splice(index, 1);
+                saveToLocalDb();
+                renderActiveTab();
+                showToast("Absensi berhasil dibatalkan & dihapus!", "success");
+            }
+        }
+
+        function fetchLiveAttendances() {
+            if (!state.config.apiUrl) return;
+            fetch(`${state.config.apiUrl}/absensi/${state.selectedNpm}`, {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${state.config.token}` }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Gagal memuat data dari server");
+                return res.json();
+            })
+            .then(data => {
+                if (data && Array.isArray(data)) {
+                    state.attendances = data;
+                    saveToLocalDb();
+                    renderActiveTab();
+                    showToast("Sukses sinkronisasi data dari server Go!", "success");
+                } else {
+                    throw new Error("Data server tidak valid");
+                }
+            })
+            .catch(() => {
+                showToast("Gagal hubungkan ke server. Menggunakan database lokal.", "error");
+                loadLocalDatabase();
+                renderActiveTab();
+            });
+        }
+
+        function simulatePdfDownload() {
+            showToast("Memproses generate dokumen PDF...", "info");
+            setTimeout(() => { window.print(); }, 800);
+        }
+    </script>
+</body>
+</html>
