@@ -20,7 +20,7 @@ var IPPort, Net = helper.GetAddress()
 
 // FiberConfig adalah konfigurasi Fiber mengikuti pola boilerplate gocroot
 var FiberConfig = fiber.Config{
-	Prefork:       false, // set true di production untuk multi-core
+	Prefork:       true, // multi-core untuk production di alwaysdata
 	CaseSensitive: true,
 	StrictRouting: true,
 	ServerHeader:  "SIAKAD",
