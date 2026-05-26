@@ -14,16 +14,13 @@ func main() {
 	// Load .env
 	config.InitConfig()
 
-	// Init Fiber dengan config mengikuti pola boilerplate gocroot
+	// Init Fiber
 	app := fiber.New(config.FiberConfig)
 
 	// CORS
 	app.Use(cors.New(config.CorsConfig()))
 
-	// Static files frontend
-	app.Static("/", "./frontend")
-
-	// Routes
+	// Routes API
 	url.Web(app)
 
 	log.Printf("Server running on %s", config.IPPort)
