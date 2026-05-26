@@ -1,0 +1,27 @@
+name: Deploy Frontend to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+
+jobs:
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Get latest code
+      uses: actions/checkout@v4
+
+    - name: Deploy frontend/ to gh-pages branch
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./frontend
+        publish_branch: gh-pages
+        force_orphan: false
+        keep_files: false
+        commit_message: "chore: deploy frontend from main/frontend/"
