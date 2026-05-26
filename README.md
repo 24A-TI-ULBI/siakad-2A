@@ -546,10 +546,10 @@ Frontend **Halaman Portal Berita**
 | 14 | Kuesioner (CRUD) | Jawaban Kuesioner | Halaman Kuesioner | samsi |
 | 15 | Pembayaran SPP (CRUD) | Riwayat Pembayaran | Halaman Tagihan SPP | rashid |
 | 16 | Surat Keterangan (CRUD) | Pengajuan Surat | Halaman Pengajuan Surat | zakwan |
-| 17 | PKL (CRUD) | Laporan PKL | Halaman Data PKL | - |
-| 18 | Skripsi (CRUD) | Bimbingan (CRUD) | Halaman Progress Skripsi | - |
+| 17 | PKL (CRUD) | Laporan PKL | Halaman Data PKL | raihan |
+| 18 | Skripsi (CRUD) | Bimbingan (CRUD) | Halaman Progress Skripsi | nadi |
 | 19 | Fasilitas (CRUD) | Peminjaman Fasilitas | Halaman Booking Fasilitas | - |
-| 20 | Berita Kampus (CRUD) | Komentar Berita | Halaman Portal Berita | - |
+| 20 | Berita Kampus (CRUD) | Komentar Berita | Halaman Portal Berita | puyey |
 
 ---
 
