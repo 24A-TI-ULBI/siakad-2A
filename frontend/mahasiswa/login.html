@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — SIAKAD</title>
+  <link rel="stylesheet" href="../shared/style.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .login-wrap {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+      max-width: 860px;
+      width: 100%;
+      align-items: stretch;
+    }
+    .login-panel {
+      background: linear-gradient(135deg, var(--primary) 0%, #f59e0b 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(249,115,22,0.3);
+    }
+    .login-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url('https://www.transparenttextures.com/patterns/topography.png');
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .login-panel-content { position: relative; z-index: 1; }
+    .login-panel-brand { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .login-panel-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-panel-eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 0.4em; color: rgba(255,255,255,0.75); font-weight: 700; margin-bottom: 4px; }
+    .login-panel-title { font-size: 17px; font-weight: 700; color: white; }
+    .login-panel-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.7;
+      border-left: 2px solid rgba(255,255,255,0.3);
+      padding-left: 14px;
+      margin-bottom: 28px;
+    }
+    .login-feature {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+      backdrop-filter: blur(4px);
+    }
+    .login-feature-icon {
+      width: 34px; height: 34px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .login-feature-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: rgba(255,255,255,0.7); font-weight: 700; margin-bottom: 2px; }
+    .login-feature-text { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; }
+    .login-panel-footer { position: relative; z-index: 1; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+    .login-panel-back { font-size: 12px; color: rgba(255,255,255,0.8); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+    .login-panel-back:hover { color: white; }
+
+    .login-form-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+    }
+    .login-form-header { text-align: center; }
+    .login-form-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4em; color: var(--primary); font-weight: 600; margin-bottom: 6px; }
+    .login-form-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .login-form-sub { font-size: 13px; color: var(--text-secondary); }
+    .login-form-footer { text-align: center; font-size: 12px; color: var(--text-muted); }
+    .login-form-footer a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    .login-form-footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .login-wrap { grid-template-columns: 1fr; }
+      .login-panel { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <!-- Left panel -->
+  <div class="login-panel">
+    <div class="login-panel-content">
+      <div class="login-panel-brand">
+        <img src="https://raw.githubusercontent.com/saripudin14/img/refs/heads/main/logo.png"
+             alt="Logo SIAKAD"
+             style="width:52px;height:52px;border-radius:14px;object-fit:contain;background:rgba(255,255,255,0.2);padding:8px;border:1px solid rgba(255,255,255,0.3);">
+        <div>
+          <div class="login-panel-eyebrow">Portal Akademik</div>
+          <div class="login-panel-title">SIAKAD</div>
+        </div>
+      </div>
+      <p class="login-panel-desc">Akses data akademik kampus menggunakan nomor HP yang terdaftar di sistem.</p>
+      <div class="login-feature">
+        <div class="login-feature-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <div>
+          <div class="login-feature-label">Autentikasi JWT</div>
+          <div class="login-feature-text">Token aman berlaku 24 jam.</div>
+        </div>
+      </div>
+      <div class="login-feature">
+        <div class="login-feature-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+        </div>
+        <div>
+          <div class="login-feature-label">MongoDB Atlas</div>
+          <div class="login-feature-text">Data tersimpan aman di cloud.</div>
+        </div>
+      </div>
+    </div>
+    <div class="login-panel-footer">
+      <a href="../index.html" class="login-panel-back">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Kembali ke beranda
+      </a>
+    </div>
+  </div>
+
+  <!-- Right: form -->
+  <div class="login-form-card">
+    <div class="login-form-header">
+      <div class="login-form-eyebrow">Masuk Sistem</div>
+      <h2 class="login-form-title">Login</h2>
+      <p class="login-form-sub">Gunakan nomor HP yang terdaftar di sistem</p>
+    </div>
+
+    <div id="alert-area"></div>
+
+    <form id="form" onsubmit="submitLogin(event)" novalidate style="display:flex;flex-direction:column;gap:16px;">
+      <div class="form-group">
+        <label class="form-label">Nomor HP <span class="required">*</span></label>
+        <input class="form-input" id="phone" type="text" placeholder="08123456789" required autocomplete="tel">
+        <span class="form-error" id="err-phone"></span>
+      </div>
+      <button type="submit" id="btn-login" class="btn btn-primary btn-full btn-lg">Masuk</button>
+    </form>
+
+    <div class="login-form-footer">
+      Belum punya akun? <a href="tambah.html">Daftar di sini</a>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/utils.js"></script>
+<script>
+  if (Auth.isLoggedIn()) window.location.href = 'profil.html';
+
+  async function submitLogin(e) {
+    e.preventDefault();
+    const phone = document.getElementById('phone').value.trim();
+    const errEl = document.getElementById('err-phone');
+    errEl.textContent = '';
+    document.getElementById('alert-area').innerHTML = '';
+
+    if (!phone) { errEl.textContent = 'Nomor HP wajib diisi'; return; }
+
+    const btn = document.getElementById('btn-login');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner"></span> Memproses...';
+
+    try {
+      const data = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ phone }) });
+      Auth.setToken(data.token);
+      Auth.setUser(data.user);
+      document.getElementById('alert-area').innerHTML =
+        '<div class="alert alert-success">Login berhasil. Mengalihkan ke profil...</div>';
+      setTimeout(() => { window.location.href = 'profil.html'; }, 1200);
+    } catch (err) {
+      document.getElementById('alert-area').innerHTML =
+        `<div class="alert alert-error">${err.message}</div>`;
+      btn.disabled = false;
+      btn.textContent = 'Masuk';
+    }
+  }
+</script>
+</body>
+</html>
