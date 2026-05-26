@@ -4,7 +4,7 @@ import (
 	"backend/controller"
 	"backend/controller/modul9"
 
-	"github.com/gofiber/fiber/v2"
+    "github.com/gofiber/fiber/v2"
 )
 
 // Web mendaftarkan semua route ke aplikasi Fiber.
@@ -25,6 +25,7 @@ func Web(app *fiber.App) {
 	// Contoh: MahasiswaRoute(app)
 	SkripsiRoute(app)
 	modul9.RegisterRoutes(app)
+  DosenRoute(app)
 
 	PengumumanRoute(app)
 	NotifikasiRoute(app)
