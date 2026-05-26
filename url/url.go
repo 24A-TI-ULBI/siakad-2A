@@ -20,6 +20,7 @@ func Web(app *fiber.App) {
 	PendaftaranRoute(app)
 	// Route modul
 	// Contoh: MahasiswaRoute(app)
+	NotifikasiRoute(app)
 	AbsensiRoute(app)
 	OrmawaRoute(app)
 	PrestasiRoute(app)
