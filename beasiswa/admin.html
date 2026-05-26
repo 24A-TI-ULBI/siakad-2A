@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>ULBI Admin Panel</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="hero">
+
+      <h1>ULBI Admin Dashboard</h1>
+
+      <p>
+        Scholarship Management System
+      </p>
+
+    </div>
+
+
+    <div class="admin-card">
+
+      <h2>Update Student Status</h2>
+
+      <div class="admin-section">
+
+        <input
+          type="text"
+          id="updateNpm"
+          placeholder="Enter Student ID"
+        >
+
+        <select id="updateStatus">
+
+          <option value="Pending">
+            Pending
+          </option>
+
+          <option value="Accepted">
+            Accepted
+          </option>
+
+          <option value="Rejected">
+            Rejected
+          </option>
+
+        </select>
+
+        <button onclick="updateStatus()">
+          Update Status
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="admin-card">
+
+      <h2>Delete Registration</h2>
+
+      <div class="admin-section">
+
+        <input
+          type="text"
+          id="deleteNpm"
+          placeholder="Enter Student ID"
+        >
+
+        <button onclick="deletePendaftaran()">
+          Delete Registration
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
