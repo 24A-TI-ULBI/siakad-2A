@@ -2,6 +2,7 @@ package url
 
 import (
 	"backend/controller"
+	"backend/controller/modul9"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,6 +21,8 @@ func Web(app *fiber.App) {
 	PendaftaranRoute(app)
 	// Route modul
 	// Contoh: MahasiswaRoute(app)
+	modul9.RegisterRoutes(app)
+
 	PengumumanRoute(app)
 	NotifikasiRoute(app)
 	AbsensiRoute(app)
