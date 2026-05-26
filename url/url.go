@@ -15,6 +15,9 @@ func Web(app *fiber.App) {
 	app.Get("/ip", controller.IPServer)
 	app.Get("/api", controller.Homepage) // info API tetap tersedia di /api
 
+	// Modul 8 - Beasiswa & Pendaftaran (yasmin)
+	BeasiswaRoute(app)
+	PendaftaranRoute(app)
 	// Route modul
 	// Contoh: MahasiswaRoute(app)
 	OrmawaRoute(app)
