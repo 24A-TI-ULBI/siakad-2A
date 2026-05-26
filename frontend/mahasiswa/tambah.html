@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tambah Mahasiswa — SIAKAD</title>
+  <link rel="stylesheet" href="../shared/style.css">
+</head>
+<body>
+
+<header class="siakad-header">
+  <div class="siakad-header-left">
+    <a href="../index.html" class="siakad-header-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+      <img src="https://raw.githubusercontent.com/saripudin14/img/refs/heads/main/logo.png"
+           alt="Logo" style="width:28px;height:28px;border-radius:7px;object-fit:contain;background:rgba(255,255,255,0.2);padding:3px;">
+      <span style="color:white;font-weight:700;font-size:15px;">SIAKAD</span>
+    </a>
+    <div class="siakad-header-divider"></div>
+    <span class="siakad-header-module">Modul Mahasiswa</span>
+  </div>
+  <div class="siakad-header-right">
+    <div class="siakad-header-user">
+      <span id="header-username"></span>
+      <a id="header-avatar" class="siakad-header-avatar" href="login.html">?</a>
+    </div>
+  </div>
+</header>
+
+<nav class="siakad-nav">
+  <a href="daftar.html">Daftar</a>
+  <a href="tambah.html" class="active">Tambah</a>
+  <a href="login.html">Login</a>
+  <a href="profil.html">Profil</a>
+</nav>
+
+<div class="siakad-container-sm" style="padding-top:32px;">
+  <div id="alert-area"></div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Tambah Mahasiswa Baru</span>
+    </div>
+    <div class="card-body">
+      <form id="form" onsubmit="submitForm(event)" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">NPM <span class="required">*</span></label>
+            <input class="form-input" id="npm" placeholder="714240041" required autocomplete="off">
+            <span class="form-error" id="err-npm"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap <span class="required">*</span></label>
+            <input class="form-input" id="nama" placeholder="Raditya Rizki R" required>
+            <span class="form-error" id="err-nama"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" id="email" type="email" placeholder="nama@email.com">
+            <span class="form-error" id="err-email"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">No. HP <span class="required">*</span></label>
+            <input class="form-input" id="phone" placeholder="08123456789" required>
+            <span class="form-hint">Minimal 10 digit angka</span>
+            <span class="form-error" id="err-phone"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Program Studi</label>
+            <input class="form-input" id="prodi" placeholder="Teknik Informatika">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Angkatan</label>
+            <input class="form-input" id="angkatan" type="number" placeholder="2024" min="2000" max="2099">
+            <span class="form-error" id="err-angkatan"></span>
+          </div>
+          <div class="full" style="display:flex;gap:10px;margin-top:8px;">
+            <button type="submit" class="btn btn-primary" id="btn-submit">Simpan Data</button>
+            <button type="reset" class="btn btn-secondary" onclick="clearErrors()">Reset</button>
+            <a href="daftar.html" class="btn btn-ghost">Lihat Daftar</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="../shared/utils.js"></script>
+<script>
+  initHeaderUser();
+  initNav();
+
+  function clearErrors() {
+    document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
+    document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+    document.getElementById('alert-area').innerHTML = '';
+  }
+
+  function setError(id, msg) {
+    const input = document.getElementById(id);
+    const err   = document.getElementById('err-' + id);
+    if (input) input.classList.add('error');
+    if (err)   err.textContent = msg;
+  }
+
+  function validateForm(d) {
+    let ok = true; clearErrors();
+    if (!d.npm)   { setError('npm', 'NPM wajib diisi'); ok = false; }
+    if (!d.nama)  { setError('nama', 'Nama wajib diisi'); ok = false; }
+    if (!d.phone) { setError('phone', 'No. HP wajib diisi'); ok = false; }
+    else if (!/^\d{10,15}$/.test(d.phone.replace(/[-\s]/g,''))) { setError('phone', 'No. HP harus angka, minimal 10 digit'); ok = false; }
+    if (d.email && (!d.email.includes('@') || !d.email.includes('.'))) { setError('email', 'Format email tidak valid'); ok = false; }
+    if (d.angkatan && (d.angkatan < 2000 || d.angkatan > 2099)) { setError('angkatan', 'Angkatan harus antara 2000 dan 2099'); ok = false; }
+    return ok;
+  }
+
+  async function submitForm(e) {
+    e.preventDefault();
+    const angkatan = document.getElementById('angkatan').value;
+    const payload = {
+      npm:      document.getElementById('npm').value.trim(),
+      nama:     document.getElementById('nama').value.trim(),
+      email:    document.getElementById('email').value.trim(),
+      phone:    document.getElementById('phone').value.trim(),
+      prodi:    document.getElementById('prodi').value.trim(),
+      angkatan: angkatan ? parseInt(angkatan) : 0,
+    };
+    if (!validateForm(payload)) return;
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner"></span> Menyimpan...';
+    try {
+      await apiFetch('/mahasiswa', { method: 'POST', body: JSON.stringify(payload) });
+      document.getElementById('alert-area').innerHTML = `
+        <div class="alert alert-success" style="margin-bottom:16px;">
+          Mahasiswa <strong>${payload.nama}</strong> berhasil ditambahkan.
+          <a href="daftar.html" style="color:inherit;font-weight:600;margin-left:8px;">Lihat Daftar</a>
+        </div>`;
+      document.getElementById('form').reset();
+      clearErrors();
+      showToast('Mahasiswa berhasil ditambahkan');
+    } catch (err) {
+      document.getElementById('alert-area').innerHTML =
+        `<div class="alert alert-error" style="margin-bottom:16px;">${err.message}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Simpan Data';
+    }
+  }
+</script>
+</body>
+</html>
