@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Kuliah — SIAKAD</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #333; min-height: 100vh; }
+
+    header {
+      background: #1a73e8;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 1.2rem; font-weight: 600; }
+    .back-btn { color: white; text-decoration: none; font-size: 0.9rem; border: 1px solid white; padding: 0.3rem 0.8rem; border-radius: 4px; }
+    .back-btn:hover { background: rgba(255,255,255,0.1); }
+
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1.5rem; }
+    
+    .filters {
+      background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 2rem; display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 200px; }
+    .form-group label { font-size: 0.85rem; font-weight: 600; color: #555; }
+    .form-group input { padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; }
+    .btn { padding: 0.6rem 1.2rem; border: none; border-radius: 4px; font-size: 0.9rem; cursor: pointer; font-weight: 600; }
+    .btn-primary { background: #1a73e8; color: white; }
+    .btn-primary:hover { background: #1557b0; }
+
+    .schedule-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
+    }
+    
+    .day-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+    .day-header { background: #e8f0fe; color: #1a73e8; padding: 1rem; font-weight: 600; font-size: 1.1rem; border-bottom: 1px solid #d2e3fc; }
+    
+    .class-item { padding: 1rem; border-bottom: 1px solid #eee; }
+    .class-item:last-child { border-bottom: none; }
+    .time { font-size: 0.85rem; color: #1a73e8; font-weight: 600; margin-bottom: 0.3rem; }
+    .subject { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .lecturer { font-size: 0.85rem; color: #555; margin-bottom: 0.4rem; }
+    .room { display: inline-block; font-size: 0.75rem; background: #f1f3f4; padding: 0.2rem 0.5rem; border-radius: 4px; color: #555; }
+    .prodi { display: inline-block; font-size: 0.75rem; background: #e6f4ea; color: #1e7e34; padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem;}
+    
+    .empty-state { text-align: center; padding: 3rem; color: #888; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>SIAKAD — Jadwal Kuliah</h1>
+  <a href="/" class="back-btn">Kembali ke Dashboard</a>
+</header>
+
+<div class="container">
+  <div class="filters">
+    <div class="form-group">
+      <label>Program Studi</label>
+      <input type="text" id="filter-prodi" placeholder="Misal: Teknik Informatika">
+    </div>
+    <div class="form-group">
+      <label>Dosen</label>
+      <input type="text" id="filter-dosen" placeholder="Cari nama dosen...">
+    </div>
+    <button class="btn btn-primary" onclick="loadJadwal()">Terapkan Filter</button>
+    <button class="btn" style="background: #34a853; color: white;" onclick="showAddModal()">+ Tambah Jadwal</button>
+  </div>
+
+  <div id="schedule-container" class="schedule-grid">
+    <!-- Konten jadwal akan dimuat di sini -->
+  </div>
+</div>
+
+<!-- Modal Tambah Jadwal -->
+<div id="addModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
+  <div style="background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;">
+    <h3 style="margin-bottom: 1rem;">Tambah Jadwal Baru</h3>
+    <form id="formAddJadwal" style="display: flex; flex-direction: column; gap: 1rem;">
+      <div class="form-group">
+        <label>Mata Kuliah</label>
+        <input type="text" id="mk" required>
+      </div>
+      <div class="form-group">
+        <label>Dosen</label>
+        <input type="text" id="dsn" required>
+      </div>
+      <div class="form-group">
+        <label>Ruangan (Kode)</label>
+        <input type="text" id="ruang" required>
+      </div>
+      <div class="form-group">
+        <label>Hari</label>
+        <select id="hari" required style="padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px;">
+          <option value="Senin">Senin</option>
+          <option value="Selasa">Selasa</option>
+          <option value="Rabu">Rabu</option>
+          <option value="Kamis">Kamis</option>
+          <option value="Jumat">Jumat</option>
+          <option value="Sabtu">Sabtu</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 1rem;">
+        <div class="form-group" style="flex: 1;">
+          <label>Jam Mulai</label>
+          <input type="time" id="jmulai" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Jam Selesai</label>
+          <input type="time" id="jselesai" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Prodi</label>
+        <input type="text" id="prd" required>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+        <button type="button" class="btn" style="background: #f1f3f4; color: #333;" onclick="hideAddModal()">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+  async function loadJadwal() {
+    const prodi = document.getElementById('filter-prodi').value;
+    const dosen = document.getElementById('filter-dosen').value;
+    
+    const params = new URLSearchParams();
+    if (prodi) params.append('prodi', prodi);
+    if (dosen) params.append('dosen', dosen);
+    
+    try {
+      const response = await fetch(`/jadwal?${params.toString()}`);
+      const data = await response.json();
+      
+      const container = document.getElementById('schedule-container');
+      container.innerHTML = '';
+      
+      if (data.status !== 'success' || !data.data || data.data.length === 0) {
+        container.innerHTML = '<div class="empty-state">Tidak ada jadwal ditemukan.</div>';
+        container.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      
+      // Group by Hari
+      const grouped = {};
+      days.forEach(day => grouped[day] = []);
+      
+      data.data.forEach(item => {
+        if (!grouped[item.hari]) grouped[item.hari] = [];
+        grouped[item.hari].push(item);
+      });
+
+      // Render cards per Hari
+      days.forEach(day => {
+        if (grouped[day] && grouped[day].length > 0) {
+          // Sort by Jam Mulai
+          grouped[day].sort((a, b) => a.jam_mulai.localeCompare(b.jam_mulai));
+          
+          let html = `<div class="day-card"><div class="day-header">${day}</div>`;
+          grouped[day].forEach(item => {
+            html += `
+              <div class="class-item">
+                <div class="time">${item.jam_mulai} - ${item.jam_selesai}</div>
+                <div class="subject">${item.mata_kuliah}</div>
+                <div class="lecturer">${item.dosen}</div>
+                <div class="room">Ruang: ${item.ruangan_kode || '-'}</div>
+                <div class="prodi">${item.prodi || '-'}</div>
+                <button onclick="hapusJadwal('${item._id}')" style="margin-top: 8px; font-size: 0.75rem; color: white; background: #ea4335; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Hapus</button>
+              </div>
+            `;
+          });
+          html += `</div>`;
+          container.innerHTML += html;
+        }
+      });
+      
+    } catch (error) {
+      console.error(error);
+      const container = document.getElementById('schedule-container');
+      container.innerHTML = '<div class="empty-state">Terjadi kesalahan saat memuat data.</div>';
+      container.style.display = 'block';
+    }
+  }
+
+  function showAddModal() {
+    document.getElementById('addModal').style.display = 'flex';
+  }
+
+  function hideAddModal() {
+    document.getElementById('addModal').style.display = 'none';
+  }
+
+  async function hapusJadwal(id) {
+    if(!confirm("Yakin ingin menghapus jadwal ini?")) return;
+    try {
+      const response = await fetch(`/jadwal/${id}`, { method: 'DELETE' });
+      const data = await response.json();
+      if(data.status === 'success') {
+        loadJadwal();
+      } else {
+        alert(data.message || 'Gagal menghapus jadwal');
+      }
+    } catch(e) {
+      alert("Error menghapus jadwal");
+    }
+  }
+
+  document.getElementById('formAddJadwal').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const payload = {
+      mata_kuliah: document.getElementById('mk').value,
+      dosen: document.getElementById('dsn').value,
+      ruangan_kode: document.getElementById('ruang').value,
+      hari: document.getElementById('hari').value,
+      jam_mulai: document.getElementById('jmulai').value,
+      jam_selesai: document.getElementById('jselesai').value,
+      prodi: document.getElementById('prd').value
+    };
+
+    try {
+      const response = await fetch('/jadwal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if(data.status === 'success') {
+        hideAddModal();
+        e.target.reset();
+        loadJadwal();
+      } else {
+        alert("Gagal: " + data.message);
+      }
+    } catch(err) {
+      alert("Error menambah jadwal");
+    }
+  });
+
+  // Load initial data
+  document.addEventListener('DOMContentLoaded', loadJadwal);
+</script>
+</body>
+</html>
