@@ -47,8 +47,7 @@ siakad-2A/
 │
 ├── model/
 │   ├── model.go
-│   ├── jadwal.go
-│   └── ruangan.go
+│   └── jadwal.go
 │
 ├── url/
 │   ├── jadwalRoute.go
@@ -74,16 +73,26 @@ siakad-2A/
 
 ```mermaid
 flowchart TD
-    A([Mulai]) --> B[Setup MongoDB Atlas]
-    B --> C[Konfigurasi .env]
-    C --> D[Membuat Model]
-    D --> E[Membuat Controller]
-    E --> F[Membuat Route]
-    F --> G[Membuat Frontend]
-    G --> H[Testing CRUD]
-    H --> I[Push GitHub]
-    I --> J[Create Pull Request]
-    J --> K([Selesai])
+
+A([Mulai]) --> B[Setup MongoDB Atlas]
+
+B --> C[Konfigurasi .env]
+
+C --> D[Membuat Model]
+
+D --> E[Membuat Controller]
+
+E --> F[Membuat Route]
+
+F --> G[Membuat Frontend]
+
+G --> H[Testing CRUD]
+
+H --> I[Push GitHub]
+
+I --> J[Create Pull Request]
+
+J --> K([Selesai])
 ```
 
 ---
@@ -120,25 +129,26 @@ Server akan berjalan secara lokal di:
 http://127.0.0.1:8080/
 ```
 
-### Buka Frontend (Aplikasi Web)
+### Buka Browser
 
-Setelah server berjalan, buka browser dan akses URL berikut untuk melihat tampilan aplikasi jadwal Anda:
+Setelah server berjalan, buka browser dan akses URL berikut untuk melihat tampilan aplikasi Anda:
 ```
-http://127.0.0.1:8080/jadwal/index.html
+http://127.0.0.1:8080/frontend/jadwal_ui/index.html
 ```
+*(Sesuaikan path frontend dengan routing Anda)*
 
 ---
 
 # Dokumentasi API
 
+**Base URL**: `http://127.0.0.1:8080`
+
 ## Endpoint Jadwal (`/jadwal`)
 
-### GET /jadwal
-
+### GET `/jadwal`
 Mengambil semua data jadwal kuliah.
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -158,12 +168,10 @@ Response
 }
 ```
 
-### GET /jadwal/:id
-
+### GET `/jadwal/:id`
 Mengambil detail jadwal berdasarkan ID.
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -181,12 +189,10 @@ Response
 }
 ```
 
-### POST /jadwal
-
+### POST `/jadwal`
 Menambahkan data jadwal baru.
 
-Request Body
-
+**Request Body:**
 ```json
 {
   "mata_kuliah": "Pengantar Strategi Algoritma",
@@ -199,8 +205,7 @@ Request Body
 }
 ```
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -209,20 +214,23 @@ Response
 }
 ```
 
-### PUT /jadwal/:id
+### PUT `/jadwal/:id`
+Mengupdate data jadwal berdasarkan ID.
 
-Mengupdate data jadwal.
-
-Request Body
-
+**Request Body:**
 ```json
 {
-  "mata_kuliah": "Pengantar Strategi Algoritma (Update)"
+  "mata_kuliah": "Pengantar Strategi Algoritma (Update)",
+  "dosen": "Roni Habibi, S.Kom., M.T.",
+  "ruangan_kode": "LAB-315",
+  "hari": "Senin",
+  "jam_mulai": "13:00",
+  "jam_selesai": "18:50",
+  "prodi": "D4 Teknik Informatika"
 }
 ```
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -230,12 +238,10 @@ Response
 }
 ```
 
-### DELETE /jadwal/:id
-
+### DELETE `/jadwal/:id`
 Menghapus data jadwal berdasarkan ID.
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -243,16 +249,12 @@ Response
 }
 ```
 
----
-
 ## Endpoint Ruangan (`/ruangan`)
 
-### GET /ruangan
-
+### GET `/ruangan`
 Mengambil semua data ruangan.
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -263,29 +265,36 @@ Response
       "nama": "Laboratorium Komputer 315",
       "kode": "LAB-315",
       "kapasitas": 40,
-      "ketersediaan": true
+      "fasilitas": [
+        "Komputer",
+        "AC",
+        "Proyektor"
+      ],
+      "gedung": "Gedung A"
     }
   ]
 }
 ```
 
-### POST /ruangan
-
+### POST `/ruangan`
 Menambahkan data ruangan baru.
 
-Request Body
-
+**Request Body:**
 ```json
 {
   "nama": "Laboratorium Komputer 315",
   "kode": "LAB-315",
   "kapasitas": 40,
-  "ketersediaan": true
+  "fasilitas": [
+    "Komputer",
+    "AC",
+    "Proyektor"
+  ],
+  "gedung": "Gedung A"
 }
 ```
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -294,12 +303,10 @@ Response
 }
 ```
 
-### GET /ruangan/:kode
+### GET `/ruangan/:kode`
+Mengambil detail ruangan berdasarkan kode ruangan.
 
-Mengambil detail ruangan berdasarkan kode.
-
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -309,26 +316,36 @@ Response
     "nama": "Laboratorium Komputer 315",
     "kode": "LAB-315",
     "kapasitas": 40,
-    "ketersediaan": true
+    "fasilitas": [
+      "Komputer",
+      "AC",
+      "Proyektor"
+    ],
+    "gedung": "Gedung A"
   }
 }
 ```
 
-### PUT /ruangan/:kode
+### PUT `/ruangan/:kode`
+Mengupdate data ruangan berdasarkan kode.
 
-Mengupdate data ruangan.
-
-Request Body
-
+**Request Body:**
 ```json
 {
+  "nama": "Laboratorium Komputer 315",
+  "kode": "LAB-315",
   "kapasitas": 45,
-  "ketersediaan": false
+  "fasilitas": [
+    "Komputer",
+    "AC",
+    "Proyektor",
+    "Whiteboard"
+  ],
+  "gedung": "Gedung A"
 }
 ```
 
-Response
-
+**Response:**
 ```json
 {
   "status": "success",
@@ -336,13 +353,43 @@ Response
 }
 ```
 
+### DELETE `/ruangan/:kode`
+Menghapus data ruangan berdasarkan kode ruangan.
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Ruangan berhasil dihapus"
+}
+```
+
 ---
 
-# Frontend UI
+# Frontend
 
-Aplikasi memiliki dua antarmuka utama:
+Aplikasi ini menggunakan antarmuka berbasis HTML, CSS (Vanilla), dan JavaScript yang berinteraksi dengan REST API backend.
 
-| Halaman | URL Path | Fungsi Utama |
-|---|---|---|
-| **Dashboard** | `/` atau `/index.html` | Halaman menu navigasi antar modul. |
-| **Jadwal & Ruangan** | `/jadwal/index.html` | Tampilan jadwal dalam bentuk tabel/card per hari. |
+| Halaman | Deskripsi / Fungsi Utama |
+|---|---|
+| **Dashboard** | Halaman utama (`/frontend/index.html`) yang berisi navigasi menuju setiap modul (Jadwal & Ruangan). |
+| **Jadwal UI** | Antarmuka untuk melakukan operasi CRUD data Jadwal Kuliah (`/frontend/jadwal_ui/index.html`). |
+| **Ruangan UI** | Antarmuka untuk melakukan operasi CRUD data Ruangan (`/frontend/ruangan_ui/index.html`). |
+
+---
+
+# Fitur
+
+- **Manajemen Jadwal Kuliah**:
+  - Menambahkan jadwal mata kuliah baru (Create)
+  - Menampilkan daftar jadwal perkuliahan (Read)
+  - Mengubah detail jadwal perkuliahan (Update)
+  - Menghapus jadwal perkuliahan (Delete)
+- **Manajemen Ruangan Kelas**:
+  - Menambahkan data ruangan baru beserta kapasitasnya (Create)
+  - Menampilkan daftar dan detail ruangan kelas (Read)
+  - Mengubah kapasitas, fasilitas, dan detail ruangan (Update)
+  - Menghapus data ruangan (Delete)
+- **RESTful API backend yang responsif**
+- **Terintegrasi dengan MongoDB Atlas**
+- **Antarmuka pengguna (Frontend) interaktif menggunakan Vanilla JS**
