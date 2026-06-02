@@ -657,7 +657,10 @@
       filtered: []
     };
 
-    const API_BASE = "/api/notifikasi";
+    const API_BASE = (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    ) ? 'http://localhost:8080/api/notifikasi' : '/api/notifikasi';
 
     const el = {
       search: document.getElementById("searchInput"),

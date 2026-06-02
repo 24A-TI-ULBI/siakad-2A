@@ -2,6 +2,7 @@ package config
 
 import (
 	"backend/helper"
+	"runtime"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -20,7 +21,7 @@ var IPPort, Net = helper.GetAddress()
 
 // FiberConfig adalah konfigurasi Fiber mengikuti pola boilerplate gocroot
 var FiberConfig = fiber.Config{
-	Prefork:       true, // multi-core untuk production di alwaysdata
+	Prefork:       runtime.GOOS != "windows", // Prefork dimatikan di Windows karena keterbatasan OS
 	CaseSensitive: true,
 	StrictRouting: true,
 	ServerHeader:  "SIAKAD",

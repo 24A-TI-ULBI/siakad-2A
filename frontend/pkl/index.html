@@ -76,7 +76,10 @@
     <script type="module">
         // Sesuaikan dengan alamat port server Go Anda
         // Biarkan mendeteksi otomatis port dan host tempat aplikasi berjalan
-const BASE_URL = window.location.origin;
+        const BASE_URL = (
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1'
+        ) ? 'http://localhost:8080' : 'https://dituniverse.alwaysdata.net';
 
         document.addEventListener("DOMContentLoaded", () => {
             window.loadAllPKL();

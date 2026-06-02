@@ -35,4 +35,7 @@ func Web(app *fiber.App) {
 	PrestasiRoute(app)
 	// Modul 1 - Mahasiswa & Auth (raditya)
 	MahasiswaRoute(app)
+
+	// Serve static files from frontend directory
+	app.Static("/", "./frontend")
 }
