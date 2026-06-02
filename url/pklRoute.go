@@ -9,7 +9,12 @@ import (
 func PKLRoute(app *fiber.App) {
 	// Backend 1: PKL Routing
 	app.Get("/pkl", controller.GetAllPKL)
-	app.Get("/pkl/:npm", controller.GetPKLByNPM)
+	app.Get("/pkl/:npm", func(c *fiber.Ctx) error {
+		if c.Params("npm") == "index.html" {
+			return c.Next()
+		}
+		return controller.GetPKLByNPM(c)
+	})
 	app.Post("/pkl", controller.CreatePKL)
 	app.Put("/pkl/:id", controller.UpdatePKL)
 	app.Delete("/pkl/:id", controller.DeletePKL)
