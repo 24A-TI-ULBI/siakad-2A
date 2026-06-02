@@ -706,8 +706,8 @@
   <script>
     // Config API Endpoint
     const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? (window.location.port === '8080' ? window.location.origin : 'http://127.0.0.1:8080')
-      : window.location.origin;
+      ? 'http://localhost:8080'
+      : 'https://dituniverse.alwaysdata.net';
 
     // Toast function
     function showToast(message, type = 'success') {
