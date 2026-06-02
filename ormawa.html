@@ -280,8 +280,13 @@
       return found ? found.nama : id;
     }
 
-    async function requestJSON(url, options = {}) {
-      const response = await fetch(url, {
+    const API_BASE = (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    ) ? 'http://localhost:8080' : 'https://dituniverse.alwaysdata.net';
+
+    async function requestJSON(path, options = {}) {
+      const response = await fetch(API_BASE + path, {
         headers: { 'Content-Type': 'application/json' },
         ...options
       });
