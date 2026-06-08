@@ -1,16 +1,16 @@
-# SIAKAD — Modul 3: Mata Kuliah & KRS
+# SIAKAD — Modul 4: Jadwal & Ruangan
 
-Nama: Affifah Putri Deza  
-NPM: 714240014  
+Nama: Alifya Azzahra  
+NPM: 714240011  
 Mata Kuliah: Pemrograman Web Service  
-Modul: 3 — Mata Kuliah & KRS  
+Modul: 4 — Jadwal & Ruangan  
 
 ---
 
 # Deskripsi
 
-Aplikasi web fullstack berbasis REST API untuk pengelolaan data mata kuliah dan pengisian KRS mahasiswa.  
-Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript sebagai frontend.
+Aplikasi web fullstack berbasis REST API untuk pengelolaan data jadwal perkuliahan dan ruangan kelas.  
+Dibangun menggunakan Go Fiber v2 sebagai backend, MongoDB Atlas sebagai database, dan Vanilla HTML/CSS/JavaScript sebagai frontend.
 
 ---
 
@@ -20,20 +20,30 @@ Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript
 |---|---|
 | Backend | Go + Go Fiber v2 |
 | Database | MongoDB Atlas |
-| Frontend | HTML + CSS + JS (Vanilla) |
-| Hosting | Alwaysdata (Free for Life) |
-| CI/CD | GitHub Actions |
-| Boilerplate | github.com/gocroot/alwaysdata |
+| Frontend | HTML + CSS + JavaScript (Vanilla) |
+| Hosting | Alwaysdata |
+| API Testing | Postman |
+| Version Control | Git & GitHub |
 
 ---
 
 # Struktur Folder
 
 ```bash
-714240014/
+siakad-2A/
+├── config/
+│   ├── config.go
+│   ├── cors.go
+│   └── db.go
+│
 ├── controller/
 │   ├── controller.go
-│   └── jadwalController.go
+│   ├── jadwalController.go
+│   └── ruanganController.go
+│
+├── helper/
+│   ├── helper.go
+│   └── mongodb.go
 │
 ├── model/
 │   ├── model.go
@@ -41,18 +51,20 @@ Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript
 │
 ├── url/
 │   ├── jadwalRoute.go
+│   ├── ruanganRoute.go
 │   └── url.go
 │
 ├── frontend/
-│   └── jadwal/
+│   ├── index.html
+│   ├── jadwal_ui/
+│   │   └── index.html
+│   └── ruangan_ui/
 │       └── index.html
 │
-├── config/
-├── helper/
 ├── main.go
 ├── go.mod
 ├── go.sum
-└── .env
+└── .gitignore
 ```
 
 ---
@@ -61,164 +73,323 @@ Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript
 
 ```mermaid
 flowchart TD
-    A([Mulai]) --> B[Clone Repository SIAKAD]
-    B --> C[Checkout Branch jadwal]
-    C --> D[Menjalankan Project Go Fiber]
-    D --> E[Membuat Model Jadwal]
-    E --> F[Membuat Controller Jadwal]
-    F --> G[Membuat Route Jadwal]
-    G --> H[Integrasi Route ke url.go]
-    H --> I[Membuat Frontend Jadwal]
-    I --> J[Membuat Fitur Tambah Data]
-    J --> K[Membuat Fitur Edit Data]
-    K --> L[Membuat Fitur Delete Data]
-    L --> M[Testing CRUD Jadwal]
-    M --> N[Git Add & Commit]
-    N --> O[Push Branch jadwal]
-    O --> P[Create Pull Request]
-    P --> Q([Selesai])
+
+A([Mulai]) --> B[Setup MongoDB Atlas]
+
+B --> C[Konfigurasi .env]
+
+C --> D[Membuat Model]
+
+D --> E[Membuat Controller]
+
+E --> F[Membuat Route]
+
+F --> G[Membuat Frontend]
+
+G --> H[Testing CRUD]
+
+H --> I[Push GitHub]
+
+I --> J[Create Pull Request]
+
+J --> K([Selesai])
 ```
 
 ---
 
 # Environment Variables
 
-Buat file `.env` di root project:
+Buat file `.env` di root folder dengan konfigurasi berikut:
 
 ```env
-MONGOSTRING=mongodb+srv://username:password@cluster.mongodb.net/
-MONGODB_NAME=kampus
+MONGOSTRING=mongodb+srv://radityarizkir_db_user:pemrogamman_3_webservice_2026@cluster0.xaive9n.mongodb.net/?appName=Cluster0
 PORT=8080
 IP=127.0.0.1
+JWT_SECRET=IjotroPBEj6MQZDZAeGrsvGcOeXs+LzWsFN+8OYQXWk=
 ```
 
 ---
 
 # Cara Menjalankan
 
-## Install Dependency
+### Install Dependency
 
 ```bash
 go mod tidy
 ```
 
----
-
-## Jalankan Server
+### Jalankan Server
 
 ```bash
 go run main.go
 ```
 
----
-
-## Buka Browser
-
-```bash
-http://127.0.0.1:8080/jadwal
+Server akan berjalan secara lokal di:
 ```
+http://127.0.0.1:8080/
+```
+
+### Buka Browser
+
+Setelah server berjalan, buka browser dan akses URL berikut untuk melihat tampilan aplikasi Anda:
+```
+http://127.0.0.1:8080/frontend/jadwal_ui/index.html
+```
+*(Sesuaikan path frontend dengan routing Anda)*
 
 ---
 
 # Dokumentasi API
 
-## Base URL
+**Base URL**: `http://127.0.0.1:8080`
 
-```bash
-http://127.0.0.1:8080
+## Endpoint Jadwal (`/jadwal`)
+
+### GET `/jadwal`
+Mengambil semua data jadwal kuliah.
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Jadwal berhasil diambil",
+  "data": [
+    {
+      "_id": "6a144dc2...",
+      "mata_kuliah": "Pengantar Strategi Algoritma",
+      "dosen": "Roni Habibi, S.Kom., M.T.",
+      "ruangan_kode": "LAB-315",
+      "hari": "Senin",
+      "jam_mulai": "13:00",
+      "jam_selesai": "18:50",
+      "prodi": "D4 Teknik Informatika"
+    }
+  ]
+}
 ```
 
----
+### GET `/jadwal/:id`
+Mengambil detail jadwal berdasarkan ID.
 
-# Endpoint Jadwal Mata Kuliah
-
-## GET /api/jadwal
-
-Mengambil semua data mata kuliah.
-
-### Response
-
+**Response:**
 ```json
-[
-  {
-    "kode": "IF101",
-    "nama": "Pemrograman Web",
-    "dosen": "Pak Budi",
+{
+  "status": "success",
+  "message": "Jadwal ditemukan",
+  "data": {
+    "_id": "6a144dc2...",
+    "mata_kuliah": "Pengantar Strategi Algoritma",
+    "dosen": "Roni Habibi, S.Kom., M.T.",
+    "ruangan_kode": "LAB-315",
     "hari": "Senin",
-    "jam": "08:00 - 10:00",
-    "ruangan": "Lab Komputer 1",
-    "sks": 3,
-    "semester": 2
+    "jam_mulai": "13:00",
+    "jam_selesai": "18:50",
+    "prodi": "D4 Teknik Informatika"
   }
-]
-```
-
----
-
-## POST /api/jadwal
-
-Menambahkan data mata kuliah baru.
-
-### Request Body
-
-```json
-{
-  "kode": "IF106",
-  "nama": "Networking",
-  "dosen": "Pak Andi",
-  "hari": "Rabu",
-  "jam": "10:00 - 12:00",
-  "ruangan": "Lab Jaringan",
-  "sks": 3,
-  "semester": 1
 }
 ```
 
----
+### POST `/jadwal`
+Menambahkan data jadwal baru.
 
-## PUT /api/jadwal/:kode
-
-Mengupdate data mata kuliah berdasarkan kode.
-
-### Request Body
-
+**Request Body:**
 ```json
 {
-  "kode": "IF101",
-  "nama": "Rekayasa Perangkat Lunak",
-  "dosen": "Bu Sinta",
-  "hari": "Kamis",
-  "jam": "13:00 - 15:00",
-  "ruangan": "Lab Software",
-  "sks": 2,
-  "semester": 1
+  "mata_kuliah": "Pengantar Strategi Algoritma",
+  "dosen": "Roni Habibi, S.Kom., M.T.",
+  "ruangan_kode": "LAB-315",
+  "hari": "Senin",
+  "jam_mulai": "13:00",
+  "jam_selesai": "18:50",
+  "prodi": "D4 Teknik Informatika"
 }
 ```
 
----
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Jadwal berhasil ditambahkan",
+  "data": "6a144dc2..."
+}
+```
 
-## DELETE /api/jadwal/:kode
+### PUT `/jadwal/:id`
+Mengupdate data jadwal berdasarkan ID.
 
-Menghapus data mata kuliah berdasarkan kode.
+**Request Body:**
+```json
+{
+  "mata_kuliah": "Pengantar Strategi Algoritma (Update)",
+  "dosen": "Roni Habibi, S.Kom., M.T.",
+  "ruangan_kode": "LAB-315",
+  "hari": "Senin",
+  "jam_mulai": "13:00",
+  "jam_selesai": "18:50",
+  "prodi": "D4 Teknik Informatika"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Jadwal berhasil diupdate"
+}
+```
+
+### DELETE `/jadwal/:id`
+Menghapus data jadwal berdasarkan ID.
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Jadwal berhasil dihapus"
+}
+```
+
+## Endpoint Ruangan (`/ruangan`)
+
+### GET `/ruangan`
+Mengambil semua data ruangan.
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Data ruangan berhasil diambil",
+  "data": [
+    {
+      "_id": "6a144dc2...",
+      "nama": "Laboratorium Komputer 315",
+      "kode": "LAB-315",
+      "kapasitas": 40,
+      "fasilitas": [
+        "Komputer",
+        "AC",
+        "Proyektor"
+      ],
+      "gedung": "Gedung A"
+    }
+  ]
+}
+```
+
+### POST `/ruangan`
+Menambahkan data ruangan baru.
+
+**Request Body:**
+```json
+{
+  "nama": "Laboratorium Komputer 315",
+  "kode": "LAB-315",
+  "kapasitas": 40,
+  "fasilitas": [
+    "Komputer",
+    "AC",
+    "Proyektor"
+  ],
+  "gedung": "Gedung A"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Ruangan berhasil ditambahkan",
+  "data": "6a144dc2..."
+}
+```
+
+### GET `/ruangan/:kode`
+Mengambil detail ruangan berdasarkan kode ruangan.
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Data ruangan ditemukan",
+  "data": {
+    "_id": "6a144dc2...",
+    "nama": "Laboratorium Komputer 315",
+    "kode": "LAB-315",
+    "kapasitas": 40,
+    "fasilitas": [
+      "Komputer",
+      "AC",
+      "Proyektor"
+    ],
+    "gedung": "Gedung A"
+  }
+}
+```
+
+### PUT `/ruangan/:kode`
+Mengupdate data ruangan berdasarkan kode.
+
+**Request Body:**
+```json
+{
+  "nama": "Laboratorium Komputer 315",
+  "kode": "LAB-315",
+  "kapasitas": 45,
+  "fasilitas": [
+    "Komputer",
+    "AC",
+    "Proyektor",
+    "Whiteboard"
+  ],
+  "gedung": "Gedung A"
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Ruangan berhasil diupdate"
+}
+```
+
+### DELETE `/ruangan/:kode`
+Menghapus data ruangan berdasarkan kode ruangan.
+
+**Response:**
+```json
+{
+  "status": "success",
+  "message": "Ruangan berhasil dihapus"
+}
+```
 
 ---
 
 # Frontend
 
-| Halaman | URL | Fungsi |
-|---|---|---|
-| Jadwal | /jadwal | Kelola data mata kuliah & pengisian KRS |
+Aplikasi ini menggunakan antarmuka berbasis HTML, CSS (Vanilla), dan JavaScript yang berinteraksi dengan REST API backend.
+
+| Halaman | Deskripsi / Fungsi Utama |
+|---|---|
+| **Dashboard** | Halaman utama (`/frontend/index.html`) yang berisi navigasi menuju setiap modul (Jadwal & Ruangan). |
+| **Jadwal UI** | Antarmuka untuk melakukan operasi CRUD data Jadwal Kuliah (`/frontend/jadwal_ui/index.html`). |
+| **Ruangan UI** | Antarmuka untuk melakukan operasi CRUD data Ruangan (`/frontend/ruangan_ui/index.html`). |
 
 ---
 
 # Fitur
 
-✅ CRUD Data Mata Kuliah  
-✅ Tambah Mata Kuliah  
-✅ Edit Mata Kuliah  
-✅ Delete Mata Kuliah  
-✅ Pengisian KRS Mahasiswa  
-✅ Search Mata Kuliah  
-✅ Responsive UI  
-✅ REST API Fiber v2  
-✅ Frontend Interaktif  
+- **Manajemen Jadwal Kuliah**:
+  - Menambahkan jadwal mata kuliah baru (Create)
+  - Menampilkan daftar jadwal perkuliahan (Read)
+  - Mengubah detail jadwal perkuliahan (Update)
+  - Menghapus jadwal perkuliahan (Delete)
+- **Manajemen Ruangan Kelas**:
+  - Menambahkan data ruangan baru beserta kapasitasnya (Create)
+  - Menampilkan daftar dan detail ruangan kelas (Read)
+  - Mengubah kapasitas, fasilitas, dan detail ruangan (Update)
+  - Menghapus data ruangan (Delete)
+- **RESTful API backend yang responsif**
+- **Terintegrasi dengan MongoDB Atlas**
+- **Antarmuka pengguna (Frontend) interaktif menggunakan Vanilla JS**
