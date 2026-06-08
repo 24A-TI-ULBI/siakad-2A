@@ -23,14 +23,24 @@
                     },
                     colors: {
                         brand: {
-                            50: '#f0fdf4',   // Hijau muda soft
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            500: '#22c55e',  // Hijau utama
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
+                            50: '#FFF5EB',
+                            100: '#FFE0CC',
+                            200: '#FFC59A',
+                            500: '#EA6D20',
+                            600: '#C6591D',
+                            700: '#994A1A',
+                            800: '#783C18',
+                            900: '#5E3013',
+                        },
+                        accent: {
+                            50: '#EAF2FF',
+                            100: '#D4E4FF',
+                            200: '#A4C8FF',
+                            500: '#0F356F',
+                            600: '#0B2A57',
+                            700: '#081F44',
+                            800: '#061734',
+                            900: '#041022',
                         }
                     }
                 }
@@ -38,7 +48,119 @@
         }
     </script>
     <style>
-        /* Desain scrollbar yang minimalis dan bersih */
+        :root {
+            color-scheme: light;
+            --page-bg: #FFFFFF;
+            --surface: #FFFFFF;
+            --surface-soft: #FFF7ED;
+            --primary: #EA6D20;
+            --primary-dark: #C6591D;
+            --secondary: #0F356F;
+            --secondary-soft: #EAF2FF;
+            --text: #12203B;
+            --muted: #5F728F;
+            --border: rgba(234, 109, 32, 0.18);
+        }
+
+        body {
+            background: #FFFFFF;
+        }
+
+        .brand-panel {
+            background: var(--surface);
+            border: 1px solid rgba(234, 109, 32, 0.18);
+            box-shadow: 0 24px 56px rgba(234, 109, 32, 0.12);
+        }
+
+        .brand-card {
+            background: var(--surface);
+            border: 1px solid rgba(234, 109, 32, 0.18);
+        }
+
+        .brand-button,
+        .brand-button:hover {
+            transition: background-color 0.25s ease, transform 0.25s ease;
+        }
+
+        .brand-button {
+            background: var(--primary);
+            color: white;
+        }
+
+        .brand-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .accent-button {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .accent-button:hover {
+            background: #081F44;
+        }
+
+        .accent-chip {
+            background: rgba(15, 53, 111, 0.08);
+            color: var(--secondary);
+        }
+
+        .section-heading {
+            color: var(--secondary);
+        }
+
+        .table-header {
+            background: var(--secondary-soft);
+            color: var(--secondary);
+        }
+
+        .table-card th {
+            border-bottom: 1px solid rgba(15, 53, 111, 0.08);
+        }
+
+        .table-card td {
+            border-bottom: 1px solid rgba(15, 53, 111, 0.06);
+        }
+
+        .sidebar-pane {
+            background: #FFFFFF;
+            border: 1px solid rgba(15, 53, 111, 0.08);
+        }
+
+        .input-surface {
+            background: #F8FAFF;
+            border-color: rgba(15, 53, 111, 0.14);
+        }
+
+        .input-surface:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(15, 53, 111, 0.08);
+        }
+
+        .shadow-soft {
+            box-shadow: 0 20px 45px rgba(15, 53, 111, 0.06);
+        }
+
+        @media (max-width: 1024px) {
+            .sticky-top {
+                position: static;
+                top: auto;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .responsive-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .nav-sm {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .nav-sm .status-chip {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -60,27 +182,27 @@
         }
     </style>
 </head>
-<body class="bg-slate-50/60 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
+<body class="bg-white text-slate-800 min-h-screen flex flex-col font-sans antialiased">
 
     <!-- TOP NAVIGATION BAR -->
-    <nav class="bg-white border-b border-slate-100 sticky top-0 z-40 shadow-sm shadow-slate-100/50">
+    <nav class="bg-gradient-to-r from-brand-500 via-brand-600 to-brand-700 text-white border-b border-brand-700 sticky top-0 z-40 shadow-lg shadow-brand-700/15">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex nav-sm justify-between h-16 items-center gap-4">
                 <div class="flex items-center space-x-3">
-                    <div class="p-2 bg-brand-100 text-brand-700 rounded-xl">
+                    <div class="p-2 bg-brand-50 text-brand-700 rounded-xl shadow-sm shadow-brand-700/10">
                         <i class="fa-solid fa-graduation-cap text-lg"></i>
                     </div>
                     <div>
-                        <span class="text-base font-bold text-slate-900 tracking-tight">Portal Akademik</span>
-                        <span class="hidden sm:inline-block text-xs text-slate-400 ml-2 border-l border-slate-200 pl-2">Modul Manajemen Mata Kuliah & KRS</span>
+                        <span class="text-base font-bold tracking-tight">Portal Akademik</span>
+                        <span class="hidden sm:inline-block text-xs text-brand-200 ml-2 border-l border-brand-800 pl-2">Modul Manajemen Mata Kuliah & KRS</span>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <span class="text-xs font-medium text-slate-500 hidden md:flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+                    <span class="text-xs font-medium text-brand-200 hidden md:flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-brand-100"></span>
                         Server Terhubung
                     </span>
-                    <div class="h-8 w-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-700 font-semibold text-sm border border-brand-100">
+                    <div class="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-950 font-semibold text-sm border border-brand-200">
                         ADM
                     </div>
                 </div>
@@ -92,7 +214,7 @@
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
         
         <!-- HEADER MODULE -->
-        <div class="mb-8 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100">
+        <div class="mb-8 brand-panel rounded-2xl p-6 shadow-sm border-brand-100">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -147,14 +269,14 @@
                 
                 <!-- COLUMN 1: FORM TAMBAH MATA KULIAH -->
                 <div class="lg:col-span-1">
-                    <div class="bg-white border border-slate-150 rounded-2xl p-6 shadow-sm sticky top-24">
+                    <div class="brand-panel rounded-2xl p-6 shadow-sm sticky top-24 border-l-4 border-brand/30">
                         <div class="flex items-center space-x-3 mb-5">
                             <div class="p-2 bg-brand-50 rounded-lg text-brand-700">
                                 <i class="fa-solid fa-circle-plus text-base"></i>
                             </div>
                             <div>
-                                <h2 class="text-base font-bold text-slate-800">Tambah Mata Kuliah</h2>
-                                <p class="text-xs text-slate-400">Buat data kurikulum baru di sistem</p>
+                                <h2 class="text-base font-bold section-heading">Tambah Mata Kuliah</h2>
+                                <p class="text-xs text-slate-500">Buat data kurikulum baru di sistem</p>
                             </div>
                         </div>
                         
@@ -194,8 +316,8 @@
 
                 <!-- COLUMN 2: TABEL LIST MATA KULIAH -->
                 <div class="lg:col-span-2">
-                    <div class="bg-white border border-slate-150 rounded-2xl shadow-sm overflow-hidden">
-                        <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="brand-panel rounded-2xl shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-brand-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
                                 <h3 class="text-base font-bold text-slate-800">Daftar Mata Kuliah Tersedia</h3>
                                 <p class="text-xs text-slate-400 font-medium">Klik aksi untuk mengedit atau menghapus entri.</p>
@@ -266,7 +388,7 @@
                                     <label class="block text-xs font-semibold text-slate-500 mb-2">Nomor Pokok Mahasiswa (NPM)</label>
                                     <div class="flex space-x-2">
                                         <input type="text" id="krs-search-npm" placeholder="Masukkan NPM..." class="flex-grow px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-semibold tracking-wide text-slate-800">
-                                        <button onclick="searchKrsMahasiswa()" class="bg-brand-600 hover:bg-brand-700 text-white font-semibold px-4 rounded-xl flex items-center justify-center shadow-sm transition-all cursor-pointer">
+                                        <button onclick="searchKrsMahasiswa()" class="brand-button rounded-xl px-4 py-2.5 flex items-center justify-center shadow-sm transition-all cursor-pointer">
                                             <i class="fa-solid fa-magnifying-glass"></i>
                                         </button>
                                     </div>
