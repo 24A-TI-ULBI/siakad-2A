@@ -58,10 +58,7 @@ func GetJadwalByID(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, err := primitive.ObjectIDFromHex(idParam)
 	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "ID tidak valid",
-		})
+		return c.Next()
 	}
 
 	db := helper.GetDB()
@@ -122,10 +119,7 @@ func UpdateJadwal(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, err := primitive.ObjectIDFromHex(idParam)
 	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "ID tidak valid",
-		})
+		return c.Next()
 	}
 
 	var data map[string]interface{}
@@ -167,10 +161,7 @@ func DeleteJadwal(c *fiber.Ctx) error {
 	idParam := c.Params("id")
 	id, err := primitive.ObjectIDFromHex(idParam)
 	if err != nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
-			"status":  "error",
-			"message": "ID tidak valid",
-		})
+		return c.Next()
 	}
 
 	db := helper.GetDB()
