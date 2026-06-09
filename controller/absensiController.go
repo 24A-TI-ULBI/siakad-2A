@@ -13,6 +13,23 @@ import (
 
 const AbsensiCollection = "absensi"
 
+// GetAllAbsensi menangani GET /absensi/all - mengambil semua data absensi
+func GetAllAbsensi(c *fiber.Ctx) error {
+	db := helper.GetDB()
+	filter := bson.M{}
+
+	docs, err := helper.GetAllDoc[model.Absensi](db, AbsensiCollection, filter)
+	if err != nil {
+		return helper.ErrorResponse(c, fiber.StatusInternalServerError, "Gagal mengambil data absensi: "+err.Error())
+	}
+
+	if docs == nil {
+		docs = []model.Absensi{}
+	}
+
+	return c.JSON(docs)
+}
+
 // GetAbsensiByNPM menangani GET /absensi/:npm
 func GetAbsensiByNPM(c *fiber.Ctx) error {
 	npm := c.Params("npm")
