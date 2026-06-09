@@ -13,6 +13,17 @@ import (
 
 const AbsensiCollection = "absensi"
 
+func absensiIDFilter(id string) bson.M {
+	if objectID, err := primitive.ObjectIDFromHex(id); err == nil {
+		return bson.M{"$or": []bson.M{
+			{"_id": id},
+			{"_id": objectID},
+		}}
+	}
+
+	return bson.M{"_id": id}
+}
+
 // GetAllAbsensi menangani GET /absensi/all - mengambil semua data absensi
 func GetAllAbsensi(c *fiber.Ctx) error {
 	db := helper.GetDB()
@@ -79,7 +90,7 @@ func InsertAbsensi(c *fiber.Ctx) error {
 
 	// Auto-generasi field opsional jika kosong
 	if req.ID == "" {
-		req.ID = primitive.NewObjectID().Hex()
+		req.ID = model.AbsensiID(primitive.NewObjectID().Hex())
 	}
 	if req.Tanggal == "" {
 		req.Tanggal = now.Format("2006-01-02")
@@ -121,7 +132,7 @@ func UpdateAbsensi(c *fiber.Ctx) error {
 	}
 
 	db := helper.GetDB()
-	filter := bson.M{"_id": id}
+	filter := absensiIDFilter(id)
 	update := bson.M{"$set": bson.M{"status": req.Status}}
 
 	_, err := helper.UpdateDoc(db, AbsensiCollection, filter, update)
@@ -140,7 +151,7 @@ func DeleteAbsensi(c *fiber.Ctx) error {
 	}
 
 	db := helper.GetDB()
-	filter := bson.M{"_id": id}
+	filter := absensiIDFilter(id)
 
 	_, err := helper.DeleteDoc(db, AbsensiCollection, filter)
 	if err != nil {
