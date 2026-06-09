@@ -494,6 +494,25 @@
             fetchLiveAttendances();
         }
 
+        function normalizeAttendanceData(payload) {
+            const rows = Array.isArray(payload)
+                ? payload
+                : (payload && Array.isArray(payload.data))
+                    ? payload.data
+                    : (payload && payload.data === null)
+                        ? []
+                        : payload === null
+                            ? []
+                            : null;
+
+            if (!rows) return null;
+
+            return rows.map(log => ({
+                ...log,
+                id: log.id || log._id
+            }));
+        }
+
         function loadLocalDatabase() {
             const localData = localStorage.getItem("absensi_mod6_db");
             if (localData && JSON.parse(localData).length > 0) {
@@ -806,8 +825,9 @@
                 return res.json();
             })
             .then(data => {
-                if (data && Array.isArray(data)) {
-                    state.attendances = data;
+                const attendances = normalizeAttendanceData(data);
+                if (attendances) {
+                    state.attendances = attendances;
                     saveToLocalDb();
                     updateApiStatusBadge(true);
                     renderActiveTab();
