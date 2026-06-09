@@ -227,22 +227,22 @@
                 
                 <!-- Info Statistik Ringkas -->
                 <div class="flex flex-wrap items-center gap-4">
-                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center space-x-3 min-w-[150px]">
-                        <div class="p-2.5 bg-brand-50 rounded-lg text-brand-600">
+                    <div class="brand-card rounded-2xl p-4 flex items-center space-x-4 min-w-[220px] shadow-soft">
+                        <div class="p-3 bg-brand-50 rounded-lg text-brand-700 text-xl">
                             <i class="fa-solid fa-book-bookmark"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">MATA KULIAH</p>
-                            <h3 id="stat-total-matkul" class="text-lg font-bold text-slate-800">0</h3>
+                            <p class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">MATA KULIAH</p>
+                            <h3 id="stat-total-matkul" class="text-2xl font-extrabold text-slate-900">0</h3>
                         </div>
                     </div>
-                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center space-x-3 min-w-[150px]">
-                        <div class="p-2.5 bg-emerald-50 rounded-lg text-emerald-600">
+                    <div class="brand-card rounded-2xl p-4 flex items-center space-x-4 min-w-[220px] shadow-soft">
+                        <div class="p-3 bg-accent-50 rounded-lg text-accent-600 text-xl">
                             <i class="fa-solid fa-user-graduate"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">MAHASISWA KRS</p>
-                            <h3 id="stat-total-mhs" class="text-lg font-bold text-slate-800">0</h3>
+                            <p class="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">MAHASISWA KRS</p>
+                            <h3 id="stat-total-mhs" class="text-2xl font-extrabold text-slate-900">0</h3>
                         </div>
                     </div>
                 </div>
@@ -288,6 +288,24 @@
                             <div>
                                 <label class="block text-xs font-semibold text-slate-500 mb-2">Nama Mata Kuliah</label>
                                 <input type="text" id="add-nama" required placeholder="Contoh: Desain Web Responsif" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm font-medium text-slate-800 placeholder-slate-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2">Dosen</label>
+                                <input type="text" id="add-dosen" required placeholder="Nama dosen pengampu" class="w-full px-3.5 py-2.5 input-surface border rounded-xl focus:outline-none focus:ring-1 focus:ring-accent-50 text-sm font-medium text-slate-800">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2">Hari</label>
+                                    <input type="text" id="add-hari" required placeholder="Contoh: Senin" class="w-full px-3.5 py-2.5 input-surface border rounded-xl focus:outline-none focus:ring-1 focus:ring-accent-50 text-sm font-medium text-slate-800">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-2">Jam</label>
+                                    <input type="text" id="add-jam" required placeholder="Contoh: 08:00-10:00" class="w-full px-3.5 py-2.5 input-surface border rounded-xl focus:outline-none focus:ring-1 focus:ring-accent-50 text-sm font-medium text-slate-800">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 mb-2">Ruangan</label>
+                                <input type="text" id="add-ruangan" required placeholder="Contoh: R201" class="w-full px-3.5 py-2.5 input-surface border rounded-xl focus:outline-none focus:ring-1 focus:ring-accent-50 text-sm font-medium text-slate-800">
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
@@ -336,6 +354,10 @@
                                     <tr>
                                         <th class="py-3.5 px-6">Kode</th>
                                         <th class="py-3.5 px-6">Nama Mata Kuliah</th>
+                                        <th class="py-3.5 px-6">Dosen</th>
+                                        <th class="py-3.5 px-6">Hari</th>
+                                        <th class="py-3.5 px-6">Jam</th>
+                                        <th class="py-3.5 px-6">Ruangan</th>
                                         <th class="py-3.5 px-6 text-center">SKS</th>
                                         <th class="py-3.5 px-6 text-center">Semester</th>
                                         <th class="py-3.5 px-6 text-right">Aksi</th>
@@ -534,6 +556,24 @@
                         <input type="number" id="edit-semester" min="1" max="8" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm text-slate-800">
                     </div>
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">Dosen</label>
+                    <input type="text" id="edit-dosen" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm text-slate-800">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">Hari</label>
+                        <input type="text" id="edit-hari" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-2">Jam</label>
+                        <input type="text" id="edit-jam" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm text-slate-800">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-2">Ruangan</label>
+                    <input type="text" id="edit-ruangan" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all text-sm text-slate-800">
+                </div>
                 <div class="flex space-x-3 pt-4 border-t border-slate-100 mt-6">
                     <button type="button" onclick="closeEditModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 px-4 rounded-xl transition-all text-xs">
                         Batal
@@ -558,11 +598,11 @@
     <script>
         // --- 1. MOCK DATA INITIALIZATION ---
         let defaultCourses = [
-            { kode: "IF101", nama: "Dasar Pemrograman", sks: 3, semester: 1 },
-            { kode: "IF102", nama: "Pemrograman Web", sks: 3, semester: 2 },
-            { kode: "IF103", nama: "Struktur Data", sks: 4, semester: 3 },
-            { kode: "IF104", nama: "Basis Data", sks: 3, semester: 3 },
-            { kode: "IF105", nama: "Sistem Operasi", sks: 3, semester: 4 }
+            { kode: "IF101", nama: "Dasar Pemrograman", dosen: "Dr. A. Pratama", hari: "Senin", jam: "08:00-10:00", ruangan: "R201", sks: 3, semester: 1 },
+            { kode: "IF102", nama: "Pemrograman Web", dosen: "Dra. B. Sari", hari: "Selasa", jam: "10:00-12:00", ruangan: "R102", sks: 3, semester: 2 },
+            { kode: "IF103", nama: "Struktur Data", dosen: "Ir. C. Wijaya", hari: "Rabu", jam: "13:00-15:00", ruangan: "R305", sks: 4, semester: 3 },
+            { kode: "IF104", nama: "Basis Data", dosen: "Drs. D. Susanto", hari: "Kamis", jam: "09:00-11:00", ruangan: "R210", sks: 3, semester: 3 },
+            { kode: "IF105", nama: "Sistem Operasi", dosen: "M. Eko", hari: "Jumat", jam: "14:00-16:00", ruangan: "R101", sks: 3, semester: 4 }
         ];
 
         let defaultKrs = [
@@ -572,17 +612,51 @@
             { id: "krs-4", npm: "221063117002", kode_matkul: "IF104" }
         ];
 
-        // Memuat dari LocalStorage jika sudah ada, jika tidak, gunakan default
+        // Muat cache LocalStorage yang pernah tersimpan, lalu sinkronkan dengan server
+        let storedCourses = [];
+        try {
+            const cachedCourses = JSON.parse(localStorage.getItem('sys_courses'));
+            if (Array.isArray(cachedCourses)) storedCourses = cachedCourses;
+        } catch (err) {
+            storedCourses = [];
+        }
+
+        let storedKrs = [];
+        try {
+            const cachedKrs = JSON.parse(localStorage.getItem('sys_krs'));
+            if (Array.isArray(cachedKrs)) storedKrs = cachedKrs;
+        } catch (err) {
+            storedKrs = [];
+        }
+
         let DB = {
-            courses: JSON.parse(localStorage.getItem('sys_courses')) || defaultCourses,
-            krs: JSON.parse(localStorage.getItem('sys_krs')) || defaultKrs
+            courses: storedCourses,
+            krs: storedKrs.length ? storedKrs : defaultKrs
         };
 
-        // Simpan ke LocalStorage helper
+        // Simpan cache ke LocalStorage helper
         function saveDb() {
             localStorage.setItem('sys_courses', JSON.stringify(DB.courses));
             localStorage.setItem('sys_krs', JSON.stringify(DB.krs));
             updateDashboardStats();
+        }
+
+        async function loadMatkulData() {
+            try {
+                console.log('[Matkul] Fetching /api/matkul');
+                const response = await fetch('/api/matkul');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+                DB.courses = Array.isArray(data) ? data : [];
+                saveDb();
+                renderMatkulTable();
+                logApiCall('GET', '/api/matkul', response.status, `Memuat ${DB.courses.length} data matkul dari backend.`);
+            } catch (error) {
+                console.error('[Matkul] loadMatkulData error:', error);
+                showToast('Gagal memuat data matkul dari server.', 'error');
+            }
         }
 
         // Variabel penampung NPM yang sedang dicari/aktif di tab KRS
@@ -625,7 +699,7 @@
         }
 
         // --- 4. NAVIGATION TAB CONTROL ---
-        function switchTab(tabId) {
+        async function switchTab(tabId) {
             // Sembunyikan semua tab content
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             
@@ -645,8 +719,7 @@
 
             // Log Tab HTTP request simulation
             if (tabId === "tab-matkul") {
-                logApiCall("GET", "/matkul", 200, "Mengambil list semua data master mata kuliah.");
-                renderMatkulTable();
+                await loadMatkulData();
             } else {
                 logApiCall("GET", `/krs/${activeNpm || ":npm"}`, 200, "Menuju antarmuka pendaftaran KRS mahasiswa.");
                 populateKrsDropdown();
@@ -673,7 +746,8 @@
             const emptyState = document.getElementById('matkul-empty-state');
             const searchVal = document.getElementById('search-matkul').value.toLowerCase();
             
-            const filtered = DB.courses.filter(c => 
+            const courses = Array.isArray(DB.courses) ? DB.courses : [];
+            const filtered = courses.filter(c => 
                 c.kode.toLowerCase().includes(searchVal) || 
                 c.nama.toLowerCase().includes(searchVal)
             );
@@ -693,6 +767,10 @@
                 tr.innerHTML = `
                     <td class="py-3.5 px-6 font-mono font-bold text-brand-700">${course.kode}</td>
                     <td class="py-3.5 px-6 text-slate-700 font-semibold group-hover:text-slate-900 transition-colors">${course.nama}</td>
+                    <td class="py-3.5 px-6 text-slate-600 text-sm">${course.dosen || '-'}</td>
+                    <td class="py-3.5 px-6 text-slate-600 text-sm">${course.hari || '-'}</td>
+                    <td class="py-3.5 px-6 text-slate-600 text-sm">${course.jam || '-'}</td>
+                    <td class="py-3.5 px-6 text-slate-600 text-sm">${course.ruangan || '-'}</td>
                     <td class="py-3.5 px-6 text-center">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 border border-brand-100">
                             ${course.sks} SKS
@@ -700,11 +778,11 @@
                     </td>
                     <td class="py-3.5 px-6 text-center text-slate-500 font-medium">Semester ${course.semester}</td>
                     <td class="py-3.5 px-6 text-right">
-                        <div class="flex items-center justify-end space-x-1">
-                            <button onclick="openEditModal('${course.kode}')" class="p-1.5 bg-white border border-slate-200 hover:border-amber-450 hover:bg-amber-50 rounded-xl text-amber-600 transition-all duration-200" title="Edit Data">
+                        <div class="flex items-center justify-end space-x-2">
+                            <button onclick="openEditModal('${course.kode}')" class="p-2 brand-button rounded-xl text-white shadow-sm hover:scale-105 transition-transform" title="Edit Data">
                                 <i class="fa-solid fa-edit text-xs"></i>
                             </button>
-                            <button onclick="apiDeleteMatkul('${course.kode}')" class="p-1.5 bg-white border border-slate-200 hover:border-rose-450 hover:bg-rose-50 rounded-xl text-rose-600 transition-all duration-200" title="Hapus Data">
+                            <button onclick="apiDeleteMatkul('${course.kode}')" class="p-2 bg-white border border-slate-200 rounded-xl text-rose-600 hover:bg-rose-50 transition-all duration-200" title="Hapus Data">
                                 <i class="fa-solid fa-trash-can text-xs"></i>
                             </button>
                         </div>
@@ -715,13 +793,17 @@
         }
 
         // POST /matkul -> Menyimpan mata kuliah baru
-        document.getElementById('form-add-matkul').addEventListener('submit', function(e) {
+        document.getElementById('form-add-matkul').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const kode = document.getElementById('add-kode').value.trim();
             const nama = document.getElementById('add-nama').value.trim();
             const sks = parseInt(document.getElementById('add-sks').value);
             const semester = parseInt(document.getElementById('add-semester').value);
+            const dosen = document.getElementById('add-dosen').value.trim();
+            const hari = document.getElementById('add-hari').value.trim();
+            const jam = document.getElementById('add-jam').value.trim();
+            const ruangan = document.getElementById('add-ruangan').value.trim();
 
             // Validasi duplikasi kode mata kuliah
             const isExist = DB.courses.some(c => c.kode.toLowerCase() === kode.toLowerCase());
@@ -732,19 +814,35 @@
                 return;
             }
 
-            const newMatkul = { kode, nama, sks, semester };
-            DB.courses.push(newMatkul);
-            saveDb();
-            
-            logApiCall("POST", "/matkul", 201, `Berhasil menyimpan mata kuliah: '${kode} - ${nama}'`);
-            showToast("Mata kuliah berhasil ditambahkan!", "success");
+            // Validasi field penting
+            if (!kode || !nama || !dosen || !hari || !jam || !ruangan) {
+                showToast('Harap isi semua field penting (Kode, Nama, Dosen, Hari, Jam, Ruangan).', 'warning');
+                return;
+            }
 
-            // Reset formulir
-            this.reset();
-            document.getElementById('add-sks').value = 3;
-            document.getElementById('add-semester').value = 1;
+            const newMatkul = { kode, nama, dosen, hari, jam, ruangan, sks, semester };
+            try {
+                const response = await fetch('/api/matkul', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newMatkul)
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                await loadMatkulData();
+                logApiCall("POST", "/api/matkul", response.status, `Berhasil menyimpan mata kuliah: '${kode} - ${nama}'`);
+                showToast("Mata kuliah berhasil ditambahkan!", "success");
 
-            renderMatkulTable();
+                // Reset formulir
+                this.reset();
+                document.getElementById('add-sks').value = 3;
+                document.getElementById('add-semester').value = 1;
+            } catch (error) {
+                console.error('[Matkul] AddMatkul error:', error);
+                logApiCall("POST", "/api/matkul", error.status || 500, `Gagal menyimpan mata kuliah: ${error.message}`);
+                showToast("Gagal menyimpan mata kuliah ke server.", "error");
+            }
         });
 
         // PUT /matkul/:kode -> Penanganan Modal & Update data
@@ -764,6 +862,10 @@
             document.getElementById('edit-nama').value = course.nama;
             document.getElementById('edit-sks').value = course.sks;
             document.getElementById('edit-semester').value = course.semester;
+            document.getElementById('edit-dosen').value = course.dosen || '';
+            document.getElementById('edit-hari').value = course.hari || '';
+            document.getElementById('edit-jam').value = course.jam || '';
+            document.getElementById('edit-ruangan').value = course.ruangan || '';
 
             // Memunculkan Modal dengan animasi lembut
             const modal = document.getElementById('modal-edit-matkul');
@@ -792,6 +894,10 @@
             const nama = document.getElementById('edit-nama').value.trim();
             const sks = parseInt(document.getElementById('edit-sks').value);
             const semester = parseInt(document.getElementById('edit-semester').value);
+            const dosen = document.getElementById('edit-dosen').value.trim();
+            const hari = document.getElementById('edit-hari').value.trim();
+            const jam = document.getElementById('edit-jam').value.trim();
+            const ruangan = document.getElementById('edit-ruangan').value.trim();
 
             // Validasi tabrakan kode unik mata kuliah baru
             if (newKode.toLowerCase() !== originalKode.toLowerCase()) {
@@ -805,8 +911,13 @@
 
             // Eksekusi pembaruan record di database simulator
             const index = DB.courses.findIndex(c => c.kode === originalKode);
+            if (!newKode || !nama || !dosen || !hari || !jam || !ruangan) {
+                showToast('Harap isi semua field penting sebelum menyimpan perubahan.', 'warning');
+                return;
+            }
+
             if (index !== -1) {
-                DB.courses[index] = { kode: newKode, nama, sks, semester };
+                DB.courses[index] = { kode: newKode, nama, dosen, hari, jam, ruangan, sks, semester };
 
                 // Auto-sync / Cascade perubahan kode ke tabel relasi KRS mahasiswa
                 if (newKode !== originalKode) {
@@ -830,32 +941,33 @@
         });
 
         // DELETE /matkul/:kode -> Simulasi penghapusan data kurikulum
-        function apiDeleteMatkul(kode) {
+        async function apiDeleteMatkul(kode) {
             // Dialog konfirmasi terintegrasi
             const confirmDelete = confirm(`Apakah kamu yakin ingin menghapus data mata kuliah [${kode}]? \nSemua data KRS mahasiswa terkait mata kuliah ini otomatis akan terhapus.`);
             if (!confirmDelete) return;
 
-            const index = DB.courses.findIndex(c => c.kode === kode);
-            if (index !== -1) {
-                const deletedName = DB.courses[index].nama;
-                
-                // Hapus data utama
-                DB.courses.splice(index, 1);
-                
-                // Cascade delete dari KRS
+            try {
+                const response = await fetch(`/api/matkul/${kode}`, { method: 'DELETE' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const index = DB.courses.findIndex(c => c.kode === kode);
+                const deletedName = index !== -1 ? DB.courses[index].nama : kode;
+                if (index !== -1) {
+                    DB.courses.splice(index, 1);
+                }
                 const initialKrsLen = DB.krs.length;
                 DB.krs = DB.krs.filter(item => item.kode_matkul !== kode);
                 const cascadeDeletedCount = initialKrsLen - DB.krs.length;
 
                 saveDb();
-                
-                logApiCall("DELETE", `/matkul/${kode}`, 200, `Berhasil menghapus '${kode} - ${deletedName}'. Terjadi cascade delete pada ${cascadeDeletedCount} baris KRS.`);
+                logApiCall("DELETE", `/api/matkul/${kode}`, response.status, `Berhasil menghapus '${kode} - ${deletedName}'. Terjadi cascade delete pada ${cascadeDeletedCount} baris KRS.`);
                 showToast("Mata kuliah berhasil dihapus!", "success");
-                
                 renderMatkulTable();
-            } else {
-                logApiCall("DELETE", `/matkul/${kode}`, 404, "Gagal request hapus: Data target tidak valid.");
-                showToast("Mata kuliah tidak dapat ditemukan!", "error");
+            } catch (error) {
+                console.error('[Matkul] apiDeleteMatkul error:', error);
+                logApiCall("DELETE", `/api/matkul/${kode}`, error.status || 500, `Gagal menghapus mata kuliah: ${error.message}`);
+                showToast("Gagal menghapus mata kuliah dari server.", "error");
             }
         }
 
@@ -1077,7 +1189,7 @@
         // --- 6. WINDOW ONLOAD INITIALIZER ---
         window.onload = function() {
             updateDashboardStats();
-            renderMatkulTable();
+            loadMatkulData();
         }
     </script>
 </body>

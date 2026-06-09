@@ -1,73 +1,47 @@
 package controller
 
 import (
+	"backend/helper"
 	"backend/model"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
 )
-
-var MatkulData = []model.Matkul{
-	{
-		Kode:     "IF101",
-		Nama:     "Pemrograman Web",
-		Dosen:    "Pak Budi",
-		Hari:     "Senin",
-		Jam:      "08:00 - 10:00",
-		Ruangan:  "Lab Komputer 1",
-		SKS:      3,
-		Semester: 2,
-	},
-	{
-		Kode:     "IF102",
-		Nama:     "Basis Data",
-		Dosen:    "Bu Sinta",
-		Hari:     "Selasa",
-		Jam:      "10:00 - 12:00",
-		Ruangan:  "Lab Komputer 2",
-		SKS:      3,
-		Semester: 3,
-	},
-}
 
 // GET ALL MATKUL
 func GetMatkul(c *fiber.Ctx) error {
-	return c.JSON(MatkulData)
+	db := helper.GetDB()
+	matkuls, err := helper.GetAllDoc[model.Matkul](db, "matkul", bson.M{})
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "gagal mengambil data matkul", "detail": err.Error()})
+	}
+	if matkuls == nil {
+		matkuls = make([]model.Matkul, 0)
+	}
+	return c.JSON(matkuls)
 }
 
 // POST TAMBAH MATKUL
 func AddMatkul(c *fiber.Ctx) error {
-
 	var data model.Matkul
-
 	if err := c.BodyParser(&data); err != nil {
 		return err
 	}
-
-	MatkulData = append(MatkulData, data)
-
-	return c.JSON(fiber.Map{
-		"message": "Matkul berhasil ditambahkan",
-	})
+	db := helper.GetDB()
+	_, err := helper.InsertOneDoc(db, "matkul", data)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "gagal menyimpan matkul", "detail": err.Error()})
+	}
+	return c.JSON(fiber.Map{"message": "Matkul berhasil ditambahkan"})
 }
 
 // DELETE MATKUL
 func DeleteMatkul(c *fiber.Ctx) error {
-
 	kode := c.Params("kode")
-
-	for i, matkul := range MatkulData {
-
-		if matkul.Kode == kode {
-
-			MatkulData = append(MatkulData[:i], MatkulData[i+1:]...)
-
-			return c.JSON(fiber.Map{
-				"message": "Matkul berhasil dihapus",
-			})
-		}
+	db := helper.GetDB()
+	_, err := helper.DeleteDoc(db, "matkul", bson.M{"kode": kode})
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "gagal menghapus matkul", "detail": err.Error()})
 	}
-
-	return c.JSON(fiber.Map{
-		"message": "Data tidak ditemukan",
-	})
+	return c.JSON(fiber.Map{"message": "Matkul berhasil dihapus"})
 }
