@@ -33,18 +33,18 @@ Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript
 714240014/
 ├── controller/
 │   ├── controller.go
-│   └── jadwalController.go
+│   └── matkulController.go
 │
 ├── model/
 │   ├── model.go
-│   └── jadwal.go
+│   └── matkul.go
 │
 ├── url/
-│   ├── jadwalRoute.go
+│   ├── matkulRoute.go
 │   └── url.go
 │
 ├── frontend/
-│   └── jadwal/
+│   └── matkul/
 │       └── index.html
 │
 ├── config/
@@ -62,19 +62,19 @@ Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript
 ```mermaid
 flowchart TD
     A([Mulai]) --> B[Clone Repository SIAKAD]
-    B --> C[Checkout Branch jadwal]
+    B --> C[Checkout Branch matkul]
     C --> D[Menjalankan Project Go Fiber]
-    D --> E[Membuat Model Jadwal]
-    E --> F[Membuat Controller Jadwal]
-    F --> G[Membuat Route Jadwal]
+    D --> E[Membuat Model Matkul]
+    E --> F[Membuat Controller Matkul]
+    F --> G[Membuat Route Matkul]
     G --> H[Integrasi Route ke url.go]
-    H --> I[Membuat Frontend Jadwal]
+    H --> I[Membuat Frontend Matkul]
     I --> J[Membuat Fitur Tambah Data]
     J --> K[Membuat Fitur Edit Data]
     K --> L[Membuat Fitur Delete Data]
-    L --> M[Testing CRUD Jadwal]
+    L --> M[Testing CRUD Matkul]
     M --> N[Git Add & Commit]
-    N --> O[Push Branch jadwal]
+    N --> O[Push Branch matkul]
     O --> P[Create Pull Request]
     P --> Q([Selesai])
 ```
@@ -115,7 +115,7 @@ go run main.go
 ## Buka Browser
 
 ```bash
-http://127.0.0.1:8080/jadwal
+http://127.0.0.1:8080/matkul
 ```
 
 ---
@@ -130,9 +130,9 @@ http://127.0.0.1:8080
 
 ---
 
-# Endpoint Jadwal Mata Kuliah
+# Endpoint Matkul Mata Kuliah
 
-## GET /api/jadwal
+## GET /api/matkul
 
 Mengambil semua data mata kuliah.
 
@@ -155,7 +155,7 @@ Mengambil semua data mata kuliah.
 
 ---
 
-## POST /api/jadwal
+## POST /api/matkul
 
 Menambahkan data mata kuliah baru.
 
@@ -176,7 +176,7 @@ Menambahkan data mata kuliah baru.
 
 ---
 
-## PUT /api/jadwal/:kode
+## PUT /api/matkul/:kode
 
 Mengupdate data mata kuliah berdasarkan kode.
 
@@ -197,7 +197,7 @@ Mengupdate data mata kuliah berdasarkan kode.
 
 ---
 
-## DELETE /api/jadwal/:kode
+## DELETE /api/matkul/:kode
 
 Menghapus data mata kuliah berdasarkan kode.
 
@@ -207,7 +207,7 @@ Menghapus data mata kuliah berdasarkan kode.
 
 | Halaman | URL | Fungsi |
 |---|---|---|
-| Jadwal | /jadwal | Kelola data mata kuliah & pengisian KRS |
+| Matkul | /matkul | Kelola data mata kuliah & pengisian KRS |
 
 ---
 
