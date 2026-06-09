@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Notifikasi Kampus</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --line: #e6eaf0;
+      --text: #102033;
+      --muted: #667085;
+      --blue: #0878a8;
+      --blue-dark: #075f86;
+      --green: #059669;
+      --red: #dc2626;
+      --amber: #d97706;
+      --soft-blue: #e8f5fb;
+      --soft-green: #e8f8ef;
+      --soft-red: #feecec;
+      --soft-amber: #fff4dd;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(240px, 360px) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 14px 24px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .search {
+      position: relative;
+    }
+
+    .search input {
+      width: 100%;
+      height: 40px;
+      border: 1px solid #cfd8e3;
+      border-radius: 6px;
+      padding: 0 14px 0 38px;
+      color: var(--text);
+      background: #fbfcfe;
+      outline: none;
+    }
+
+    .search span {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      min-width: 210px;
+    }
+
+    .profile .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      background: #123047;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .profile strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .profile small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .content {
+      padding: 22px 24px 34px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      min-height: 116px;
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .stat-icon.blue { background: var(--soft-blue); color: var(--blue); }
+    .stat-icon.green { background: var(--soft-green); color: var(--green); }
+    .stat-icon.amber { background: var(--soft-amber); color: var(--amber); }
+    .stat-icon.red { background: var(--soft-red); color: var(--red); }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .stat-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .field,
+    .select {
+      height: 40px;
+      border: 1px solid #cfd8e3;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .field {
+      width: 150px;
+    }
+
+    .btn {
+      height: 40px;
+      border: 1px solid #cfd8e3;
+      border-radius: 6px;
+      background: #fff;
+      color: #213044;
+      padding: 0 14px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .btn:hover {
+      background: #f8fafc;
+    }
+
+    .btn.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn.primary:hover {
+      background: var(--blue-dark);
+    }
+
+    .btn.danger {
+      border-color: #fecaca;
+      background: #fff7f7;
+      color: var(--red);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #edf0f4;
+      vertical-align: middle;
+      font-size: 13px;
+    }
+
+    th {
+      background: #fbfcfe;
+      color: #344054;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    tbody tr:hover {
+      background: #fbfdff;
+    }
+
+    .time {
+      display: grid;
+      gap: 3px;
+      white-space: nowrap;
+    }
+
+    .time small,
+    .message small {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .message {
+      display: grid;
+      gap: 4px;
+      min-width: 260px;
+    }
+
+    .message strong {
+      font-size: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.green { background: var(--soft-green); color: var(--green); }
+    .badge.red { background: var(--soft-red); color: var(--red); }
+    .badge.amber { background: var(--soft-amber); color: var(--amber); }
+    .badge.blue { background: var(--soft-blue); color: var(--blue); }
+    .badge.gray { background: #edf2f7; color: #475467; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mini-btn {
+      height: 30px;
+      border: 1px solid #d8e1ec;
+      border-radius: 6px;
+      background: #fff;
+      color: #344054;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .mini-btn.read {
+      color: var(--green);
+      border-color: #c7ead8;
+      background: #f4fbf7;
+    }
+
+    .mini-btn.delete {
+      color: var(--red);
+      border-color: #fecaca;
+      background: #fff7f7;
+    }
+
+    .empty {
+      padding: 42px 16px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .composer {
+      padding: 18px;
+    }
+
+    .composer h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .composer p {
+      margin: 6px 0 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .form-row {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 13px;
+    }
+
+    label {
+      color: #344054;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .composer input,
+    .composer select,
+    .composer textarea {
+      width: 100%;
+      border: 1px solid #cfd8e3;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    .composer textarea {
+      min-height: 104px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .notice {
+      display: none;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .notice.show {
+      display: block;
+    }
+
+    .notice.success {
+      background: var(--soft-green);
+      color: var(--green);
+    }
+
+    .notice.error {
+      background: var(--soft-red);
+      color: var(--red);
+    }
+
+    @media (max-width: 980px) {
+      .topbar,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .profile {
+        justify-content: flex-start;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar,
+      .content {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .filters,
+      .filter-group,
+      .field,
+      .select,
+      .btn {
+        width: 100%;
+      }
+
+      .filter-group {
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="title">
+        <h1>Riwayat Notifikasi Kampus</h1>
+        <p>Pantau notifikasi mahasiswa dan status pesan yang belum dibaca.</p>
+      </div>
+
+      <div class="search">
+        <span>Q</span>
+        <input id="searchInput" type="search" placeholder="Cari judul, pesan, NPM, atau tipe...">
+      </div>
+
+      <div class="profile">
+        <div>
+          <strong>Admin Akademik</strong>
+          <small>Modul Notifikasi</small>
+        </div>
+        <div class="avatar">RA</div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="stats" aria-label="Ringkasan notifikasi">
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Total Notifikasi</span>
+            <span class="stat-icon blue">T</span>
+          </div>
+          <div class="stat-value" id="totalCount">0</div>
+          <div class="stat-note">Semua pesan tersimpan</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Belum Dibaca</span>
+            <span class="stat-icon red">!</span>
+          </div>
+          <div class="stat-value" id="unreadCount">0</div>
+          <div class="stat-note">Perlu perhatian mahasiswa</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Dikirim Hari Ini</span>
+            <span class="stat-icon green">N</span>
+          </div>
+          <div class="stat-value" id="todayCount">0</div>
+          <div class="stat-note">Update aktivitas terbaru</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-head">
+            <span>Prioritas Tinggi</span>
+            <span class="stat-icon amber">P</span>
+          </div>
+          <div class="stat-value" id="priorityCount">0</div>
+          <div class="stat-note">Pesan penting aktif</div>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <div class="panel">
+          <div class="filters">
+            <div class="filter-group">
+              <input class="field" id="npmFilter" type="text" placeholder="Filter NPM">
+              <select class="select" id="statusFilter">
+                <option value="semua">Semua Status</option>
+                <option value="belum">Belum Dibaca</option>
+                <option value="dibaca">Sudah Dibaca</option>
+              </select>
+              <select class="select" id="typeFilter">
+                <option value="semua">Semua Tipe</option>
+                <option value="Akademik">Akademik</option>
+                <option value="Administrasi">Administrasi</option>
+                <option value="Keuangan">Keuangan</option>
+                <option value="Sistem">Sistem</option>
+                <option value="Umum">Umum</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <button class="btn" id="resetBtn" type="button">Reset Filter</button>
+              <button class="btn primary" id="refreshBtn" type="button">Refresh Data</button>
+              <button class="btn primary" id="readAllBtn" type="button">Tandai Semua Dibaca</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>NPM</th>
+                  <th>Tipe</th>
+                  <th>Notifikasi</th>
+                  <th>Prioritas</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="footer">
+            <span id="tableInfo">Menampilkan 0 data</span>
+            <button class="btn danger" id="deleteHistoryBtn" type="button">Hapus Riwayat NPM</button>
+          </div>
+        </div>
+
+        <aside class="panel composer">
+          <h2>Kirim Notifikasi</h2>
+          <p>Gunakan form ini untuk membuat notifikasi baru ke mahasiswa tertentu.</p>
+          <div id="notice" class="notice"></div>
+
+          <form id="notifForm">
+            <div class="form-row">
+              <label for="npmInput">NPM Mahasiswa</label>
+              <input id="npmInput" name="npm" type="text" placeholder="Contoh: 714240001" required>
+            </div>
+
+            <div class="form-row">
+              <label for="titleInput">Judul</label>
+              <input id="titleInput" name="judul" type="text" placeholder="Contoh: Jadwal UTS" required>
+            </div>
+
+            <div class="form-row">
+              <label for="messageInput">Pesan</label>
+              <textarea id="messageInput" name="pesan" placeholder="Tulis isi notifikasi..." required></textarea>
+            </div>
+
+            <div class="form-row">
+              <label for="typeInput">Tipe</label>
+              <select id="typeInput" name="tipe">
+                <option>Akademik</option>
+                <option>Administrasi</option>
+                <option>Keuangan</option>
+                <option>Sistem</option>
+                <option>Umum</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="priorityInput">Prioritas</label>
+              <select id="priorityInput" name="prioritas">
+                <option>Normal</option>
+                <option>Tinggi</option>
+                <option>Rendah</option>
+              </select>
+            </div>
+
+            <button class="btn primary" type="submit">Kirim Notifikasi</button>
+          </form>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      items: [],
+      filtered: []
+    };
+
+    const API_BASE = (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    ) ? 'http://localhost:8080/api/notifikasi' : '/api/notifikasi';
+
+    const el = {
+      search: document.getElementById("searchInput"),
+      npmFilter: document.getElementById("npmFilter"),
+      statusFilter: document.getElementById("statusFilter"),
+      typeFilter: document.getElementById("typeFilter"),
+      tableBody: document.getElementById("tableBody"),
+      tableInfo: document.getElementById("tableInfo"),
+      notice: document.getElementById("notice"),
+      totalCount: document.getElementById("totalCount"),
+      unreadCount: document.getElementById("unreadCount"),
+      todayCount: document.getElementById("todayCount"),
+      priorityCount: document.getElementById("priorityCount"),
+      form: document.getElementById("notifForm")
+    };
+
+    document.getElementById("refreshBtn").addEventListener("click", loadData);
+    document.getElementById("readAllBtn").addEventListener("click", markAllRead);
+    document.getElementById("deleteHistoryBtn").addEventListener("click", deleteHistory);
+    document.getElementById("resetBtn").addEventListener("click", resetFilters);
+    el.search.addEventListener("input", applyFilters);
+    el.npmFilter.addEventListener("input", applyFilters);
+    el.statusFilter.addEventListener("change", applyFilters);
+    el.typeFilter.addEventListener("change", applyFilters);
+    el.form.addEventListener("submit", createNotification);
+
+    loadData();
+
+    async function loadData() {
+      try {
+        const response = await fetch(API_BASE, {
+          headers: { "Accept": "application/json" }
+        });
+        const json = await response.json();
+
+        if (!response.ok || json.status !== "success") {
+          throw new Error(json.message || "Gagal mengambil data");
+        }
+
+        state.items = Array.isArray(json.data) ? json.data : [];
+        applyFilters();
+      } catch (error) {
+        showNotice(error.message, "error");
+        state.items = [];
+        applyFilters();
+      }
+    }
+
+    function applyFilters() {
+      const keyword = el.search.value.trim().toLowerCase();
+      const npm = el.npmFilter.value.trim().toLowerCase();
+      const status = el.statusFilter.value;
+      const tipe = el.typeFilter.value;
+
+      state.filtered = state.items.filter((item) => {
+        const text = [
+          item.npm,
+          item.judul,
+          item.pesan,
+          item.tipe,
+          item.prioritas
+        ].join(" ").toLowerCase();
+
+        const matchKeyword = !keyword || text.includes(keyword);
+        const matchNpm = !npm || String(item.npm || "").toLowerCase().includes(npm);
+        const matchStatus = status === "semua" || (status === "belum" ? !item.dibaca : item.dibaca);
+        const matchTipe = tipe === "semua" || item.tipe === tipe;
+
+        return matchKeyword && matchNpm && matchStatus && matchTipe;
+      });
+
+      renderStats();
+      renderTable();
+    }
+
+    function renderStats() {
+      const now = new Date();
+      const todayKey = now.toDateString();
+      const unread = state.items.filter((item) => !item.dibaca).length;
+      const today = state.items.filter((item) => {
+        const created = new Date(item.dibuat_pada);
+        return !Number.isNaN(created.getTime()) && created.toDateString() === todayKey;
+      }).length;
+      const priority = state.items.filter((item) => String(item.prioritas || "").toLowerCase() === "tinggi").length;
+
+      el.totalCount.textContent = state.items.length.toLocaleString("id-ID");
+      el.unreadCount.textContent = unread.toLocaleString("id-ID");
+      el.todayCount.textContent = today.toLocaleString("id-ID");
+      el.priorityCount.textContent = priority.toLocaleString("id-ID");
+    }
+
+    function renderTable() {
+      if (state.filtered.length === 0) {
+        el.tableBody.innerHTML = '<tr><td class="empty" colspan="7">Belum ada notifikasi yang sesuai filter.</td></tr>';
+        el.tableInfo.textContent = "Menampilkan 0 data";
+        return;
+      }
+
+      el.tableBody.innerHTML = state.filtered.map((item) => {
+        const id = escapeHtml(readId(item));
+        const statusClass = item.dibaca ? "green" : "red";
+        const statusText = item.dibaca ? "Sudah Dibaca" : "Belum Dibaca";
+        const priorityClass = priorityBadge(item.prioritas);
+        const typeClass = typeBadge(item.tipe);
+
+        return `
+          <tr>
+            <td>
+              <div class="time">
+                <span>${formatDate(item.dibuat_pada)}</span>
+                <small>${formatTime(item.dibuat_pada)}</small>
+              </div>
+            </td>
+            <td>${escapeHtml(item.npm || "-")}</td>
+            <td><span class="badge ${typeClass}">${escapeHtml(item.tipe || "Umum")}</span></td>
+            <td>
+              <div class="message">
+                <strong>${escapeHtml(item.judul || "-")}</strong>
+                <small>${escapeHtml(item.pesan || "-")}</small>
+              </div>
+            </td>
+            <td><span class="badge ${priorityClass}">${escapeHtml(item.prioritas || "Normal")}</span></td>
+            <td><span class="badge ${statusClass}">${statusText}</span></td>
+            <td>
+              <div class="actions">
+                ${item.dibaca ? "" : `<button class="mini-btn read" type="button" onclick="markRead('${id}')">Baca</button>`}
+                <button class="mini-btn delete" type="button" onclick="deleteNotification('${id}')">Hapus</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      el.tableInfo.textContent = `Menampilkan ${state.filtered.length.toLocaleString("id-ID")} dari ${state.items.length.toLocaleString("id-ID")} data`;
+    }
+
+    async function createNotification(event) {
+      event.preventDefault();
+
+      const formData = new FormData(el.form);
+      const payload = {
+        npm: formData.get("npm").trim(),
+        judul: formData.get("judul").trim(),
+        pesan: formData.get("pesan").trim(),
+        tipe: formData.get("tipe"),
+        prioritas: formData.get("prioritas"),
+        dikirim_oleh: "Admin Akademik"
+      };
+
+      try {
+        const response = await fetch(API_BASE, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        const json = await response.json();
+
+        if (!response.ok || json.status !== "success") {
+          throw new Error(json.message || "Gagal mengirim notifikasi");
+        }
+
+        el.form.reset();
+        showNotice("Notifikasi berhasil dikirim", "success");
+        await loadData();
+      } catch (error) {
+        showNotice(error.message, "error");
+      }
+    }
+
+    async function markRead(id) {
+      if (!id) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/${id}/baca`, { method: "PUT" });
+        const json = await response.json();
+        if (!response.ok || json.status !== "success") {
+          throw new Error(json.message || "Gagal menandai notifikasi");
+        }
+        await loadData();
+      } catch (error) {
+        showNotice(error.message, "error");
+      }
+    }
+
+    async function markAllRead() {
+      const unread = state.filtered.filter((item) => !item.dibaca);
+      if (unread.length === 0) {
+        showNotice("Tidak ada notifikasi belum dibaca pada filter ini", "success");
+        return;
+      }
+
+      try {
+        await Promise.all(unread.map((item) => fetch(`${API_BASE}/${readId(item)}/baca`, { method: "PUT" })));
+        showNotice("Semua notifikasi pada filter ini sudah ditandai dibaca", "success");
+        await loadData();
+      } catch (error) {
+        showNotice("Gagal menandai semua notifikasi", "error");
+      }
+    }
+
+    async function deleteNotification(id) {
+      if (!id || !confirm("Hapus notifikasi ini?")) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+        const json = await response.json();
+        if (!response.ok || json.status !== "success") {
+          throw new Error(json.message || "Gagal menghapus notifikasi");
+        }
+        showNotice("Notifikasi berhasil dihapus", "success");
+        await loadData();
+      } catch (error) {
+        showNotice(error.message, "error");
+      }
+    }
+
+    async function deleteHistory() {
+      const npm = el.npmFilter.value.trim();
+      if (!npm) {
+        showNotice("Isi filter NPM terlebih dahulu untuk menghapus riwayat", "error");
+        return;
+      }
+      if (!confirm(`Hapus semua riwayat notifikasi untuk NPM ${npm}?`)) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/riwayat/${encodeURIComponent(npm)}`, {
+          method: "DELETE"
+        });
+        const json = await response.json();
+        if (!response.ok || json.status !== "success") {
+          throw new Error(json.message || "Gagal menghapus riwayat");
+        }
+        showNotice(`Riwayat NPM ${npm} berhasil dihapus`, "success");
+        await loadData();
+      } catch (error) {
+        showNotice(error.message, "error");
+      }
+    }
+
+    function resetFilters() {
+      el.search.value = "";
+      el.npmFilter.value = "";
+      el.statusFilter.value = "semua";
+      el.typeFilter.value = "semua";
+      applyFilters();
+    }
+
+    function readId(item) {
+      if (!item) return "";
+      if (typeof item.id === "string") return item.id;
+      if (item.id && item.id.$oid) return item.id.$oid;
+      if (typeof item._id === "string") return item._id;
+      if (item._id && item._id.$oid) return item._id.$oid;
+      return "";
+    }
+
+    function typeBadge(value) {
+      const tipe = String(value || "").toLowerCase();
+      if (tipe === "akademik") return "blue";
+      if (tipe === "administrasi") return "amber";
+      if (tipe === "keuangan") return "green";
+      if (tipe === "sistem") return "gray";
+      return "blue";
+    }
+
+    function priorityBadge(value) {
+      const priority = String(value || "").toLowerCase();
+      if (priority === "tinggi") return "red";
+      if (priority === "rendah") return "green";
+      return "amber";
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "-";
+      return date.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+    function formatTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return date.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }) + " WIB";
+    }
+
+    function showNotice(message, type) {
+      el.notice.textContent = message;
+      el.notice.className = `notice show ${type}`;
+      window.clearTimeout(showNotice.timer);
+      showNotice.timer = window.setTimeout(() => {
+        el.notice.className = "notice";
+      }, 3500);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pembayaran SPP - Siakad</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 20px; color: #333; }
+    .container { max-width: 1100px; margin: auto; }
+    h1 { color: #0d6efd; margin-bottom: 20px; text-align: center; }
+    .card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: 600; }
+    input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; }
+    button { padding: 10px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 8px; }
+    .btn-primary { background: #0d6efd; color: #fff; }
+    .btn-primary:hover { background: #0b5ed7; }
+    .btn-danger { background: #dc3545; color: #fff; }
+    .btn-danger:hover { background: #bb2d3b; }
+    .btn-success { background: #198754; color: #fff; }
+    .btn-success:hover { background: #157347; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6; }
+    th { background: #0d6efd; color: #fff; }
+    .badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+    .badge-lunas { background: #d1e7dd; color: #0f5132; }
+    .badge-belum { background: #f8d7da; color: #842029; }
+    .alert { padding: 10px; border-radius: 6px; margin-bottom: 15px; display: none; }
+    .alert.show { display: block; }
+    .alert-success { background: #d1e7dd; color: #0f5132; }
+    .alert-error { background: #f8d7da; color: #842029; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💳 Modul Pembayaran SPP & Riwayat</h1>
+    
+    <!-- Form Input -->
+    <div class="card">
+      <h3>Tambah Tagihan SPP</h3>
+      <div id="alertBox" class="alert"></div>
+      <div class="form-group">
+        <label>NPM</label>
+        <input type="text" id="npm" placeholder="Contoh: 714240006">
+      </div>
+      <div class="form-group">
+        <label>Nama Mahasiswa</label>
+        <input type="text" id="nama" placeholder="Nama lengkap">
+      </div>
+      <div class="form-group">
+        <label>Semester</label>
+        <input type="text" id="semester" placeholder="Contoh: 2024/2025-Ganjil">
+      </div>
+      <div class="form-group">
+        <label>Jumlah Tagihan (Rp)</label>
+        <input type="number" id="jumlah" placeholder="Contoh: 2500000">
+      </div>
+      <button class="btn-primary" onclick="tambahSPP()">💾 Simpan Tagihan</button>
+    </div>
+
+    <!-- Filter & Table -->
+    <div class="card">
+      <h3>Daftar Tagihan</h3>
+      <div style="margin-bottom: 15px;">
+        <input type="text" id="filterNPM" placeholder="Cari berdasarkan NPM..." style="width: 250px; display: inline-block;">
+        <button class="btn-primary" onclick="cariNPM()">🔍 Cari</button>
+        <button class="btn-success" onclick="loadData()">🔄 Refresh</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>NPM</th>
+              <th>Nama</th>
+              <th>Semester</th>
+              <th>Jumlah</th>
+              <th>Status</th>
+              <th>Tgl Bayar</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="7" style="text-align:center;">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    ) ? 'http://localhost:8080' : 'https://dituniverse.alwaysdata.net';
+    const API = API_BASE + "/spp";
+
+    document.addEventListener("DOMContentLoaded", loadData);
+
+    function showAlert(msg, type) {
+      const box = document.getElementById("alertBox");
+      box.textContent = msg;
+      box.className = `alert alert-${type} show`;
+      setTimeout(() => box.className = "alert", 3000);
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(API);
+        const json = await res.json();
+        renderTable(json.data || []);
+      } catch (e) {
+        document.getElementById("tableBody").innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Gagal konek ke server</td></tr>`;
+      }
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Tidak ada data</td></tr>`;
+        return;
+      }
+      data.forEach(item => {
+        const isLunas = item.status_pembayaran === "lunas";
+        const badge = isLunas ? "badge-lunas" : "badge-belum";
+        const statusTxt = isLunas ? "✅ Lunas" : "❌ Belum";
+        const btnBayar = isLunas ? "" : `<button class="btn-success" onclick="bayar('${item._id}')"> Bayar</button>`;
+        
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.npm}</td>
+            <td>${item.nama_mahasiswa || "-"}</td>
+            <td>${item.semester}</td>
+            <td>Rp ${Number(item.jumlah_tagihan).toLocaleString('id-ID')}</td>
+            <td><span class="badge ${badge}">${statusTxt}</span></td>
+            <td>${item.tanggal_bayar || "-"}</td>
+            <td>${btnBayar} <button class="btn-danger" onclick="hapus('${item._id}')">🗑️</button></td>
+          </tr>`;
+      });
+    }
+
+    async function tambahSPP() {
+      const data = {
+        npm: document.getElementById("npm").value.trim(),
+        nama_mahasiswa: document.getElementById("nama").value.trim(),
+        semester: document.getElementById("semester").value.trim(),
+        jumlah_tagihan: parseFloat(document.getElementById("jumlah").value),
+        status_pembayaran: "belum_lunas",
+        tanggal_tagihan: new Date().toISOString().split('T')[0]
+      };
+      if (!data.npm || !data.semester || !data.jumlah_tagihan) {
+        return showAlert("Lengkapi NPM, Semester, dan Jumlah!", "error");
+      }
+      try {
+        const res = await fetch(API, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (json.status === "success") {
+          showAlert("Berhasil ditambahkan!", "success");
+          loadData();
+          ["npm","nama","semester","jumlah"].forEach(id => document.getElementById(id).value = "");
+        } else {
+          showAlert(json.message || "Gagal simpan", "error");
+        }
+      } catch (e) { showAlert("Error koneksi", "error"); }
+    }
+
+    async function bayar(id) {
+      if (!confirm("Konfirmasi pembayaran SPP?")) return;
+      try {
+        const res = await fetch(`${API}/${id}`, {
+          method: "PUT",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            status_pembayaran: "lunas",
+            tanggal_bayar: new Date().toISOString().split('T')[0],
+            metode_pembayaran: "Transfer Bank"
+          })
+        });
+        const json = await res.json();
+        if (json.status === "success") {
+          showAlert("Pembayaran berhasil dikonfirmasi!", "success");
+          loadData();
+        } else {
+          showAlert(json.message || "Gagal update", "error");
+        }
+      } catch (e) { showAlert("Error koneksi", "error"); }
+    }
+
+    async function hapus(id) {
+      if (!confirm("Yakin hapus data ini?")) return;
+      try {
+        const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+        const json = await res.json();
+        if (json.status === "success") {
+          showAlert("Data berhasil dihapus", "success");
+          loadData();
+        } else {
+          showAlert(json.message || "Gagal hapus", "error");
+        }
+      } catch (e) { showAlert("Error koneksi", "error"); }
+    }
+
+    async function cariNPM() {
+      const npm = document.getElementById("filterNPM").value.trim();
+      if (!npm) return loadData();
+      try {
+        const res = await fetch(`${API}/${npm}`);
+        const json = await res.json();
+        renderTable(json.data || []);
+      } catch (e) { showAlert("Gagal mencari", "error"); }
+    }
+  </script>
+</body>
+</html>

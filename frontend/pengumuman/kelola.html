@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kelola Pengumuman — SIAKAD</title>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Google Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #f0f2f5;
+      --header-bg: #1a73e8;
+      --card-bg: #ffffff;
+      --text-main: #202124;
+      --text-muted: #5f6368;
+      --primary: #1a73e8;
+      --primary-hover: #1557b0;
+      --border-color: #dadce0;
+      --success: #1e7e34;
+      --success-bg: #e6f4ea;
+      --error: #d93025;
+      --error-bg: #fce8e6;
+      --warning: #f29900;
+      --warning-bg: #fef7e0;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: var(--header-bg);
+      color: white;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      font-size: 2.25rem;
+      color: white;
+    }
+
+    .brand-text h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-text p {
+      font-size: 0.8rem;
+      opacity: 0.85;
+      margin-top: 0.1rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      flex: 1;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.2rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      outline: none;
+      text-decoration: none;
+    }
+
+    .btn-white {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .btn-white:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+    }
+
+    /* Page Heading Info */
+    .page-info {
+      background: white;
+      border-radius: 12px;
+      padding: 1.25rem 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .info-icon {
+      color: var(--primary);
+      font-size: 1.75rem;
+      background: #e8f0fe;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-details h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
+
+    .info-details p {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Filters Section */
+    .filter-section {
+      background: white;
+      border-radius: 12px;
+      padding: 1.25rem 1.75rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    .filter-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .filter-label .material-icons {
+      font-size: 1.1rem;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    
+    .filter-input-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .filter-input {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      outline: none;
+      font-family: inherit;
+      transition: var(--transition);
+      background: white;
+      color: var(--text-main);
+    }
+
+    .filter-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    .pill {
+      padding: 0.5rem 1.15rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: #f1f3f4;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pill:hover {
+      background: #e8eaed;
+      color: var(--text-main);
+    }
+
+    .pill.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
+    }
+
+    /* Announcement Grid */
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Cards */
+    .announcement-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      min-height: 230px;
+    }
+
+    .announcement-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary);
+    }
+
+    .announcement-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(26, 115, 232, 0.4);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-category {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      background: #e8f0fe;
+      color: var(--primary);
+    }
+
+    .card-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .card-date .material-icons {
+      font-size: 0.9rem;
+    }
+
+    .card-body {
+      flex: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      line-height: 1.35;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .card-title:hover {
+      color: var(--primary);
+    }
+
+    .card-excerpt {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #f1f3f4;
+      padding-top: 0.85rem;
+    }
+
+    .card-author {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .author-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e8f0fe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .action-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.3rem;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .action-btn.edit {
+      color: var(--warning);
+    }
+
+    .action-btn.edit:hover {
+      background: var(--warning-bg);
+      color: #b06000;
+    }
+
+    .action-btn.delete {
+      color: var(--error);
+    }
+
+    .action-btn.delete:hover {
+      background: var(--error-bg);
+      color: #90100a;
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(32, 33, 36, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f9fa;
+    }
+
+    .modal-header h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-header h2 .material-icons {
+      color: var(--primary);
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .close-btn:hover {
+      color: var(--text-main);
+      background: #e8eaed;
+    }
+
+    .modal-body {
+      padding: 1.75rem;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235f6368'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.2rem;
+      padding-right: 2.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.75rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: #f8f9fa;
+    }
+
+    /* Category List elements */
+    .category-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .toast {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-main);
+      transform: translateX(120%);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast-success { border-left: 4px solid var(--success); }
+    .toast-error { border-left: 4px solid var(--error); }
+
+    .toast-icon {
+      font-size: 1.25rem;
+    }
+
+    .toast-success .toast-icon { color: var(--success); }
+    .toast-error .toast-icon { color: var(--error); }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2.5rem 0;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-color);
+      background: white;
+      margin-top: auto;
+    }
+
+    /* Empty state */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+    }
+
+    .empty-state-icon {
+      font-size: 2.75rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    .empty-state h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    .empty-state p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="brand">
+        <span class="material-icons brand-icon">settings</span>
+        <div class="brand-text">
+          <h1>Kelola Pengumuman</h1>
+          <p>Portal Pengurus — Sistem Informasi Akademik</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/pengumuman/index.html" class="btn btn-white">
+          <span class="material-icons">campaign</span>
+          Papan Pengumuman
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Page Info Bar -->
+    <div class="page-info">
+      <div class="info-item">
+        <div class="info-icon">
+          <span class="material-icons">campaign</span>
+        </div>
+        <div class="info-details">
+          <h3>Total Pengumuman</h3>
+          <p id="totalAnnouncements">0</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">
+          <span class="material-icons">category</span>
+        </div>
+        <div class="info-details">
+          <h3>Total Kategori</h3>
+          <p id="totalCategories">0</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <!-- Interactive buttons for Add Operations -->
+        <button class="btn btn-primary" onclick="openAddModal()">
+          <span class="material-icons">add</span>
+          Buat Pengumuman
+        </button>
+        <button class="btn btn-secondary" onclick="openCategoryModal()" style="margin-left: 0.5rem;">
+          <span class="material-icons">folder</span>
+          Kelola Kategori
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter & Categories Pill Section -->
+    <div class="filter-section">
+      <!-- Kategori -->
+      <div style="margin-bottom: 1.25rem;">
+        <div class="filter-label">
+          <span class="material-icons">filter_list</span>
+          Filter berdasarkan Kategori
+        </div>
+        <div class="category-pills" id="categoryPills">
+          <button class="pill active" onclick="filterByCategory('all', this)">
+            <span class="material-icons">all_inclusive</span> Semua
+          </button>
+          <!-- Categories Pills injected here -->
+        </div>
+      </div>
+      
+      <!-- Tanggal -->
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+        <div class="filter-label" style="margin-bottom: 0.75rem;">
+          <span class="material-icons">calendar_today</span>
+          Filter berdasarkan Tanggal
+        </div>
+        <div class="filter-input-group">
+          <div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem;">Sesudah</div>
+            <input type="date" id="startDate" class="filter-input" onchange="renderAnnouncements()">
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem;">Sebelum</div>
+            <input type="date" id="endDate" class="filter-input" onchange="renderAnnouncements()">
+          </div>
+          <div>
+            <button class="btn btn-secondary" onclick="clearDateFilters()" style="padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem; height: 36px; display: inline-flex; align-items: center; gap: 0.25rem;">
+              <span class="material-icons" style="font-size: 1.1rem;">backspace</span>
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Board Grid -->
+    <div class="board-grid" id="boardGrid">
+      <!-- Grid items injected here -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Portal Informasi Akademik Kampus. Modul 7 - Pengumuman & Kategori. All Rights Reserved.</p>
+  </footer>
+
+  <!-- Modal: Tambah/Edit Pengumuman -->
+  <div class="modal" id="announcementModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">
+          <span class="material-icons">add_box</span>
+          Tambah Pengumuman Baru
+        </h2>
+        <button class="close-btn" onclick="closeAnnouncementModal()">&times;</button>
+      </div>
+      <form id="announcementForm" onsubmit="handleFormSubmit(event)">
+        <input type="hidden" id="formId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="formTitle">
+              <span class="material-icons" style="font-size: 1rem; color: var(--primary);">title</span>
+              Judul Pengumuman
+            </label>
+            <input type="text" class="form-control" id="formTitle" placeholder="Masukkan judul pengumuman..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="formCategory">
+              <span class="material-icons" style="font-size: 1rem; color: var(--primary);">category</span>
+              Kategori
+            </label>
+            <select class="form-control" id="formCategory" required>
+              <option value="" disabled selected>Pilih Kategori</option>
+              <!-- Options loaded dynamically -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="formContent">
+              <span class="material-icons" style="font-size: 1rem; color: var(--primary);">article</span>
+              Isi Pengumuman
+            </label>
+            <textarea class="form-control" id="formContent" placeholder="Tulis isi informasi secara lengkap..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="formAuthor">
+              <span class="material-icons" style="font-size: 1rem; color: var(--primary);">person</span>
+              Penulis
+            </label>
+            <input type="text" class="form-control" id="formAuthor" placeholder="Contoh: BAAK, Prodi TI (Default: Admin Akademik)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="formFile">
+              <span class="material-icons" style="font-size: 1rem; color: var(--primary);">attach_file</span>
+              Lampiran File (Gambar, PDF, Video — Maks. 5MB)
+            </label>
+            <input type="file" id="formFile" class="form-control" accept="image/*,application/pdf,video/*" onchange="uploadFileAsync()">
+            <input type="hidden" id="formFileUrl">
+            <input type="hidden" id="formFileType">
+            
+            <div id="fileUploadProgress" style="display: none; align-items: center; gap: 0.5rem; margin-top: 0.5rem; font-size: 0.8rem; color: var(--primary);">
+              <span class="material-icons" style="font-size: 1rem; animation: spin 1s infinite linear;">sync</span>
+              <span>Sedang mengunggah file...</span>
+            </div>
+            
+            <div id="filePreviewSection" style="margin-top: 0.75rem; display: none; padding: 0.75rem; background: #f8f9fa; border: 1px solid var(--border-color); border-radius: 8px; justify-content: space-between; align-items: center; gap: 0.5rem;">
+              <div id="filePreviewContent" style="display: flex; align-items: center; gap: 0.5rem; flex: 1; overflow: hidden;">
+                <!-- Preview details injected here -->
+              </div>
+              <button type="button" class="action-btn delete" onclick="removeAttachedFile()" title="Hapus Lampiran" style="padding: 0.25rem;">
+                <span class="material-icons" style="font-size: 1.2rem;">cancel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAnnouncementModal()">Batal</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <span class="material-icons">save</span>
+            Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Kelola Kategori -->
+  <div class="modal" id="categoryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <span class="material-icons">folder_open</span>
+          Kelola Kategori
+        </h2>
+        <button class="close-btn" onclick="closeCategoryModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="categoryForm" onsubmit="handleCategorySubmit(event)" style="margin-bottom: 1.5rem;">
+          <div class="form-group" style="display: flex; gap: 0.5rem; margin-bottom: 0;">
+            <input type="text" class="form-control" id="newCategoryName" placeholder="Nama kategori baru..." required>
+            <button type="submit" class="btn btn-primary" style="padding: 0 1.25rem; flex-shrink: 0;">
+              <span class="material-icons">add</span>
+              Tambah
+            </button>
+          </div>
+        </form>
+        <label class="form-label" style="margin-bottom: 0.5rem; display: block;">Daftar Kategori Terdaftar:</label>
+        <div id="categoryListContainer" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto; padding-right: 0.5rem;">
+          <!-- Category list items injected here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeCategoryModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Javascript Logic -->
+  <script>
+    const API_URL = (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === '' ||
+      window.location.protocol === 'file:'
+    ) ? 'http://localhost:8080/api' : 'https://dituniverse.alwaysdata.net/api';
+
+    let announcements = [];
+    let categories = [];
+    let currentCategoryFilter = 'all';
+
+    // Toast Notification helper
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      let icon = 'check_circle';
+      if (type === 'error') icon = 'error';
+
+      toast.innerHTML = `
+        <span class="material-icons toast-icon">${icon}</span>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 10);
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 350);
+      }, 4000);
+    }
+
+    // Date formatting helper
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const date = new Date(dateString);
+      return date.toLocaleDateString('id-ID', options);
+    }
+
+    // Modal Controls
+    function openAddModal() {
+      document.getElementById('modalTitle').innerHTML = '<span class="material-icons">add_box</span> Tambah Pengumuman Baru';
+      document.getElementById('formId').value = '';
+      document.getElementById('announcementForm').reset();
+      
+      document.getElementById('formFileUrl').value = '';
+      document.getElementById('formFileType').value = '';
+      document.getElementById('formFile').value = '';
+      document.getElementById('filePreviewSection').style.display = 'none';
+      document.getElementById('fileUploadProgress').style.display = 'none';
+      
+      document.getElementById('announcementModal').classList.add('active');
+    }
+
+    function closeAnnouncementModal() {
+      document.getElementById('announcementModal').classList.remove('active');
+    }
+
+    function openCategoryModal() {
+      renderCategoryList();
+      document.getElementById('categoryModal').classList.add('active');
+    }
+
+    // Render File Preview function
+    function renderFilePreview(url, type) {
+      const content = document.getElementById('filePreviewContent');
+      if (!content) return;
+      
+      if (type === 'image') {
+        content.innerHTML = `
+          <img src="${url}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);">
+          <div style="display: flex; flex-direction: column; overflow: hidden; text-align: left;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-main); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Gambar Terlampir</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${url.split('/').pop()}</span>
+          </div>
+        `;
+      } else if (type === 'pdf') {
+        content.innerHTML = `
+          <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #fce8e6; color: #d93025; border-radius: 4px; border: 1px solid #fca8a4;">
+            <span class="material-icons" style="font-size: 1.75rem;">picture_as_pdf</span>
+          </div>
+          <div style="display: flex; flex-direction: column; overflow: hidden; text-align: left;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-main); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Dokumen PDF Terlampir</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${url.split('/').pop()}</span>
+          </div>
+        `;
+      } else if (type === 'video') {
+        content.innerHTML = `
+          <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #e8f0fe; color: #1a73e8; border-radius: 4px; border: 1px solid #c2dbff;">
+            <span class="material-icons" style="font-size: 1.75rem;">videocam</span>
+          </div>
+          <div style="display: flex; flex-direction: column; overflow: hidden; text-align: left;">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-main); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Video Terlampir</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">${url.split('/').pop()}</span>
+          </div>
+        `;
+      }
+    }
+
+    function removeAttachedFile() {
+      document.getElementById('formFileUrl').value = '';
+      document.getElementById('formFileType').value = '';
+      document.getElementById('formFile').value = '';
+      document.getElementById('filePreviewSection').style.display = 'none';
+      showToast('Lampiran file dihapus dari form');
+    }
+
+    async function uploadFileAsync() {
+      const fileInput = document.getElementById('formFile');
+      if (fileInput.files.length === 0) return;
+
+      const file = fileInput.files[0];
+      
+      // Client-side size limit validation (5MB)
+      const MaxSize = 5 * 1024 * 1024;
+      if (file.size > MaxSize) {
+        showToast('Ukuran file terlalu besar. Maksimum: 5MB', 'error');
+        fileInput.value = '';
+        return;
+      }
+
+      // Check mime types
+      const allowedMimeTypes = [
+        "image/jpeg", "image/png", "image/gif", "image/webp",
+        "application/pdf",
+        "video/mp4", "video/webm", "video/ogg"
+      ];
+      if (!allowedMimeTypes.includes(file.type)) {
+        showToast('Tipe file tidak diizinkan. Hanya Gambar, PDF, dan Video.', 'error');
+        fileInput.value = '';
+        return;
+      }
+
+      const progressIndicator = document.getElementById('fileUploadProgress');
+      const previewSection = document.getElementById('filePreviewSection');
+      
+      progressIndicator.style.display = 'flex';
+      previewSection.style.display = 'none';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch(`${API_URL}/pengumuman/upload`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        progressIndicator.style.display = 'none';
+
+        if (result.status === 'success') {
+          showToast('File berhasil diunggah!');
+          document.getElementById('formFileUrl').value = result.data.file_url;
+          document.getElementById('formFileType').value = result.data.file_type;
+          
+          previewSection.style.display = 'flex';
+          renderFilePreview(result.data.file_url, result.data.file_type);
+        } else {
+          showToast(result.message || 'Gagal mengunggah file', 'error');
+          fileInput.value = '';
+        }
+      } catch (err) {
+        progressIndicator.style.display = 'none';
+        showToast('Koneksi server gagal mengunggah file', 'error');
+        console.error(err);
+        fileInput.value = '';
+      }
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.remove('active');
+    }
+
+    // Open Edit Modal
+    function openEditModal(id) {
+      const item = announcements.find(a => a.id === id);
+      if (!item) return;
+
+      document.getElementById('modalTitle').innerHTML = '<span class="material-icons">edit</span> Edit Pengumuman';
+      document.getElementById('formId').value = item.id;
+      document.getElementById('formTitle').value = item.judul;
+      document.getElementById('formCategory').value = item.kategori;
+      document.getElementById('formContent').value = item.isi;
+      document.getElementById('formAuthor').value = item.penulis || '';
+
+      document.getElementById('formFileUrl').value = item.file_url || '';
+      document.getElementById('formFileType').value = item.file_type || '';
+      document.getElementById('formFile').value = '';
+      document.getElementById('fileUploadProgress').style.display = 'none';
+
+      const previewSection = document.getElementById('filePreviewSection');
+      if (item.file_url) {
+        previewSection.style.display = 'flex';
+        renderFilePreview(item.file_url, item.file_type);
+      } else {
+        previewSection.style.display = 'none';
+      }
+
+      document.getElementById('announcementModal').classList.add('active');
+    }
+
+    // APIs
+    async function fetchCategories() {
+      try {
+        const response = await fetch(`${API_URL}/kategori`);
+        const result = await response.json();
+        if (result.status === 'success') {
+          categories = result.data || [];
+          renderCategoryPills();
+          populateCategorySelect();
+          document.getElementById('totalCategories').textContent = categories.length;
+        } else {
+          showToast(result.message || 'Gagal memuat kategori', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi server gagal saat memuat kategori', 'error');
+        console.error(err);
+      }
+    }
+
+    async function fetchAnnouncements() {
+      try {
+        const url = currentCategoryFilter === 'all' 
+          ? `${API_URL}/pengumuman-data` 
+          : `${API_URL}/pengumuman/kategori/${encodeURIComponent(currentCategoryFilter)}`;
+        
+        const response = await fetch(url);
+        const result = await response.json();
+        if (result.status === 'success') {
+          announcements = result.data || [];
+          renderAnnouncements();
+          if (currentCategoryFilter === 'all') {
+            document.getElementById('totalAnnouncements').textContent = announcements.length;
+          }
+        } else {
+          showToast(result.message || 'Gagal memuat pengumuman', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi server gagal saat memuat pengumuman', 'error');
+        console.error(err);
+      }
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('formId').value;
+      const judul = document.getElementById('formTitle').value;
+      const kategori = document.getElementById('formCategory').value;
+      const isi = document.getElementById('formContent').value;
+      const penulis = document.getElementById('formAuthor').value;
+      const file_url = document.getElementById('formFileUrl').value;
+      const file_type = document.getElementById('formFileType').value;
+
+      const payload = { judul, kategori, isi, penulis, file_url, file_type };
+      const isEdit = id !== '';
+      const method = isEdit ? 'PUT' : 'POST';
+      const url = isEdit ? `${API_URL}/pengumuman/${id}` : `${API_URL}/pengumuman`;
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          showToast(isEdit ? 'Pengumuman berhasil diperbarui!' : 'Pengumuman berhasil ditambahkan!');
+          closeAnnouncementModal();
+          fetchAnnouncements();
+        } else {
+          showToast(result.message || 'Proses gagal', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi server gagal menyimpan pengumuman', 'error');
+        console.error(err);
+      }
+    }
+
+    async function deleteAnnouncement(id) {
+      if (!confirm('Apakah Anda yakin ingin menghapus pengumuman ini?')) return;
+
+      try {
+        const response = await fetch(`${API_URL}/pengumuman/${id}`, {
+          method: 'DELETE'
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          showToast('Pengumuman berhasil dihapus');
+          fetchAnnouncements();
+        } else {
+          showToast(result.message || 'Gagal menghapus pengumuman', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi server gagal menghapus pengumuman', 'error');
+        console.error(err);
+      }
+    }
+
+    async function handleCategorySubmit(e) {
+      e.preventDefault();
+      const nama = document.getElementById('newCategoryName').value.trim();
+      if (!nama) return;
+
+      try {
+        const response = await fetch(`${API_URL}/kategori`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nama })
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          showToast('Kategori baru berhasil ditambahkan');
+          document.getElementById('newCategoryName').value = '';
+          await fetchCategories();
+          renderCategoryList();
+        } else {
+          showToast(result.message || 'Gagal menambah kategori', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi server gagal menambah kategori', 'error');
+        console.error(err);
+      }
+    }
+
+    // Render category pills
+    function renderCategoryPills() {
+      const container = document.getElementById('categoryPills');
+      container.innerHTML = `
+        <button class="pill ${currentCategoryFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all', this)">
+          <span class="material-icons">all_inclusive</span> Semua
+        </button>
+      `;
+
+      categories.forEach(cat => {
+        const isActive = currentCategoryFilter === cat.nama;
+        const button = document.createElement('button');
+        button.className = `pill ${isActive ? 'active' : ''}`;
+        button.innerHTML = `<span class="material-icons">folder</span> ${cat.nama}`;
+        button.onclick = () => filterByCategory(cat.nama, button);
+        container.appendChild(button);
+      });
+    }
+
+    // Populate category dropdown
+    function populateCategorySelect() {
+      const select = document.getElementById('formCategory');
+      select.innerHTML = '<option value="" disabled selected>Pilih Kategori</option>';
+
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.nama;
+        option.textContent = cat.nama;
+        select.appendChild(option);
+      });
+    }
+
+    // Render Category list inside Manage Modal
+    function renderCategoryList() {
+      const container = document.getElementById('categoryListContainer');
+      if (categories.length === 0) {
+        container.innerHTML = `<div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; text-align: center; padding: 1rem 0;">Belum ada kategori terdaftar.</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      categories.forEach(cat => {
+        const div = document.createElement('div');
+        div.className = 'category-item';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 0.15rem;">
+            <span style="font-size: 0.875rem; font-weight: 500; color: var(--text-main);">${cat.nama}</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">ID: ${cat.id || '-'}</span>
+          </div>
+          <button class="action-btn delete" onclick="deleteCategory('${cat.id}')" title="Hapus Kategori" style="width: 32px; height: 32px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; background: transparent; cursor: pointer; transition: var(--transition);">
+            <span class="material-icons" style="font-size: 1.25rem;">delete</span>
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function deleteCategory(id) {
+      if (!id) return;
+      if (!confirm('Apakah Anda yakin ingin menghapus kategori ini? Pengumuman dengan kategori ini tidak akan otomatis terhapus.')) return;
+
+      try {
+        const response = await fetch(`${API_URL}/kategori/${id}`, {
+          method: 'DELETE'
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          showToast('Kategori berhasil dihapus');
+          await fetchCategories();
+          renderCategoryList();
+        } else {
+          showToast(result.message || 'Gagal menghapus kategori', 'error');
+        }
+      } catch (err) {
+        showToast('Koneksi server gagal menghapus kategori', 'error');
+        console.error(err);
+      }
+    }
+
+    // Filter Trigger
+    function filterByCategory(categoryName, element) {
+      const pills = document.querySelectorAll('#categoryPills .pill');
+      pills.forEach(p => p.classList.remove('active'));
+      element.classList.add('active');
+
+      currentCategoryFilter = categoryName;
+      fetchAnnouncements();
+    }
+
+    function clearDateFilters() {
+      document.getElementById('startDate').value = '';
+      document.getElementById('endDate').value = '';
+      renderAnnouncements();
+    }
+
+    // Render announcements grid
+    function renderAnnouncements() {
+      const grid = document.getElementById('boardGrid');
+      grid.innerHTML = '';
+
+      // Filter announcements by date locally
+      const startDateVal = document.getElementById('startDate').value;
+      const endDateVal = document.getElementById('endDate').value;
+      
+      let filtered = announcements;
+      
+      if (startDateVal) {
+        const start = new Date(startDateVal);
+        start.setHours(0, 0, 0, 0);
+        filtered = filtered.filter(item => new Date(item.tanggal) >= start);
+      }
+      
+      if (endDateVal) {
+        const end = new Date(endDateVal);
+        end.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(item => new Date(item.tanggal) <= end);
+      }
+
+      // Update totalAnnouncements count label to match the filtered length
+      const totalEl = document.getElementById('totalAnnouncements');
+      if (totalEl) {
+        totalEl.textContent = filtered.length;
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <span class="material-icons empty-state-icon">campaign</span>
+            <h3>Tidak Ada Pengumuman</h3>
+            <p>Belum ada pengumuman untuk kriteria pencarian Anda.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'announcement-card';
+        const authorInitial = (item.penulis || 'Admin').charAt(0).toUpperCase();
+
+        let attachmentBadge = '';
+        if (item.file_url) {
+          let icon = 'attach_file';
+          let label = 'Lampiran';
+          let color = '#5f6368';
+          let bg = '#f1f3f4';
+          
+          if (item.file_type === 'image') {
+            icon = 'image';
+            label = 'Gambar';
+            color = '#1e7e34';
+            bg = '#e6f4ea';
+          } else if (item.file_type === 'pdf') {
+            icon = 'picture_as_pdf';
+            label = 'PDF';
+            color = '#d93025';
+            bg = '#fce8e6';
+          } else if (item.file_type === 'video') {
+            icon = 'videocam';
+            label = 'Video';
+            color = '#1a73e8';
+            bg = '#e8f0fe';
+          }
+          
+          attachmentBadge = `
+            <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.25rem 0.65rem; border-radius: 4px; background: ${bg}; color: ${color}; display: inline-flex; align-items: center; gap: 0.25rem;">
+              <span class="material-icons" style="font-size: 0.85rem;">${icon}</span>
+              ${label}
+            </span>
+          `;
+        }
+
+        card.innerHTML = `
+          <div>
+            <div class="card-header">
+              <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                <span class="card-category">${item.kategori}</span>
+                ${attachmentBadge}
+              </div>
+              <span class="card-date">
+                <span class="material-icons">calendar_today</span>
+                ${formatDate(item.tanggal)}
+              </span>
+            </div>
+            <div class="card-body">
+              <h2 class="card-title">${item.judul}</h2>
+              <p class="card-excerpt">${item.isi}</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="card-author">
+              <div class="author-avatar">${authorInitial}</div>
+              <span>${item.penulis || 'Admin Akademik'}</span>
+            </div>
+            <div class="card-actions">
+              <button class="action-btn edit" onclick="openEditModal('${item.id}')" title="Edit Pengumuman">
+                <span class="material-icons">edit</span>
+              </button>
+              <button class="action-btn delete" onclick="deleteAnnouncement('${item.id}')" title="Hapus Pengumuman">
+                <span class="material-icons">delete</span>
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await fetchCategories();
+      await fetchAnnouncements();
+    });
+  </script>
+</body>
+</html>

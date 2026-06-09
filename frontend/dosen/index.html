@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIAKAD - Data Dosen</title>
+  <style>
+    :root {
+      --bg: #f6f8f5;
+      --surface: #ffffff;
+      --surface-soft: #eef7f2;
+      --ink: #243032;
+      --muted: #6a797b;
+      --line: #dce8e1;
+      --mint: #8fc9aa;
+      --mint-strong: #2f7f68;
+      --peach: #f2b49f;
+      --peach-soft: #fff0ea;
+      --blue: #86a8d8;
+      --blue-soft: #eef4ff;
+      --danger: #c44f58;
+      --danger-soft: #fff0f1;
+      --shadow: 0 18px 45px rgba(41, 61, 55, 0.08);
+      --shadow-strong: 0 24px 60px rgba(41, 61, 55, 0.14);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.62) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+        linear-gradient(180deg, #edf7f2 0, var(--bg) 280px);
+      background-size: 32px 32px, 32px 32px, auto;
+      letter-spacing: 0;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(220, 232, 225, 0.9);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .overview-board {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.8fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 18px;
+    }
+
+    .hero-copy,
+    .profile-stage {
+      border: 1px solid rgba(220, 232, 225, 0.95);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-copy {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 224px;
+      padding: 28px 28px 26px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(244, 250, 246, 0.94)),
+        #fff;
+      border-top: 7px solid transparent;
+      border-image: linear-gradient(90deg, var(--mint-strong), var(--blue), var(--peach)) 1;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--mint-strong);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .hero-copy h2 {
+      margin: 14px 0 8px;
+      max-width: 660px;
+      font-size: clamp(1.55rem, 3vw, 2.45rem);
+      line-height: 1.08;
+    }
+
+    .hero-copy p {
+      margin: 0;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fbfdfc;
+      color: #405052;
+      font-size: 0.84rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .hero-chip .icon {
+      color: var(--mint-strong);
+    }
+
+    .profile-stage {
+      position: relative;
+      min-height: 212px;
+      padding: 20px;
+      background:
+        linear-gradient(135deg, #ffffff 0%, #f6fbf8 54%, #fff3ed 100%);
+    }
+
+    .profile-stage.hero-visual {
+      min-height: 224px;
+      border-top: 7px solid transparent;
+      border-image: linear-gradient(90deg, var(--mint-strong), var(--blue), var(--peach)) 1;
+    }
+
+    .profile-stage::before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 22px;
+      height: 76px;
+      border: 1px solid rgba(220, 232, 225, 0.8);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(47, 127, 104, 0.08), rgba(134, 168, 216, 0.1)),
+        repeating-linear-gradient(90deg, transparent 0 34px, rgba(106, 121, 123, 0.08) 34px 35px);
+    }
+
+    .profile-scene {
+      position: absolute;
+      inset: 18px 18px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-card {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 156px;
+      height: 156px;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-strong);
+      animation: floatProfile 4.4s ease-in-out infinite;
+    }
+
+    .profile-card::after {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 17px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--mint), var(--blue), var(--peach));
+      animation: slideAccent 3.2s ease-in-out infinite;
+    }
+
+    .mini-profile {
+      position: absolute;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      width: 78px;
+      height: 78px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 35px rgba(41, 61, 55, 0.1);
+    }
+
+    .mini-profile.left {
+      left: 8px;
+      bottom: 26px;
+      animation: floatProfile 5.2s ease-in-out infinite 0.25s;
+    }
+
+    .mini-profile.right {
+      right: 10px;
+      top: 16px;
+      animation: floatProfile 5s ease-in-out infinite 0.7s;
+    }
+
+    .mini-profile.top {
+      left: 22%;
+      top: 16px;
+      animation: floatProfile 4.8s ease-in-out infinite 0.45s;
+    }
+
+    .mini-profile.bottom {
+      right: 24%;
+      bottom: 18px;
+      animation: floatProfile 5.4s ease-in-out infinite 0.9s;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: var(--mint-strong);
+      color: #fff;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--mint-strong);
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mint-strong);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: var(--mint-strong);
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(47, 127, 104, 0.2);
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .btn.soft {
+      background: var(--peach-soft);
+      color: #9b4d38;
+      border-color: #f7cfc1;
+    }
+
+    .btn.danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border-color: #f5c9ce;
+    }
+
+    .btn.icon-only {
+      width: 38px;
+      min-height: 38px;
+      padding: 0;
+    }
+
+    .icon {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin: 22px 0;
+    }
+
+    .metric {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 10px 30px rgba(41, 61, 55, 0.06);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 1.9rem;
+      line-height: 1;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-jabatan-form { order: 1; }
+    .panel-dosen-form { order: 2; }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfdfb;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 13px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      color: #405052;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfc;
+      color: var(--ink);
+      padding: 9px 11px;
+      outline: none;
+      transition: border 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    .field textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--mint);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(143, 201, 170, 0.18);
+    }
+
+    .field input[readonly] {
+      color: var(--muted);
+      background: #f3f6f4;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .preset-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .preset-btn {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfc;
+      color: var(--mint-strong);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .preset-btn:hover {
+      background: var(--surface-soft);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(170px, 230px);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .searchbox {
+      position: relative;
+    }
+
+    .searchbox .icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .searchbox input {
+      padding-left: 38px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f4faf6;
+      color: #405052;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 210px;
+    }
+
+    .avatar {
+      position: relative;
+      display: block;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent),
+        #d9ecff;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: inset 0 -4px 0 rgba(36, 48, 50, 0.05), 0 9px 18px rgba(41, 61, 55, 0.08);
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .avatar.profile-lg {
+      width: 98px;
+      height: 98px;
+      border-radius: 8px;
+      animation: breathe 3.8s ease-in-out infinite;
+    }
+
+    .avatar.profile-sm {
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+    }
+
+    .avatar.v1 { background-color: #dff2ea; }
+    .avatar.v2 { background-color: #e9efff; }
+    .avatar.v3 { background-color: #fff0ea; }
+    .avatar.v4 { background-color: #edf6d9; }
+    .avatar.v5 { background-color: #f4edff; }
+
+    .avatar-hair,
+    .avatar-face,
+    .avatar-neck,
+    .avatar-body,
+    .avatar-eye,
+    .avatar-smile,
+    .avatar-badge {
+      position: absolute;
+      display: block;
+    }
+
+    .avatar-hair {
+      left: 23%;
+      top: 12%;
+      width: 54%;
+      height: 34%;
+      border-radius: 48% 48% 32% 32%;
+      background: #35505b;
+      z-index: 2;
+    }
+
+    .avatar-face {
+      left: 29%;
+      top: 27%;
+      width: 42%;
+      height: 38%;
+      border-radius: 46% 46% 44% 44%;
+      background: #f1c3a6;
+      z-index: 3;
+    }
+
+    .avatar-neck {
+      left: 44%;
+      top: 58%;
+      width: 12%;
+      height: 13%;
+      border-radius: 4px;
+      background: #e9ad8e;
+      z-index: 2;
+    }
+
+    .avatar-body {
+      left: 18%;
+      bottom: -13%;
+      width: 64%;
+      height: 40%;
+      border-radius: 45% 45% 18% 18%;
+      background: var(--mint-strong);
+      z-index: 1;
+    }
+
+    .avatar-eye {
+      top: 42%;
+      width: 4%;
+      height: 4%;
+      border-radius: 50%;
+      background: #243032;
+      z-index: 4;
+      animation: blink 4.6s infinite;
+    }
+
+    .avatar-eye.left { left: 41%; }
+    .avatar-eye.right { right: 41%; }
+
+    .avatar-smile {
+      left: 44%;
+      top: 52%;
+      width: 12%;
+      height: 6%;
+      border: 2px solid #9b5f4a;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-radius: 999px;
+      z-index: 4;
+    }
+
+    .avatar-badge {
+      right: 9%;
+      bottom: 10%;
+      width: 17%;
+      height: 17%;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid var(--mint);
+      z-index: 5;
+      animation: pulseBadge 2.6s ease-in-out infinite;
+    }
+
+    .avatar.v2 .avatar-hair { background: #4b5f9d; }
+    .avatar.v2 .avatar-body { background: #6f8fc5; }
+    .avatar.v3 .avatar-hair { background: #8d563d; }
+    .avatar.v3 .avatar-body { background: #d98b70; }
+    .avatar.v4 .avatar-hair { background: #405b43; }
+    .avatar.v4 .avatar-body { background: #7fa36d; }
+    .avatar.v5 .avatar-hair { background: #5a4a73; }
+    .avatar.v5 .avatar-body { background: #9279b8; }
+
+    .person strong,
+    .person span {
+      display: block;
+    }
+
+    .person span,
+    .subtext {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--mint-strong);
+      font-size: 0.8rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.peach {
+      background: var(--peach-soft);
+      color: #9b4d38;
+    }
+
+    .badge.blue {
+      background: var(--blue-soft);
+      color: #406aa0;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .jabatan-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .jabatan-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdfc;
+    }
+
+    .jabatan-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .empty-state {
+      display: grid;
+      place-items: center;
+      gap: 14px;
+      min-height: 180px;
+      border: 1px dashed #cbdad1;
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+      background:
+        linear-gradient(135deg, rgba(238, 247, 242, 0.85), rgba(255, 240, 234, 0.72)),
+        #fbfdfc;
+    }
+
+    .empty-profiles {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: min(280px, 100%);
+      min-height: 86px;
+    }
+
+    .empty-profiles .avatar {
+      margin-left: -8px;
+      margin-right: -8px;
+      animation: floatProfile 4.6s ease-in-out infinite;
+    }
+
+    .empty-profiles .avatar:nth-child(2) {
+      transform: translateY(-8px);
+      animation-delay: 0.35s;
+    }
+
+    .empty-profiles .avatar:nth-child(3) {
+      animation-delay: 0.7s;
+    }
+
+    .empty-state strong {
+      display: block;
+      color: var(--ink);
+      font-size: 1rem;
+    }
+
+    .empty-state span {
+      display: block;
+      margin-top: 4px;
+      max-width: 360px;
+      line-height: 1.55;
+    }
+
+    @keyframes floatProfile {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes breathe {
+      0%, 100% { box-shadow: inset 0 -4px 0 rgba(36, 48, 50, 0.05), 0 9px 18px rgba(41, 61, 55, 0.08); }
+      50% { box-shadow: inset 0 -4px 0 rgba(36, 48, 50, 0.04), 0 16px 30px rgba(47, 127, 104, 0.18); }
+    }
+
+    @keyframes pulseBadge {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.16); }
+    }
+
+    @keyframes blink {
+      0%, 94%, 100% { transform: scaleY(1); }
+      96% { transform: scaleY(0.15); }
+    }
+
+    @keyframes slideAccent {
+      0%, 100% { transform: translateX(-7px); opacity: 0.72; }
+      50% { transform: translateX(7px); opacity: 1; }
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 20;
+      width: min(360px, calc(100% - 40px));
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 18px 45px rgba(41, 61, 55, 0.16);
+      color: var(--ink);
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.error {
+      border-color: #f4bec5;
+      background: #fff6f7;
+      color: var(--danger);
+    }
+
+    @media (max-width: 920px) {
+      .overview-board,
+      .dashboard,
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-stage {
+        min-height: 220px;
+      }
+
+      .main-grid {
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-shell {
+        width: min(100% - 20px, 1180px);
+        padding-top: 10px;
+      }
+
+      .topbar,
+      .panel-header,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .top-actions,
+      .form-actions {
+        justify-content: stretch;
+      }
+
+      .btn,
+      .status-pill {
+        width: 100%;
+      }
+
+      .panel-body {
+        padding: 14px;
+      }
+
+      .hero-copy,
+      .profile-stage {
+        padding: 16px;
+      }
+
+      .hero-copy {
+        min-height: auto;
+      }
+
+      .hero-chip {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .preset-row {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-stage {
+        min-height: 210px;
+      }
+
+      .mini-profile.left {
+        left: 0;
+      }
+
+      .mini-profile.right {
+        right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <section class="topbar">
+      <div class="brand">
+        <div class="brand-mark">S2</div>
+        <div>
+          <h1>Data Dosen & Jabatan</h1>
+          <span>SIAKAD - Modul 2</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="status-pill" id="api-status">
+          <span class="status-dot"></span>
+          <span>Menghubungkan</span>
+        </div>
+        <button class="btn secondary" type="button" id="refresh-btn">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12A9 9 0 0 1 18.5 5.8"/><path d="M18 3v4h-4"/><path d="M6 21v-4h4"/></svg>
+          Muat ulang
+        </button>
+      </div>
+    </section>
+
+    <section class="overview-board" aria-label="Ringkasan fitur modul dosen">
+      <div class="hero-copy">
+        <span class="hero-kicker">Modul Dosen & Jabatan</span>
+        <h2>Kelola data dosen dan jabatan akademik dalam satu halaman.</h2>
+        <p>Buat jabatan terlebih dahulu, input profil dosen lengkap, lalu gunakan pencarian dan filter untuk melihat data berdasarkan jabatan.</p>
+        <div class="hero-chips">
+          <span class="hero-chip">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Tambah jabatan
+          </span>
+          <span class="hero-chip">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Input profil dosen
+          </span>
+          <span class="hero-chip">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+            Cari & filter
+          </span>
+        </div>
+      </div>
+
+      <div class="profile-stage hero-visual" aria-hidden="true">
+        <div class="profile-scene">
+          <div class="mini-profile top">
+            <div class="avatar profile-sm v4">
+              <span class="avatar-hair"></span><span class="avatar-face"></span><span class="avatar-neck"></span><span class="avatar-body"></span><span class="avatar-eye left"></span><span class="avatar-eye right"></span><span class="avatar-smile"></span><span class="avatar-badge"></span>
+            </div>
+          </div>
+          <div class="mini-profile left">
+            <div class="avatar profile-sm v3">
+              <span class="avatar-hair"></span><span class="avatar-face"></span><span class="avatar-neck"></span><span class="avatar-body"></span><span class="avatar-eye left"></span><span class="avatar-eye right"></span><span class="avatar-smile"></span><span class="avatar-badge"></span>
+            </div>
+          </div>
+          <div class="profile-card">
+            <div class="avatar profile-lg v1">
+              <span class="avatar-hair"></span><span class="avatar-face"></span><span class="avatar-neck"></span><span class="avatar-body"></span><span class="avatar-eye left"></span><span class="avatar-eye right"></span><span class="avatar-smile"></span><span class="avatar-badge"></span>
+            </div>
+          </div>
+          <div class="mini-profile right">
+            <div class="avatar profile-sm v2">
+              <span class="avatar-hair"></span><span class="avatar-face"></span><span class="avatar-neck"></span><span class="avatar-body"></span><span class="avatar-eye left"></span><span class="avatar-eye right"></span><span class="avatar-smile"></span><span class="avatar-badge"></span>
+            </div>
+          </div>
+          <div class="mini-profile bottom">
+            <div class="avatar profile-sm v5">
+              <span class="avatar-hair"></span><span class="avatar-face"></span><span class="avatar-neck"></span><span class="avatar-body"></span><span class="avatar-eye left"></span><span class="avatar-eye right"></span><span class="avatar-smile"></span><span class="avatar-badge"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard" aria-label="Ringkasan">
+      <div class="metric">
+        <span>Total dosen</span>
+        <strong id="metric-total">0</strong>
+      </div>
+      <div class="metric">
+        <span>Dosen aktif</span>
+        <strong id="metric-active">0</strong>
+      </div>
+      <div class="metric">
+        <span>Jabatan</span>
+        <strong id="metric-jabatan">0</strong>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="stack">
+        <section class="panel panel-dosen-form">
+          <div class="panel-header">
+            <h2 id="dosen-form-title">Tambah Dosen</h2>
+            <button class="btn secondary icon-only" type="button" id="clear-dosen-btn" title="Bersihkan form">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+          <div class="panel-body">
+            <form class="form-grid" id="dosen-form">
+              <div class="field">
+                <label for="nidn">NIDN</label>
+                <input id="nidn" name="nidn" autocomplete="off" required>
+              </div>
+              <div class="field">
+                <label for="nama">Nama Dosen</label>
+                <input id="nama" name="nama" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <label for="telepon">Telepon</label>
+                <input id="telepon" name="telepon" autocomplete="tel">
+              </div>
+              <div class="field">
+                <label for="prodi">Program Studi</label>
+                <input id="prodi" name="prodi" required>
+              </div>
+              <div class="field">
+                <label for="jabatan_id">Jabatan</label>
+                <select id="jabatan_id" name="jabatan_id" required></select>
+              </div>
+              <div class="field">
+                <label for="pendidikan">Pendidikan</label>
+                <select id="pendidikan" name="pendidikan">
+                  <option value="S2">S2</option>
+                  <option value="S3">S3</option>
+                  <option value="Profesi">Profesi</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                  <option value="Aktif">Aktif</option>
+                  <option value="Cuti">Cuti</option>
+                  <option value="Tidak Aktif">Tidak Aktif</option>
+                </select>
+              </div>
+              <div class="form-actions">
+                <button class="btn" type="submit" id="dosen-submit">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                  Simpan dosen
+                </button>
+                <button class="btn secondary" type="button" id="cancel-edit-dosen">Batal</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel panel-jabatan-form">
+          <div class="panel-header">
+            <h2 id="jabatan-form-title">Tambah Jabatan</h2>
+            <button class="btn secondary icon-only" type="button" id="clear-jabatan-btn" title="Bersihkan form">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+          <div class="panel-body">
+            <form class="form-grid" id="jabatan-form">
+              <div class="field">
+                <label for="jabatan_nama">Nama Jabatan</label>
+                <input id="jabatan_nama" name="nama" required>
+              </div>
+              <div class="field">
+                <label for="jabatan_jenis">Jenis</label>
+                <select id="jabatan_jenis" name="jenis">
+                  <option value="Fungsional">Fungsional</option>
+                  <option value="Struktural">Struktural</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="jabatan_deskripsi">Deskripsi</label>
+                <textarea id="jabatan_deskripsi" name="deskripsi"></textarea>
+              </div>
+              <div class="preset-row">
+                <button class="preset-btn" type="button" data-jabatan-nama="Asisten Ahli" data-jabatan-jenis="Fungsional">Asisten Ahli</button>
+                <button class="preset-btn" type="button" data-jabatan-nama="Lektor" data-jabatan-jenis="Fungsional">Lektor</button>
+                <button class="preset-btn" type="button" data-jabatan-nama="Kaprodi" data-jabatan-jenis="Struktural">Kaprodi</button>
+              </div>
+              <div class="form-actions">
+                <button class="btn soft" type="submit" id="jabatan-submit">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Simpan jabatan
+                </button>
+                <button class="btn secondary" type="button" id="cancel-edit-jabatan">Batal</button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Daftar Dosen</h2>
+            <span class="badge blue" id="table-count">0 data</span>
+          </div>
+          <div class="panel-body">
+            <div class="toolbar">
+              <div class="searchbox field">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input id="search" type="search" placeholder="Cari nama, NIDN, prodi">
+              </div>
+              <div class="field">
+                <select id="filter-jabatan"></select>
+              </div>
+            </div>
+            <div id="dosen-content"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Daftar Jabatan</h2>
+            <span class="badge peach" id="jabatan-count">0 data</span>
+          </div>
+          <div class="panel-body">
+            <div class="jabatan-list" id="jabatan-list"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_BASE = (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    ) ? 'http://localhost:8080/api' : '/api';
+    const state = {
+      dosen: [],
+      jabatan: [],
+      editingNidn: null,
+      editingJabatanId: null,
+      preferredJabatanId: null
+    };
+
+    const els = {
+      apiStatus: document.getElementById("api-status"),
+      metricTotal: document.getElementById("metric-total"),
+      metricActive: document.getElementById("metric-active"),
+      metricJabatan: document.getElementById("metric-jabatan"),
+      dosenForm: document.getElementById("dosen-form"),
+      dosenFormTitle: document.getElementById("dosen-form-title"),
+      dosenSubmit: document.getElementById("dosen-submit"),
+      cancelEditDosen: document.getElementById("cancel-edit-dosen"),
+      clearDosenBtn: document.getElementById("clear-dosen-btn"),
+      jabatanForm: document.getElementById("jabatan-form"),
+      jabatanFormTitle: document.getElementById("jabatan-form-title"),
+      jabatanSubmit: document.getElementById("jabatan-submit"),
+      cancelEditJabatan: document.getElementById("cancel-edit-jabatan"),
+      clearJabatanBtn: document.getElementById("clear-jabatan-btn"),
+      jabatanSelect: document.getElementById("jabatan_id"),
+      filterJabatan: document.getElementById("filter-jabatan"),
+      search: document.getElementById("search"),
+      dosenContent: document.getElementById("dosen-content"),
+      tableCount: document.getElementById("table-count"),
+      jabatanList: document.getElementById("jabatan-list"),
+      jabatanCount: document.getElementById("jabatan-count"),
+      refreshBtn: document.getElementById("refresh-btn"),
+      toast: document.getElementById("toast")
+    };
+
+    function icon(name) {
+      const paths = {
+        edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+        trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/>',
+        mail: '<path d="m22 7-8.97 5.7a2 2 0 0 1-2.06 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/>'
+      };
+      return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
+    }
+
+    function setApiStatus(text, ok = true) {
+      els.apiStatus.querySelector("span:last-child").textContent = text;
+      els.apiStatus.style.background = ok ? "var(--surface-soft)" : "var(--danger-soft)";
+      els.apiStatus.style.color = ok ? "var(--mint-strong)" : "var(--danger)";
+      els.apiStatus.querySelector(".status-dot").style.background = ok ? "var(--mint-strong)" : "var(--danger)";
+    }
+
+    function showToast(message, error = false) {
+      els.toast.textContent = message;
+      els.toast.classList.toggle("error", error);
+      els.toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 3000);
+    }
+
+    async function request(path, options = {}) {
+      const response = await fetch(`${API_BASE}${path}`, {
+        headers: { "Content-Type": "application/json" },
+        ...options
+      });
+      const text = await response.text();
+      let payload = {};
+      try {
+        payload = text ? JSON.parse(text) : {};
+      } catch (error) {
+        throw new Error("Response server tidak berbentuk JSON");
+      }
+      if (!response.ok || payload.status === "error") {
+        throw new Error(payload.message || "Request gagal diproses");
+      }
+      return payload.data;
+    }
+
+    async function loadData() {
+      try {
+        setApiStatus("Menghubungkan", true);
+        const [jabatan, dosen] = await Promise.all([
+          request("/jabatan"),
+          request("/dosen")
+        ]);
+        state.jabatan = Array.isArray(jabatan) ? jabatan : [];
+        state.dosen = Array.isArray(dosen) ? dosen : [];
+        renderAll();
+        setApiStatus("API aktif", true);
+      } catch (error) {
+        setApiStatus("API bermasalah", false);
+        showToast(error.message, true);
+      }
+    }
+
+    function renderAll() {
+      renderMetrics();
+      renderJabatanOptions();
+      renderDosenTable();
+      renderJabatanList();
+    }
+
+    function renderMetrics() {
+      els.metricTotal.textContent = state.dosen.length;
+      els.metricActive.textContent = state.dosen.filter((item) => item.status === "Aktif").length;
+      els.metricJabatan.textContent = state.jabatan.length;
+    }
+
+    function renderJabatanOptions() {
+      const selectedFormValue = state.preferredJabatanId || els.jabatanSelect.value;
+      const selectedFilterValue = els.filterJabatan.value;
+
+      if (state.jabatan.length === 0) {
+        els.jabatanSelect.innerHTML = '<option value="">Tambah jabatan dulu</option>';
+        els.jabatanSelect.disabled = true;
+      } else {
+        els.jabatanSelect.disabled = false;
+        els.jabatanSelect.innerHTML = '<option value="">Pilih jabatan</option>' + state.jabatan
+          .map((item) => `<option value="${getID(item)}">${escapeHtml(item.nama)} - ${escapeHtml(item.jenis)}</option>`)
+          .join("");
+      }
+
+      els.filterJabatan.innerHTML = '<option value="">Semua jabatan</option>' + state.jabatan
+        .map((item) => `<option value="${getID(item)}">${escapeHtml(item.nama)}</option>`)
+        .join("");
+
+      els.jabatanSelect.value = selectedFormValue;
+      els.filterJabatan.value = selectedFilterValue;
+      state.preferredJabatanId = null;
+    }
+
+    function renderDosenTable() {
+      const keyword = els.search.value.trim().toLowerCase();
+      const jabatanID = els.filterJabatan.value;
+      const filtered = state.dosen.filter((item) => {
+        const text = `${item.nidn} ${item.nama} ${item.email} ${item.prodi} ${item.jabatan_nama}`.toLowerCase();
+        const matchSearch = !keyword || text.includes(keyword);
+        const matchJabatan = !jabatanID || item.jabatan_id === jabatanID;
+        return matchSearch && matchJabatan;
+      });
+
+      els.tableCount.textContent = `${filtered.length} data`;
+      if (filtered.length === 0) {
+        els.dosenContent.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-profiles">
+              ${animatedAvatar("Dosen Baru", "profile-sm v2")}
+              ${animatedAvatar("Profil Dosen", "profile-sm v1")}
+              ${animatedAvatar("Akademik", "profile-sm v3")}
+            </div>
+            <div>
+              <strong>Belum ada data dosen yang cocok.</strong>
+              <span>Tambahkan data dosen pertama, lalu foto profil animasinya akan muncul di tabel.</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      els.dosenContent.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Dosen</th>
+                <th>Prodi</th>
+                <th>Jabatan</th>
+                <th>Status</th>
+                <th>Kontak</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filtered.map((item) => `
+                <tr>
+                  <td>
+                    <div class="person">
+                      ${animatedAvatar(item.nama, avatarVariant(item.nama))}
+                      <div>
+                        <strong>${escapeHtml(item.nama)}</strong>
+                        <span>${escapeHtml(item.nidn)}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <strong>${escapeHtml(item.prodi)}</strong>
+                    <div class="subtext">${escapeHtml(item.pendidikan || "-")}</div>
+                  </td>
+                  <td><span class="badge">${escapeHtml(item.jabatan_nama || "-")}</span></td>
+                  <td><span class="badge ${item.status === "Aktif" ? "" : "peach"}">${escapeHtml(item.status || "-")}</span></td>
+                  <td>
+                    <strong>${escapeHtml(item.email)}</strong>
+                    <div class="subtext">${escapeHtml(item.telepon || "-")}</div>
+                  </td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="btn secondary icon-only" type="button" title="Edit dosen" onclick="editDosen('${escapeJs(item.nidn)}')">${icon("edit")}</button>
+                      <button class="btn danger icon-only" type="button" title="Hapus dosen" onclick="deleteDosen('${escapeJs(item.nidn)}')">${icon("trash")}</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderJabatanList() {
+      els.jabatanCount.textContent = `${state.jabatan.length} data`;
+      if (state.jabatan.length === 0) {
+        els.jabatanList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-profiles">
+              ${animatedAvatar("Asisten Ahli", "profile-sm v4")}
+              ${animatedAvatar("Lektor", "profile-sm v1")}
+            </div>
+            <div>
+              <strong>Belum ada data jabatan.</strong>
+              <span>Tambahkan jabatan dulu supaya bisa dipilih saat mengisi profil dosen.</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      els.jabatanList.innerHTML = state.jabatan.map((item) => {
+        const itemID = getID(item);
+        const usedCount = state.dosen.filter((dosen) => dosen.jabatan_id === itemID).length;
+        return `
+          <div class="jabatan-item">
+            <div>
+              <strong>${escapeHtml(item.nama)}</strong>
+              <span class="badge ${item.jenis === "Struktural" ? "blue" : "peach"}">${escapeHtml(item.jenis)}</span>
+              <span class="subtext">${usedCount} dosen</span>
+            </div>
+            <div class="row-actions">
+              <button class="btn secondary icon-only" type="button" title="Edit jabatan" onclick="editJabatan('${itemID}')">${icon("edit")}</button>
+              <button class="btn danger icon-only" type="button" title="Hapus jabatan" onclick="deleteJabatan('${itemID}', ${usedCount})">${icon("trash")}</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function resetDosenForm() {
+      state.editingNidn = null;
+      els.dosenForm.reset();
+      els.dosenForm.nidn.readOnly = false;
+      els.dosenForm.pendidikan.value = "S2";
+      els.dosenForm.status.value = "Aktif";
+      els.dosenFormTitle.textContent = "Tambah Dosen";
+      els.dosenSubmit.innerHTML = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Simpan dosen';
+    }
+
+    function resetJabatanForm() {
+      state.editingJabatanId = null;
+      els.jabatanForm.reset();
+      els.jabatanForm.jenis.value = "Fungsional";
+      els.jabatanFormTitle.textContent = "Tambah Jabatan";
+      els.jabatanSubmit.innerHTML = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Simpan jabatan';
+    }
+
+    window.editDosen = function(nidn) {
+      const item = state.dosen.find((dosen) => dosen.nidn === nidn);
+      if (!item) return;
+      state.editingNidn = item.nidn;
+      els.dosenForm.nidn.value = item.nidn;
+      els.dosenForm.nidn.readOnly = true;
+      els.dosenForm.nama.value = item.nama || "";
+      els.dosenForm.email.value = item.email || "";
+      els.dosenForm.telepon.value = item.telepon || "";
+      els.dosenForm.prodi.value = item.prodi || "";
+      els.dosenForm.jabatan_id.value = item.jabatan_id || "";
+      els.dosenForm.pendidikan.value = item.pendidikan || "S2";
+      els.dosenForm.status.value = item.status || "Aktif";
+      els.dosenFormTitle.textContent = "Edit Dosen";
+      els.dosenSubmit.innerHTML = `${icon("edit")}Simpan perubahan`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.deleteDosen = async function(nidn) {
+      if (!confirm(`Hapus dosen dengan NIDN ${nidn}?`)) return;
+      try {
+        await request(`/dosen/${encodeURIComponent(nidn)}`, { method: "DELETE" });
+        showToast("Data dosen berhasil dihapus");
+        await loadData();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    };
+
+    window.editJabatan = function(id) {
+      const item = state.jabatan.find((jabatan) => getID(jabatan) === id);
+      if (!item) return;
+      state.editingJabatanId = id;
+      els.jabatanForm.nama.value = item.nama || "";
+      els.jabatanForm.jenis.value = item.jenis || "Fungsional";
+      els.jabatanForm.deskripsi.value = item.deskripsi || "";
+      els.jabatanFormTitle.textContent = "Edit Jabatan";
+      els.jabatanSubmit.innerHTML = `${icon("edit")}Simpan perubahan`;
+      els.jabatanForm.nama.focus();
+    };
+
+    window.deleteJabatan = async function(id, usedCount) {
+      const message = usedCount > 0
+        ? `Jabatan ini dipakai ${usedCount} dosen. Tetap hapus?`
+        : "Hapus jabatan ini?";
+      if (!confirm(message)) return;
+      try {
+        await request(`/jabatan/${id}`, { method: "DELETE" });
+        showToast("Data jabatan berhasil dihapus");
+        await loadData();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    };
+
+    els.dosenForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const payload = Object.fromEntries(new FormData(els.dosenForm).entries());
+      payload.nidn = els.dosenForm.nidn.value.trim();
+      if (!payload.jabatan_id) {
+        showToast("Buat atau pilih jabatan dulu", true);
+        els.jabatanForm.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      try {
+        const path = state.editingNidn
+          ? `/dosen/${encodeURIComponent(state.editingNidn)}`
+          : "/dosen";
+        const method = state.editingNidn ? "PUT" : "POST";
+        await request(path, { method, body: JSON.stringify(payload) });
+        showToast(state.editingNidn ? "Data dosen berhasil diperbarui" : "Data dosen berhasil ditambahkan");
+        resetDosenForm();
+        await loadData();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    els.jabatanForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const payload = Object.fromEntries(new FormData(els.jabatanForm).entries());
+
+      try {
+        const path = state.editingJabatanId
+          ? `/jabatan/${state.editingJabatanId}`
+          : "/jabatan";
+        const method = state.editingJabatanId ? "PUT" : "POST";
+        const result = await request(path, { method, body: JSON.stringify(payload) });
+        if (!state.editingJabatanId) {
+          state.preferredJabatanId = normalizeID(result && result.inserted_id);
+        }
+        showToast(state.editingJabatanId ? "Data jabatan berhasil diperbarui" : "Data jabatan berhasil ditambahkan");
+        resetJabatanForm();
+        await loadData();
+        if (state.jabatan.length > 0) {
+          els.jabatanSelect.focus();
+        }
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    els.search.addEventListener("input", renderDosenTable);
+    els.filterJabatan.addEventListener("change", renderDosenTable);
+    els.refreshBtn.addEventListener("click", loadData);
+    els.cancelEditDosen.addEventListener("click", resetDosenForm);
+    els.clearDosenBtn.addEventListener("click", resetDosenForm);
+    els.cancelEditJabatan.addEventListener("click", resetJabatanForm);
+    els.clearJabatanBtn.addEventListener("click", resetJabatanForm);
+    document.querySelectorAll("[data-jabatan-nama]").forEach((button) => {
+      button.addEventListener("click", () => createQuickJabatan(button.dataset.jabatanNama, button.dataset.jabatanJenis));
+    });
+
+    async function createQuickJabatan(nama, jenis) {
+      const existing = state.jabatan.find((item) => String(item.nama || "").toLowerCase() === nama.toLowerCase());
+      if (existing) {
+        state.preferredJabatanId = getID(existing);
+        renderJabatanOptions();
+        showToast(`${nama} sudah ada dan sudah dipilih`);
+        els.jabatanSelect.focus();
+        return;
+      }
+
+      try {
+        const result = await request("/jabatan", {
+          method: "POST",
+          body: JSON.stringify({
+            nama,
+            jenis,
+            deskripsi: `${nama} ${jenis.toLowerCase()}`
+          })
+        });
+        state.preferredJabatanId = normalizeID(result && result.inserted_id);
+        showToast(`${nama} berhasil ditambahkan`);
+        await loadData();
+        els.jabatanSelect.focus();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    }
+
+    function animatedAvatar(name = "", extraClass = "") {
+      return `
+        <div class="avatar ${extraClass}" title="${escapeHtml(name)}">
+          <span class="avatar-hair"></span>
+          <span class="avatar-face"></span>
+          <span class="avatar-neck"></span>
+          <span class="avatar-body"></span>
+          <span class="avatar-eye left"></span>
+          <span class="avatar-eye right"></span>
+          <span class="avatar-smile"></span>
+          <span class="avatar-badge"></span>
+        </div>
+      `;
+    }
+
+    function avatarVariant(name = "") {
+      const total = String(name).split("").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      return `v${(total % 5) + 1}`;
+    }
+
+    function getID(item = {}) {
+      return normalizeID(item.id || item._id);
+    }
+
+    function normalizeID(value) {
+      if (!value) return "";
+      if (typeof value === "string") return value;
+      if (value.$oid) return value.$oid;
+      return String(value);
+    }
+
+    function escapeHtml(value = "") {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeJs(value = "") {
+      return String(value).replaceAll("\\", "\\\\").replaceAll("'", "\\'");
+    }
+
+    resetDosenForm();
+    resetJabatanForm();
+    loadData();
+  </script>
+</body>
+</html>

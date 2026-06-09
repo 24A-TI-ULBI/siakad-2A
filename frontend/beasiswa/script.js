@@ -1,4 +1,9 @@
-fetch("http://127.0.0.1:8080/api/beasiswa")
+const API_BASE = (
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+) ? 'http://localhost:8080' : 'https://dituniverse.alwaysdata.net';
+
+fetch(API_BASE + "/api/beasiswa")
 .then(response => response.json())
 .then(data => {
 
@@ -91,7 +96,7 @@ async function daftarBeasiswa(){
   };
 
   const response = await fetch(
-    "http://127.0.0.1:8080/beasiswa/daftar",
+    API_BASE + "/beasiswa/daftar",
     {
       method:"POST",
 
@@ -114,7 +119,7 @@ async function cekStatus(){
     document.getElementById("cekNpm").value;
 
   const response = await fetch(
-    `http://127.0.0.1:8080/beasiswa/status/${npm}`
+    `${API_BASE}/beasiswa/status/${npm}`
   );
 
   const result = await response.json();
@@ -156,7 +161,7 @@ async function updateStatus() {
   try {
 
     const response = await fetch(
-      `http://127.0.0.1:8080/beasiswa/status/${npm}`,
+      `${API_BASE}/beasiswa/status/${npm}`,
       {
         method: "PUT",
 
@@ -194,7 +199,7 @@ async function deletePendaftaran() {
   try {
 
     const response = await fetch(
-      `http://127.0.0.1:8080/beasiswa/${npm}`,
+      `${API_BASE}/beasiswa/${npm}`,
       {
         method: "DELETE"
       }

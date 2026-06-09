@@ -8,7 +8,12 @@ import (
 
 func PrestasiRoute(app *fiber.App) {
 	app.Get("/prestasi", controller.GetPrestasi)
-	app.Get("/prestasi/:npm", controller.GetPrestasiByNPM)
+	app.Get("/prestasi/:npm", func(c *fiber.Ctx) error {
+		if c.Params("npm") == "index.html" {
+			return c.Next()
+		}
+		return controller.GetPrestasiByNPM(c)
+	})
 	app.Post("/prestasi", controller.PostPrestasi)
 	app.Put("/prestasi/:id", controller.PutPrestasi)
 	app.Delete("/prestasi/:id", controller.DeletePrestasi)

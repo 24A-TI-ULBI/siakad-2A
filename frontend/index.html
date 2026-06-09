@@ -208,20 +208,43 @@
       </div>
     </a>
     <div class="landing-nav-right">
-      <a href="mahasiswa/login.html" class="btn btn-primary btn-sm">Login</a>
+      <div class="server-badge">
+        <span class="server-dot" id="server-status-dot"></span>
+        <span id="server-status-text" style="font-weight: 600;">Memeriksa Server...</span>
+      </div>
+      <div id="auth-buttons">
+        <a href="mahasiswa/login.html" class="btn btn-primary btn-sm">Login</a>
+      </div>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-inner">
+    <div class="hero-inner" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center;">
       <div>
         <p class="hero-eyebrow">Sistem Informasi Akademik</p>
         <h1 class="hero-title">Portal Informasi<br>Akademik Kampus</h1>
         <p class="hero-desc">Kelola data akademik kampus secara digital. Akses informasi mahasiswa, dosen, mata kuliah, jadwal, nilai, dan berbagai layanan akademik lainnya dalam satu platform terpadu.</p>
         <div class="hero-actions">
           <a href="mahasiswa/daftar.html" class="hero-btn-primary">Lihat Data Mahasiswa</a>
-          <a href="mahasiswa/login.html" class="hero-btn-secondary">Login</a>
+          <a href="mahasiswa/login.html" class="hero-btn-secondary" id="hero-login-btn">Login ke Portal</a>
+        </div>
+      </div>
+      
+      <div class="hero-panel">
+        <p class="hero-panel-label">Ringkasan Sistem</p>
+        <div class="hero-panel-grid">
+          <div class="hero-panel-item" style="background: rgba(255,255,255,0.08);">
+            <div style="font-size: 16px; font-weight: 700; margin-bottom: 2px;">12</div>
+            <div style="font-size: 9px; opacity: 0.8; text-transform: uppercase;">Modul Aktif</div>
+          </div>
+          <div class="hero-panel-item" style="background: rgba(255,255,255,0.08);">
+            <div style="font-size: 16px; font-weight: 700; margin-bottom: 2px;">Go & Fiber</div>
+            <div style="font-size: 9px; opacity: 0.8; text-transform: uppercase;">Backend Engine</div>
+          </div>
+          <div class="hero-panel-item" style="background: rgba(255,255,255,0.08); grid-column: span 2;">
+            <div style="font-size: 12px; font-weight: 600;" id="hero-welcome-text">Selamat Datang di SIAKAD</div>
+          </div>
         </div>
       </div>
     </div>
@@ -231,68 +254,185 @@
   <div class="section">
     <p class="section-eyebrow">Direktori Modul</p>
     <h2 class="section-title">Akses semua layanan akademik</h2>
-    <div class="modules-grid">
+    
+    <!-- Kategori 1: Administrasi & Akademik -->
+    <div style="margin-bottom: 40px;">
+      <h3 style="font-size: 15px; font-weight: 700; color: var(--primary); border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Administrasi & Akademik Utama</h3>
+      <div class="modules-grid">
+        <a href="mahasiswa/daftar.html" class="module-card active">
+          <div class="module-num">1</div>
+          <div class="module-name">Data Mahasiswa</div>
+          <div class="module-desc">CRUD data mahasiswa, pengelolaan profil, dan login menggunakan OTP/No HP.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
 
-      <a href="mahasiswa/daftar.html" class="module-card active">
-        <div class="module-num">1</div>
-        <div class="module-name">Data Mahasiswa</div>
-        <div class="module-desc">CRUD mahasiswa & autentikasi berbasis nomor HP.</div>
-        <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
-      </a>
+        <a href="dosen/index.html" class="module-card active">
+          <div class="module-num">2</div>
+          <div class="module-name">Data Dosen</div>
+          <div class="module-desc">CRUD data dosen, bidang keahlian, jabatan fungsional, dan status pengajaran.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
 
-      <div class="module-card inactive">
-        <div class="module-num">2</div>
-        <div class="module-name">Data Dosen</div>
-        <div class="module-desc">CRUD dosen & jabatan fungsional.</div>
-        <div class="module-soon">Segera hadir</div>
+        <a href="absensi/index.html" class="module-card active">
+          <div class="module-num">3</div>
+          <div class="module-name">Presensi Kehadiran</div>
+          <div class="module-desc">Pencatatan absensi harian mahasiswa secara live serta statistik kehadiran kelas.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+
+        <a href="spp/index.html" class="module-card active">
+          <div class="module-num">4</div>
+          <div class="module-name">Tagihan Keuangan (SPP)</div>
+          <div class="module-desc">Pengecekan biaya perkuliahan, tagihan semesteran, dan riwayat transaksi keuangan.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
       </div>
+    </div>
 
-      <div class="module-card inactive">
-        <div class="module-num">3</div>
-        <div class="module-name">Mata Kuliah</div>
-        <div class="module-desc">CRUD mata kuliah & KRS mahasiswa.</div>
-        <div class="module-soon">Segera hadir</div>
+    <!-- Kategori 2: Layanan & Sumber Daya -->
+    <div style="margin-bottom: 40px;">
+      <h3 style="font-size: 15px; font-weight: 700; color: var(--primary); border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Tugas Akhir, Magang & Pengumuman</h3>
+      <div class="modules-grid">
+        <a href="skripsi/index.html" class="module-card active">
+          <div class="module-num">5</div>
+          <div class="module-name">Bimbingan Skripsi</div>
+          <div class="module-desc">Manajemen pendaftaran judul tugas akhir, log bimbingan, dan pengajuan sidang.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+
+        <a href="pkl/index.html" class="module-card active">
+          <div class="module-num">6</div>
+          <div class="module-name">Layanan PKL</div>
+          <div class="module-desc">Administrasi kerja praktik / PKL, verifikasi tempat magang, dan penilaian laporan.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+
+        <a href="pengumuman/index.html" class="module-card active">
+          <div class="module-num">7</div>
+          <div class="module-name">Papan Pengumuman</div>
+          <div class="module-desc">Penyebaran informasi resmi kampus, jadwal akademik penting, dan agenda kegiatan.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+
+        <a href="Modul-9/perpustakaan.html" class="module-card active">
+          <div class="module-num">8</div>
+          <div class="module-name">Sistem Perpustakaan</div>
+          <div class="module-desc">Katalog digital perpustakaan, status ketersediaan buku, dan riwayat sirkulasi.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
       </div>
+    </div>
 
-      <div class="module-card inactive">
-        <div class="module-num">4</div>
-        <div class="module-name">Jadwal Kuliah</div>
-        <div class="module-desc">Jadwal perkuliahan & ketersediaan ruangan.</div>
-        <div class="module-soon">Segera hadir</div>
+    <!-- Kategori 3: Kemahasiswaan -->
+    <div style="margin-bottom: 24px;">
+      <h3 style="font-size: 15px; font-weight: 700; color: var(--primary); border-left: 4px solid var(--primary); padding-left: 10px; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.5px;">Layanan & Aktivitas Kemahasiswaan</h3>
+      <div class="modules-grid">
+        <a href="beasiswa/index.html" class="module-card active">
+          <div class="module-num">9</div>
+          <div class="module-name">Program Beasiswa</div>
+          <div class="module-desc">Daftar info penawaran beasiswa aktif, pengiriman berkas, dan hasil seleksi.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+
+        <a href="notifikasi/index.html" class="module-card active">
+          <div class="module-num">10</div>
+          <div class="module-name">Notifikasi & Inbox</div>
+          <div class="module-desc">Kotak masuk notifikasi personal, peringatan akademik, dan riwayat pesan masuk.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+
+        <a href="prestasi/index.html" class="module-card active">
+          <div class="module-num">11</div>
+          <div class="module-name">Portofolio Prestasi</div>
+          <div class="module-desc">Pencatatan prestasi perlombaan, penghargaan ilmiah, seni, dan olahraga mahasiswa.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+
+        <a href="ormawa.html" class="module-card active">
+          <div class="module-num">12</div>
+          <div class="module-name">Ormawa & UKM</div>
+          <div class="module-desc">Direktori organisasi kemahasiswaan, agenda kegiatan UKM, dan kepengurusan.</div>
+          <div class="module-link">Buka modul <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg></div>
+        </a>
       </div>
-
-      <div class="module-card inactive">
-        <div class="module-num">5</div>
-        <div class="module-name">Nilai & Transkrip</div>
-        <div class="module-desc">Input nilai & rekap IPK mahasiswa.</div>
-        <div class="module-soon">Segera hadir</div>
-      </div>
-
-      <div class="module-card inactive">
-        <div class="module-num">6</div>
-        <div class="module-name">Absensi</div>
-        <div class="module-desc">Rekap kehadiran mahasiswa per matkul.</div>
-        <div class="module-soon">Segera hadir</div>
-      </div>
-
-      <div class="module-card inactive">
-        <div class="module-num">7</div>
-        <div class="module-name">Pengumuman</div>
-        <div class="module-desc">Board pengumuman kampus dengan kategori.</div>
-        <div class="module-soon">Segera hadir</div>
-      </div>
-
-      <div class="module-card inactive">
-        <div class="module-num">8+</div>
-        <div class="module-name">12 Modul Lainnya</div>
-        <div class="module-desc">Beasiswa, perpustakaan, prestasi, SPP, dan lainnya.</div>
-        <div class="module-soon">Segera hadir</div>
-      </div>
-
     </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="landing-footer-inner">
+      <span>Portal Informasi Akademik Terpadu</span>
+      <span>SIAKAD &copy; 2026 • Universitas Logistik & Bisnis Internasional</span>
+    </div>
+  </footer>
+
   <script src="shared/utils.js"></script>
-  <script></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Periksa Status Login Pengguna
+      const authButtons = document.getElementById("auth-buttons");
+      const heroLoginBtn = document.getElementById("hero-login-btn");
+      const heroWelcomeText = document.getElementById("hero-welcome-text");
+      const user = Auth.getUser();
+      
+      if (Auth.isLoggedIn() && user) {
+        const initials = getInitials(user.nama);
+        
+        // Update navbar button
+        authButtons.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="mahasiswa/profil.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+              <div class="avatar" style="width: 32px; height: 32px; font-size: 12px; font-weight: 700; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border);">
+                ${initials}
+              </div>
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">${user.nama.split(' ')[0]}</span>
+            </a>
+            <button onclick="handleLogout()" class="btn btn-secondary btn-sm" style="padding: 5px 10px; font-size: 11px;">Logout</button>
+          </div>
+        `;
+
+        // Update hero buttons
+        if (heroLoginBtn) {
+          heroLoginBtn.textContent = "Ke Profil Saya";
+          heroLoginBtn.href = "mahasiswa/profil.html";
+        }
+
+        // Update hero panel welcome
+        if (heroWelcomeText) {
+          heroWelcomeText.textContent = `Aktif: ${user.nama}`;
+        }
+      }
+
+      // 2. Periksa Status Server Backend
+      checkBackendStatus();
+      setInterval(checkBackendStatus, 15000); // periksa setiap 15 detik
+    });
+
+    function handleLogout() {
+      Auth.logout();
+      showToast("Berhasil keluar dari sistem", "info");
+      setTimeout(() => {
+        window.location.reload();
+      }, 800);
+    }
+
+    async function checkBackendStatus() {
+      const dot = document.getElementById("server-status-dot");
+      const text = document.getElementById("server-status-text");
+      try {
+        const response = await fetch(API_BASE + "/api", { method: 'GET' });
+        if (response.ok) {
+          dot.className = "server-dot online";
+          text.innerText = "Backend Online";
+        } else {
+          dot.className = "server-dot offline";
+          text.innerText = "Backend Error";
+        }
+      } catch (error) {
+        dot.className = "server-dot offline";
+        text.innerText = "Backend Offline";
+      }
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIAKAD — Progress Skripsi & Bimbingan</title>
+  <meta name="description" content="Halaman pengelolaan progress skripsi dan bimbingan mahasiswa - Portal Akademik Kampus">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #0f1117;
+      --bg-secondary: #1a1d2e;
+      --bg-card: #1e2235;
+      --bg-card-hover: #252a42;
+      --bg-input: #161929;
+      --border: #2a2f45;
+      --border-focus: #6366f1;
+      --text-primary: #e8eaf0;
+      --text-secondary: #8b8fa8;
+      --text-muted: #5c6078;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent-soft: rgba(99, 102, 241, 0.12);
+      --success: #22c55e;
+      --success-soft: rgba(34, 197, 94, 0.12);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.12);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.12);
+      --info: #3b82f6;
+      --info-soft: rgba(59, 130, 246, 0.12);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(99,102,241,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-logo {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.85rem; color: white;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .header h1 { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
+    .header p { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+    .header-back {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.82rem;
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: var(--transition);
+    }
+    .header-back:hover { background: rgba(255,255,255,0.08); color: white; }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(160deg, #1e1b4b 0%, #312e81 40%, #4f46e5 100%);
+      padding: 3.5rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(99,102,241,0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(168,85,247,0.1) 0%, transparent 40%);
+      animation: heroGlow 8s ease-in-out infinite alternate;
+    }
+    @keyframes heroGlow {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-2%, 2%) rotate(3deg); }
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .hero h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.4rem;
+      background: linear-gradient(135deg, #fff 0%, #c7d2fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p { font-size: 0.9rem; color: rgba(255,255,255,0.65); }
+
+    /* ===== TABS ===== */
+    .tabs-wrapper {
+      max-width: 1100px;
+      margin: -1.5rem auto 0;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 0.35rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .tab-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    /* ===== MAIN ===== */
+    .main {
+      max-width: 1100px;
+      margin: 1.5rem auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    .tab-panel { display: none; animation: fadeUp 0.35s ease; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== SECTION ===== */
+    .section {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+    }
+    .section:hover { border-color: rgba(99,102,241,0.2); }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      color: var(--text-primary);
+    }
+    .section-title .icon { font-size: 1.1rem; }
+
+    /* ===== FORM ===== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-input, .form-select, .form-textarea {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.7rem 0.9rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.85rem;
+      transition: var(--transition);
+      outline: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .form-select { cursor: pointer; }
+    .form-select option { background: var(--bg-secondary); }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      padding: 0.7rem 1.4rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      box-shadow: 0 2px 12px var(--accent-glow);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px var(--accent-glow); }
+    .btn-danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid rgba(239,68,68,0.2);
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+    .btn-sm { padding: 0.45rem 0.8rem; font-size: 0.75rem; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+    .form-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+
+    /* ===== TABLE ===== */
+    .table-wrapper { overflow-x: auto; border-radius: var(--radius-sm); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    th {
+      background: rgba(99,102,241,0.08);
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 0.72rem;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(42,47,69,0.5);
+      color: var(--text-primary);
+    }
+    tr { transition: var(--transition); }
+    tr:hover { background: rgba(99,102,241,0.04); }
+    .td-actions { display: flex; gap: 0.4rem; }
+
+    /* ===== BADGES ===== */
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-pengajuan { background: var(--info-soft); color: var(--info); }
+    .badge-berjalan { background: var(--warning-soft); color: var(--warning); }
+    .badge-revisi { background: var(--danger-soft); color: var(--danger); }
+    .badge-selesai { background: var(--success-soft); color: var(--success); }
+    .badge-menunggu { background: var(--warning-soft); color: var(--warning); }
+    .badge-disetujui { background: var(--success-soft); color: var(--success); }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .badge-pengajuan .badge-dot { background: var(--info); }
+    .badge-berjalan .badge-dot { background: var(--warning); }
+    .badge-revisi .badge-dot { background: var(--danger); }
+    .badge-selesai .badge-dot { background: var(--success); }
+    .badge-menunggu .badge-dot { background: var(--warning); }
+    .badge-disetujui .badge-dot { background: var(--success); }
+
+    /* ===== TIMELINE ===== */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0.55rem;
+      top: 0.5rem; bottom: 0.5rem;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--border));
+      border-radius: 2px;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.2rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .timeline-item:hover { border-color: rgba(99,102,241,0.3); }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.7rem; top: 1.15rem;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid var(--bg-primary);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .timeline-date { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+    .timeline-dosen { font-size: 0.78rem; color: var(--text-secondary); }
+    .timeline-catatan { font-size: 0.82rem; color: var(--text-primary); line-height: 1.5; }
+    .timeline-bab { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+    /* ===== SEARCH BAR ===== */
+    .search-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .search-bar .form-input { flex: 1; min-width: 200px; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.5; }
+    .empty-state p { font-size: 0.85rem; }
+
+    /* ===== TOAST ===== */
+    .toast-container {
+      position: fixed;
+      top: 1.5rem; right: 1.5rem;
+      z-index: 9999;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .toast {
+      padding: 0.8rem 1.2rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: white;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      animation: slideIn 0.35s ease, fadeOut 0.35s ease 2.8s forwards;
+      max-width: 360px;
+    }
+    .toast-success { background: linear-gradient(135deg, #16a34a, #15803d); }
+    .toast-error { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+
+    /* ===== LOADING ===== */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .header { padding: 0.8rem 1rem; }
+      .hero { padding: 2.5rem 1.2rem 2rem; }
+      .hero h2 { font-size: 1.3rem; }
+      .main { padding: 0 1rem 2rem; }
+      .tabs-wrapper { padding: 0 1rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .tabs { flex-direction: column; }
+      .td-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">S</div>
+    <div>
+      <h1>SIAKAD</h1>
+      <p>Portal Informasi Akademik</p>
+    </div>
+  </div>
+  <a href="/" class="header-back" id="nav-home">← Beranda</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-icon">📝</div>
+    <h2>Progress Skripsi & Bimbingan</h2>
+    <p>Kelola judul skripsi, pantau progress, dan catat sesi bimbingan</p>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="skripsi" id="tab-skripsi">📋 Data Skripsi</button>
+    <button class="tab-btn" data-tab="bimbingan" id="tab-bimbingan">📅 Riwayat Bimbingan</button>
+    <button class="tab-btn" data-tab="form-skripsi" id="tab-form-skripsi">➕ Daftarkan Skripsi</button>
+    <button class="tab-btn" data-tab="form-bimbingan" id="tab-form-bimbingan">✏️ Input Bimbingan</button>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- TAB 1: DATA SKRIPSI -->
+  <div class="tab-panel active" id="panel-skripsi">
+    <div class="section">
+      <div class="section-title"><span class="icon">📋</span> Daftar Skripsi Mahasiswa</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>NPM</th>
+              <th>Nama</th>
+              <th>Judul Skripsi</th>
+              <th>Pembimbing 1</th>
+              <th>Pembimbing 2</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="skripsi-table-body">
+            <tr><td colspan="7"><div class="empty-state"><div class="icon">📭</div><p>Memuat data skripsi...</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: RIWAYAT BIMBINGAN -->
+  <div class="tab-panel" id="panel-bimbingan">
+    <div class="section">
+      <div class="section-title"><span class="icon">🔍</span> Cari Riwayat Bimbingan</div>
+      <div class="search-bar">
+        <input type="text" class="form-input" id="search-bimbingan-npm" placeholder="Masukkan NPM mahasiswa...">
+        <button class="btn btn-primary" onclick="searchBimbingan()" id="btn-search-bimbingan">🔎 Cari</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title"><span class="icon">📅</span> Timeline Bimbingan</div>
+      <div id="bimbingan-timeline">
+        <div class="empty-state">
+          <div class="icon">🔍</div>
+          <p>Masukkan NPM untuk melihat riwayat bimbingan</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: FORM DAFTAR SKRIPSI -->
+  <div class="tab-panel" id="panel-form-skripsi">
+    <div class="section">
+      <div class="section-title"><span class="icon">➕</span> Daftarkan Judul Skripsi</div>
+      <form id="form-skripsi" onsubmit="submitSkripsi(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="sk-npm">NPM Mahasiswa</label>
+            <input type="text" class="form-input" id="sk-npm" placeholder="Contoh: 714240001" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sk-nama">Nama Mahasiswa</label>
+            <input type="text" class="form-input" id="sk-nama" placeholder="Nama lengkap" required>
+          </div>
+          <div class="form-group full">
+            <label class="form-label" for="sk-judul">Judul Skripsi</label>
+            <textarea class="form-textarea" id="sk-judul" placeholder="Masukkan judul skripsi..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sk-dosbing1">Dosen Pembimbing 1</label>
+            <input type="text" class="form-input" id="sk-dosbing1" placeholder="Nama dosen" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sk-nidn1">NIDN Pembimbing 1</label>
+            <input type="text" class="form-input" id="sk-nidn1" placeholder="NIDN dosen">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sk-dosbing2">Dosen Pembimbing 2 (Opsional)</label>
+            <input type="text" class="form-input" id="sk-dosbing2" placeholder="Nama dosen">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sk-nidn2">NIDN Pembimbing 2 (Opsional)</label>
+            <input type="text" class="form-input" id="sk-nidn2" placeholder="NIDN dosen">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sk-tanggal">Tanggal Daftar</label>
+            <input type="date" class="form-input" id="sk-tanggal" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sk-status">Status</label>
+            <select class="form-select" id="sk-status">
+              <option value="pengajuan">Pengajuan</option>
+              <option value="berjalan">Berjalan</option>
+              <option value="revisi">Revisi</option>
+              <option value="selesai">Selesai</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-submit-skripsi">💾 Simpan Skripsi</button>
+          <button type="reset" class="btn btn-ghost" id="btn-reset-skripsi">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TAB 4: FORM INPUT BIMBINGAN -->
+  <div class="tab-panel" id="panel-form-bimbingan">
+    <div class="section">
+      <div class="section-title"><span class="icon">✏️</span> Catat Sesi Bimbingan Baru</div>
+      <form id="form-bimbingan" onsubmit="submitBimbingan(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="bm-npm">NPM Mahasiswa</label>
+            <input type="text" class="form-input" id="bm-npm" placeholder="Contoh: 714240001" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bm-nidn">NIDN Dosen</label>
+            <input type="text" class="form-input" id="bm-nidn" placeholder="NIDN dosen pembimbing" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bm-dosen">Nama Dosen</label>
+            <input type="text" class="form-input" id="bm-dosen" placeholder="Nama dosen pembimbing" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bm-tanggal">Tanggal Bimbingan</label>
+            <input type="date" class="form-input" id="bm-tanggal" required>
+          </div>
+          <div class="form-group full">
+            <label class="form-label" for="bm-catatan">Catatan Bimbingan</label>
+            <textarea class="form-textarea" id="bm-catatan" placeholder="Ringkasan diskusi, arahan dosen, poin revisi..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bm-bab">Progress Bab (Opsional)</label>
+            <input type="text" class="form-input" id="bm-bab" placeholder="Contoh: Bab 3 - Metodologi">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bm-status">Status</label>
+            <select class="form-select" id="bm-status">
+              <option value="menunggu">Menunggu</option>
+              <option value="disetujui">Disetujui</option>
+              <option value="revisi">Revisi</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-submit-bimbingan">💾 Simpan Bimbingan</button>
+          <button type="reset" class="btn btn-ghost" id="btn-reset-bimbingan">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+  const API_BASE = (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+  ) ? 'http://localhost:8080' : 'https://dituniverse.alwaysdata.net';
+
+  // ===== TAB SWITCHING =====
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ===== TOAST =====
+  function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3200);
+  }
+
+  // ===== STATUS BADGE =====
+  function statusBadge(status) {
+    const s = (status || 'pengajuan').toLowerCase();
+    return '<span class="badge badge-' + s + '"><span class="badge-dot"></span>' + s + '</span>';
+  }
+
+  // ===== LOAD ALL SKRIPSI =====
+  async function loadSkripsi() {
+    const tbody = document.getElementById('skripsi-table-body');
+    try {
+      const res = await fetch(API_BASE + '/skripsi');
+      const json = await res.json();
+      if (json.status === 'success' && json.data && json.data.length > 0) {
+        tbody.innerHTML = json.data.map(s => `
+          <tr>
+            <td>${s.npm || '-'}</td>
+            <td>${s.nama_mahasiswa || '-'}</td>
+            <td style="max-width:260px">${s.judul || '-'}</td>
+            <td>${s.dosen_pembimbing_1 || '-'}</td>
+            <td>${s.dosen_pembimbing_2 || '-'}</td>
+            <td>${statusBadge(s.status)}</td>
+            <td>
+              <div class="td-actions">
+                <button class="btn btn-danger btn-sm" onclick="deleteSkripsi('${s.id}')" title="Hapus">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">📭</div><p>Belum ada data skripsi terdaftar</p></div></td></tr>';
+      }
+    } catch (err) {
+      tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">⚠️</div><p>Gagal memuat data: ' + err.message + '</p></div></td></tr>';
+    }
+  }
+
+  // ===== SUBMIT SKRIPSI =====
+  async function submitSkripsi(e) {
+    e.preventDefault();
+    const data = {
+      npm: document.getElementById('sk-npm').value.trim(),
+      nama_mahasiswa: document.getElementById('sk-nama').value.trim(),
+      judul: document.getElementById('sk-judul').value.trim(),
+      dosen_pembimbing_1: document.getElementById('sk-dosbing1').value.trim(),
+      nidn_pembimbing_1: document.getElementById('sk-nidn1').value.trim(),
+      dosen_pembimbing_2: document.getElementById('sk-dosbing2').value.trim(),
+      nidn_pembimbing_2: document.getElementById('sk-nidn2').value.trim(),
+      tanggal_daftar: document.getElementById('sk-tanggal').value,
+      status: document.getElementById('sk-status').value,
+    };
+
+    try {
+      const res = await fetch(API_BASE + '/skripsi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.status === 'success') {
+        showToast('Skripsi berhasil didaftarkan!');
+        document.getElementById('form-skripsi').reset();
+        loadSkripsi();
+        // Switch to data tab
+        document.querySelector('[data-tab="skripsi"]').click();
+      } else {
+        showToast(json.message || 'Gagal menyimpan data', 'error');
+      }
+    } catch (err) {
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+
+  // ===== DELETE SKRIPSI =====
+  async function deleteSkripsi(id) {
+    if (!confirm('Yakin ingin menghapus data skripsi ini?')) return;
+    try {
+      const res = await fetch(API_BASE + '/skripsi/' + id, { method: 'DELETE' });
+      const json = await res.json();
+      if (json.status === 'success') {
+        showToast('Data skripsi berhasil dihapus');
+        loadSkripsi();
+      } else {
+        showToast(json.message || 'Gagal menghapus', 'error');
+      }
+    } catch (err) {
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+
+  // ===== SEARCH BIMBINGAN =====
+  async function searchBimbingan() {
+    const npm = document.getElementById('search-bimbingan-npm').value.trim();
+    if (!npm) {
+      showToast('Masukkan NPM terlebih dahulu', 'error');
+      return;
+    }
+
+    const container = document.getElementById('bimbingan-timeline');
+    container.innerHTML = '<div class="empty-state"><div class="spinner"></div><p style="margin-top:0.75rem">Memuat data...</p></div>';
+
+    try {
+      const res = await fetch(API_BASE + '/bimbingan/' + npm);
+      const json = await res.json();
+      if (json.status === 'success' && json.data && json.data.length > 0) {
+        container.innerHTML = '<div class="timeline">' + json.data.map(b => `
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <div>
+                <span class="timeline-date">📅 ${b.tanggal || '-'}</span>
+                <span class="timeline-dosen"> — ${b.nama_dosen || b.nidn || 'Dosen'}</span>
+              </div>
+              ${statusBadge(b.status)}
+            </div>
+            <div class="timeline-catatan">${b.catatan || '-'}</div>
+            ${b.progress_bab ? '<div class="timeline-bab">📖 ' + b.progress_bab + '</div>' : ''}
+          </div>
+        `).join('') + '</div>';
+      } else {
+        container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>Belum ada riwayat bimbingan untuk NPM: ' + npm + '</p></div>';
+      }
+    } catch (err) {
+      container.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Gagal memuat data: ' + err.message + '</p></div>';
+    }
+  }
+
+  // ===== SUBMIT BIMBINGAN =====
+  async function submitBimbingan(e) {
+    e.preventDefault();
+    const data = {
+      npm: document.getElementById('bm-npm').value.trim(),
+      nidn: document.getElementById('bm-nidn').value.trim(),
+      nama_dosen: document.getElementById('bm-dosen').value.trim(),
+      tanggal: document.getElementById('bm-tanggal').value,
+      catatan: document.getElementById('bm-catatan').value.trim(),
+      progress_bab: document.getElementById('bm-bab').value.trim(),
+      status: document.getElementById('bm-status').value,
+    };
+
+    try {
+      const res = await fetch(API_BASE + '/bimbingan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.status === 'success') {
+        showToast('Sesi bimbingan berhasil dicatat!');
+        document.getElementById('form-bimbingan').reset();
+        // Switch to bimbingan tab
+        document.querySelector('[data-tab="bimbingan"]').click();
+        document.getElementById('search-bimbingan-npm').value = data.npm;
+        searchBimbingan();
+      } else {
+        showToast(json.message || 'Gagal menyimpan data', 'error');
+      }
+    } catch (err) {
+      showToast('Error: ' + err.message, 'error');
+    }
+  }
+
+  // Enter key triggers search
+  document.getElementById('search-bimbingan-npm').addEventListener('keypress', e => {
+    if (e.key === 'Enter') searchBimbingan();
+  });
+
+  // Set default date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('sk-tanggal').value = today;
+  document.getElementById('bm-tanggal').value = today;
+
+  // Load data on page load
+  loadSkripsi();
+</script>
+
+</body>
+</html>

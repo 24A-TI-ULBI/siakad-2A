@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul 17 - PKL & Laporan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen py-10 px-4">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+        <div class="border-b border-slate-100 pb-6 mb-8">
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Sistem Informasi PKL & Laporan</h1>
+            <p class="text-sm text-slate-500 mt-1">Modul 17 • Manajemen Praktik Kerja Lapangan & Penilaian</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-6">
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">1. Pendaftaran PKL Baru</h3>
+                    <form id="form-pkl" class="space-y-3">
+                        <input type="text" id="npm" placeholder="NPM Mahasiswa" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" required>
+                        <input type="text" id="perusahaan" placeholder="Nama Perusahaan Tujuan" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" required>
+                        <input type="text" id="periode" placeholder="Periode (Contoh: JKT-2026)" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" required>
+                        <input type="text" id="pembimbing" placeholder="Nama Dosen Pembimbing" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" required>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg text-sm transition shadow-sm">Daftarkan PKL</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">2. Pengajuan Laporan</h3>
+                    <form id="form-laporan" class="space-y-3">
+                        <input type="text" id="lap-npm" placeholder="Masukkan NPM Anda" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" required>
+                        <input type="text" id="lap-url" placeholder="Link URL Laporan (Drive/GitHub)" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" required>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded-lg text-sm transition shadow-sm">Submit Laporan</button>
+                    </form>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-2">3. Cek Nilai PKL</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="search-nilai-id" placeholder="Masukkan ID Laporan" class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                        <button id="btn-cek-nilai" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm">Cek</button>
+                    </div>
+                    <p id="txt-nilai" class="text-sm font-semibold text-emerald-600 mt-3"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-10 border-t border-slate-100 pt-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-900">Data & Status PKL Mahasiswa</h3>
+                <button id="btn-refresh" class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition">🔄 Refresh Data</button>
+            </div>
+            <div class="overflow-x-auto border border-slate-100 rounded-xl">
+                <table class="w-full text-sm text-left text-slate-600">
+                    <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-4 py-3">NPM</th>
+                            <th class="px-4 py-3">Perusahaan</th>
+                            <th class="px-4 py-3">Periode</th>
+                            <th class="px-4 py-3">Pembimbing</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-pkl" class="divide-y divide-slate-100 bg-white">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Sesuaikan dengan alamat port server Go Anda
+        // Biarkan mendeteksi otomatis port dan host tempat aplikasi berjalan
+        const BASE_URL = (
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1'
+        ) ? 'http://localhost:8080' : 'https://dituniverse.alwaysdata.net';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            window.loadAllPKL();
+            document.getElementById("form-pkl").addEventListener("submit", daftarPKL);
+            document.getElementById("form-laporan").addEventListener("submit", submitLaporan);
+            document.getElementById("btn-refresh").addEventListener("click", window.loadAllPKL);
+            document.getElementById("btn-cek-nilai").addEventListener("click", cekNilai);
+        });
+
+        // 1. GET ALL DATA PKL (Diikat ke window agar bisa dipanggil tombol refresh)
+        window.loadAllPKL = function() {
+            fetch(`${BASE_URL}/pkl`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Respon server tidak oke");
+                    return res.json();
+                })
+                .then(response => {
+                    const tbody = document.getElementById("table-pkl");
+                    if (!tbody) return;
+                    
+                    tbody.innerHTML = "";
+                    if (!response.data || response.data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-slate-400 text-sm">Belum ada data pendaftaran PKL.</td></tr>`;
+                        return;
+                    }
+                    
+                    response.data.forEach(item => {
+                        const badge = item.status === 'Disetujui' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200';
+                        // Ambil ID hex string dengan aman baik dari MongoDB asli maupun mock data
+                        const itemId = item.id ? item.id : '';
+                        
+                        const row = `
+                            <tr class="hover:bg-slate-50/70 transition text-sm text-slate-600">
+                                <td class="px-4 py-3.5 font-medium text-slate-900">${item.npm || '-'}</td>
+                                <td class="px-4 py-3.5">${item.perusahaan || '-'}</td>
+                                <td class="px-4 py-3.5">${item.periode || '-'}</td>
+                                <td class="px-4 py-3.5">${item.pembimbing || '-'}</td>
+                                <td class="px-4 py-3.5"><span class="px-2.5 py-0.5 rounded-full text-xs font-medium border ${badge}">${item.status || 'Pending'}</span></td>
+                                <td class="px-4 py-3.5 text-center space-x-1">
+                                    <button onclick="window.updateStatusPKL('${itemId}', 'Disetujui')" class="bg-emerald-600 text-white text-xs px-2.5 py-1.5 rounded-md hover:bg-emerald-700 transition shadow-sm">Approve</button>
+                                    <button onclick="window.hapusPKL('${itemId}')" class="text-rose-600 text-xs px-2.5 py-1.5 rounded-md hover:bg-rose-50 transition">Hapus</button>
+                                </td>
+                            </tr>`;
+                        tbody.insertAdjacentHTML("beforeend", row);
+                    });
+                })
+                .catch(err => {
+                    console.error("Gagal mengambil data:", err);
+                    const tbody = document.getElementById("table-pkl");
+                    if (tbody) {
+                        tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-6 text-center text-rose-500 text-sm">Gagal memuat data dari server backend Go.</td></tr>`;
+                    }
+                });
+        }
+
+        // 2. POST REGISTER PKL
+        function daftarPKL(e) {
+            e.preventDefault();
+            const payload = {
+                npm: document.getElementById("npm").value,
+                perusahaan: document.getElementById("perusahaan").value,
+                periode: document.getElementById("periode").value,
+                pembimbing: document.getElementById("pembimbing").value,
+                status: "Pending"
+            };
+
+            fetch(`${BASE_URL}/pkl`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) { 
+                    alert("Sukses mendaftar!"); 
+                    document.getElementById("form-pkl").reset(); 
+                    window.loadAllPKL(); 
+                } else {
+                    alert("Gagal menyimpan: " + res.message);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Terjadi eror jaringan saat mendaftar!");
+            });
+        }
+
+        // 3. POST SUBMIT LAPORAN
+        function submitLaporan(e) {
+            e.preventDefault();
+            const payload = {
+                npm: document.getElementById("lap-npm").value,
+                url_laporan: document.getElementById("lap-url").value,
+                nilai: 0, 
+                keterangan: "Belum Dinilai"
+            };
+
+            fetch(`${BASE_URL}/pkl/laporan`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) { 
+                    alert(`Sukses! Catat ID Laporan Anda: ${res.data.id}`); 
+                    document.getElementById("form-laporan").reset(); 
+                } else {
+                    alert("Gagal submit laporan");
+                }
+            })
+            .catch(err => alert("Eror jaringan saat submit laporan!"));
+        }
+
+        // 4. PUT UPDATE STATUS (Diikat ke window agar bisa diakses atribut onclick HTML)
+        window.updateStatusPKL = function(id, status) {
+            if(!id) return alert("ID data tidak valid");
+            fetch(`${BASE_URL}/pkl/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status })
+            })
+            .then(res => res.json())
+            .then(() => window.loadAllPKL())
+            .catch(err => console.error("Gagal update status:", err));
+        }
+
+        // 5. DELETE DATA PKL (Diikat ke window agar bisa diakses atribut onclick HTML)
+        window.hapusPKL = function(id) {
+            if(!id) return alert("ID data tidak valid");
+            if(confirm("Hapus data pendaftaran ini?")) {
+                fetch(`${BASE_URL}/pkl/${id}`, { method: "DELETE" })
+                .then(res => res.json())
+                .then(() => window.loadAllPKL())
+                .catch(err => console.error("Gagal menghapus data:", err));
+            }
+        }
+
+        // 6. GET NILAI LAPORAN
+        function cekNilai() {
+            const id = document.getElementById("search-nilai-id").value;
+            if(!id) return;
+            fetch(`${BASE_URL}/pkl/laporan/${id}/nilai`)
+                .then(res => res.json())
+                .then(res => {
+                    const el = document.getElementById("txt-nilai");
+                    if(res.data) el.innerText = `Nilai: ${res.data.nilai} (${res.data.keterangan})`;
+                    else el.innerText = "ID tidak ditemukan atau belum dinilai.";
+                })
+                .catch(err => console.error("Gagal mengecek nilai:", err));
+        }
+    </script>
+</body>
+</html>
