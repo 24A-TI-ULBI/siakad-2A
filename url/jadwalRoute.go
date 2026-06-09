@@ -7,14 +7,14 @@ import (
 )
 
 func JadwalRoute(app *fiber.App) {
-	jadwal := app.Group("/jadwal")
+	jadwal := app.Group("/api/jadwal")
 	jadwal.Get("", controller.GetAllJadwal)
 	jadwal.Post("", controller.CreateJadwal)
 	jadwal.Get("/:id", controller.GetJadwalByID)
 	jadwal.Put("/:id", controller.UpdateJadwal)
 	jadwal.Delete("/:id", controller.DeleteJadwal)
 
-	ruangan := app.Group("/ruangan")
+	ruangan := app.Group("/api/ruangan")
 	ruangan.Get("", controller.GetAllRuangan)
 	ruangan.Post("", controller.CreateRuangan)
 	ruangan.Get("/:kode", controller.GetRuanganByKode)
