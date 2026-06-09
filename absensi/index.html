@@ -523,6 +523,34 @@
             };
         }
 
+        function readCachedAttendances() {
+            try {
+                return normalizeAttendanceData(JSON.parse(localStorage.getItem("absensi_mod6_db") || "[]")) || [];
+            } catch (err) {
+                console.error("Local cache error:", err);
+                return [];
+            }
+        }
+
+        function isDemoOrLocalOnlyAttendance(log) {
+            return String(log && log.id ? log.id : "").startsWith("log-");
+        }
+
+        function mergeAttendanceData(serverAttendances, cachedAttendances) {
+            const merged = [];
+            const seen = new Set();
+
+            [...serverAttendances, ...cachedAttendances.filter(log => !isDemoOrLocalOnlyAttendance(log))].forEach(log => {
+                const key = log.id || `${log.npm}-${log.matkulCode}-${log.tanggal}-${log.timestamp}-${log.status}`;
+                if (seen.has(key)) return;
+
+                seen.add(key);
+                merged.push(log);
+            });
+
+            return merged;
+        }
+
         function loadLocalDatabase() {
             const localData = localStorage.getItem("absensi_mod6_db");
             if (localData && JSON.parse(localData).length > 0) {
@@ -840,7 +868,9 @@
         }
 
         function fetchLiveAttendances() {
-            fetch(`${API_BASE}/absensi/all`)
+            fetch(`${API_BASE}/absensi/all?_=${Date.now()}`, {
+                cache: "no-store"
+            })
             .then(res => {
                 if (!res.ok) throw new Error("Gagal memuat data dari server");
                 return res.json();
@@ -848,7 +878,7 @@
             .then(data => {
                 const attendances = normalizeAttendanceData(data);
                 if (attendances) {
-                    state.attendances = attendances;
+                    state.attendances = mergeAttendanceData(attendances, readCachedAttendances());
                     saveToLocalDb();
                     updateApiStatusBadge(true);
                     renderActiveTab();
