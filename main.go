@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"backend/config"
+	"backend/helper"
 	"backend/url"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,6 +14,9 @@ import (
 func main() {
 	// Load .env
 	config.InitConfig()
+
+	// Init MongoDB connection (singleton)
+	helper.InitDB()
 
 	// Init Fiber
 	app := fiber.New(config.FiberConfig)

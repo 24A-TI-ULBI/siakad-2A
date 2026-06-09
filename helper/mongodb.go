@@ -2,6 +2,7 @@ package helper
 
 import (
 	"context"
+	"log"
 	"net"
 	"os"
 	"strconv"
@@ -71,21 +72,48 @@ func GetCollection(collectionName string) *mongo.Collection {
 	return GetDB().Collection(collectionName)
 }
 
-// GetDB returns the main *mongo.Database instance dari config.
-func GetDB() *mongo.Database {
+// Singleton: satu koneksi MongoDB untuk seluruh lifetime server
+var dbInstance *mongo.Database
+
+// InitDB menginisialisasi koneksi MongoDB sekali saat startup.
+// Wajib dipanggil di main.go sebelum server listen.
+func InitDB() {
 	dbName := os.Getenv("MONGODB_NAME")
 	if dbName == "" {
 		dbName = "kampus"
 	}
+	connStr := os.Getenv("MONGOSTRING")
+	if connStr == "" {
+		log.Fatal("MONGOSTRING env variable kosong! Isi di file .env")
+	}
+
 	mconn := model.DBInfo{
-		DBString: os.Getenv("MONGOSTRING"),
+		DBString: connStr,
 		DBName:   dbName,
 	}
+
 	db, err := MongoConnect(mconn)
 	if err != nil {
-		panic("Gagal koneksi MongoDB: " + err.Error())
+		log.Fatalf("Gagal koneksi MongoDB saat init: %v", err)
 	}
-	return db
+
+	// Ping untuk memastikan koneksi benar-benar aktif
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := db.Client().Ping(ctx, nil); err != nil {
+		log.Fatalf("MongoDB Ping gagal: %v", err)
+	}
+
+	dbInstance = db
+	log.Println("✅ MongoDB berhasil terkoneksi ke database:", dbName)
+}
+
+// GetDB returns the main *mongo.Database instance dari config.
+func GetDB() *mongo.Database {
+	if dbInstance == nil {
+		InitDB()
+	}
+	return dbInstance
 }
 
 // GetContext returns a context with timeout for MongoDB operations
