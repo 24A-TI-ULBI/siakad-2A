@@ -513,6 +513,16 @@
             }));
         }
 
+        function normalizeAttendanceItem(payload) {
+            const log = payload && payload.data ? payload.data : payload;
+            if (!log || typeof log !== "object") return null;
+
+            return {
+                ...log,
+                id: log.id || log._id
+            };
+        }
+
         function loadLocalDatabase() {
             const localData = localStorage.getItem("absensi_mod6_db");
             if (localData && JSON.parse(localData).length > 0) {
@@ -753,8 +763,19 @@
                 return res.json();
             })
             .then(data => {
+                const savedAttendance = normalizeAttendanceItem(data) || {
+                    ...newAbsen,
+                    id: `log-${Date.now()}`
+                };
+
+                state.attendances = [
+                    savedAttendance,
+                    ...state.attendances.filter(log => log.id !== savedAttendance.id)
+                ];
+                saveToLocalDb();
+                updateApiStatusBadge(true);
+                renderActiveTab();
                 showToast("Absensi berhasil terkirim ke server Go!", "success");
-                fetchLiveAttendances();
             })
             .catch(err => {
                 console.error("API error:", err);
