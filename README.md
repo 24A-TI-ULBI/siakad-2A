@@ -1,16 +1,16 @@
-# SIAKAD — Modul 3: Mata Kuliah & KRS
+# SIAKAD — Modul 4: Jadwal & Ruangan
 
-Nama: Affifah Putri Deza  
-NPM: 714240014  
+Nama: Alifya Azzahra  
+NPM: [Isi NPM Kamu]  
 Mata Kuliah: Pemrograman Web Service  
-Modul: 3 — Mata Kuliah & KRS  
+Modul: 4 — Jadwal & Ruangan  
 
 ---
 
 # Deskripsi
 
-Aplikasi web fullstack berbasis REST API untuk pengelolaan data mata kuliah dan pengisian KRS mahasiswa.  
-Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript sebagai frontend.
+Aplikasi web fullstack berbasis REST API untuk pengelolaan data jadwal perkuliahan dan ruangan kelas di kampus.  
+Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript sebagai frontend dashboard yang modern.
 
 ---
 
@@ -27,198 +27,132 @@ Dibangun menggunakan Go Fiber v2 sebagai backend dan Vanilla HTML/CSS/JavaScript
 
 ---
 
-# Struktur Folder
+# Struktur Folder Modul
 
 ```bash
-714240014/
+siakad-2A/
 ├── controller/
-│   ├── controller.go
-│   └── jadwalController.go
+│   └── jadwalController.go     # Logic CRUD Jadwal & Ruangan
 │
 ├── model/
-│   ├── model.go
-│   └── jadwal.go
+│   └── jadwal.go               # Struct model data MongoDB
 │
 ├── url/
-│   ├── jadwalRoute.go
-│   └── url.go
+│   ├── jadwalRoute.go          # Registrasi Group Endpoint /api
+│   └── url.go                  # Integrasi route utama
 │
 ├── frontend/
 │   └── jadwal/
-│       └── index.html
-│
-├── config/
-├── helper/
-├── main.go
-├── go.mod
-├── go.sum
-└── .env
+│       └── index.html          # UI Dashboard interaktif
 ```
 
 ---
 
-# Alur Pengerjaan
+# Cara Menjalankan Secara Lokal
 
-```mermaid
-flowchart TD
-    A([Mulai]) --> B[Clone Repository SIAKAD]
-    B --> C[Checkout Branch jadwal]
-    C --> D[Menjalankan Project Go Fiber]
-    D --> E[Membuat Model Jadwal]
-    E --> F[Membuat Controller Jadwal]
-    F --> G[Membuat Route Jadwal]
-    G --> H[Integrasi Route ke url.go]
-    H --> I[Membuat Frontend Jadwal]
-    I --> J[Membuat Fitur Tambah Data]
-    J --> K[Membuat Fitur Edit Data]
-    K --> L[Membuat Fitur Delete Data]
-    L --> M[Testing CRUD Jadwal]
-    M --> N[Git Add & Commit]
-    N --> O[Push Branch jadwal]
-    O --> P[Create Pull Request]
-    P --> Q([Selesai])
-```
-
----
-
-# Environment Variables
-
-Buat file `.env` di root project:
-
-```env
-MONGOSTRING=mongodb+srv://username:password@cluster.mongodb.net/
-MONGODB_NAME=kampus
-PORT=8080
-IP=127.0.0.1
-```
-
----
-
-# Cara Menjalankan
-
-## Install Dependency
-
+## 1. Install Dependency
 ```bash
 go mod tidy
 ```
 
----
-
-## Jalankan Server
-
+## 2. Jalankan Server
 ```bash
 go run main.go
 ```
 
----
-
-## Buka Browser
-
-```bash
-http://127.0.0.1:8080/jadwal
-```
+## 3. Akses Halaman
+* Halaman Portal Utama: `http://127.0.0.1:8080/`
+* Halaman Modul Jadwal: `http://127.0.0.1:8080/jadwal/`
 
 ---
 
-# Dokumentasi API
+# Dokumentasi API (Base URL: http://127.0.0.1:8080)
 
-## Base URL
+## Endpoint Jadwal Kuliah
 
-```bash
-http://127.0.0.1:8080
-```
-
----
-
-# Endpoint Jadwal Mata Kuliah
-
-## GET /api/jadwal
-
-Mengambil semua data mata kuliah.
-
-### Response
-
-```json
-[
+### 1. GET `/api/jadwal`
+Mengambil semua data jadwal kuliah (bisa difilter berdasarkan query parameter `prodi` dan `dosen`).
+* **Query Params (Opsional):** `prodi=Teknik` atau `dosen=Budi`
+* **Response Sukses (200 OK):**
+  ```json
   {
-    "kode": "IF101",
-    "nama": "Pemrograman Web",
-    "dosen": "Pak Budi",
-    "hari": "Senin",
-    "jam": "08:00 - 10:00",
-    "ruangan": "Lab Komputer 1",
-    "sks": 3,
-    "semester": 2
+    "status": "success",
+    "message": "Jadwal berhasil diambil",
+    "data": [
+      {
+        "_id": "60c72b2f9b1d8b2c8c8b4567",
+        "mata_kuliah": "Pemrograman Web Service",
+        "dosen": "Romi",
+        "prodi": "D4 Teknik Informatika",
+        "hari": "Selasa",
+        "jam_mulai": "08:00",
+        "jam_selesai": "09:40",
+        "ruangan_kode": "LAB-312"
+      }
+    ]
   }
-]
-```
+  ```
+
+### 2. POST `/api/jadwal`
+Menambahkan data jadwal kuliah baru.
+* **Request Body:**
+  ```json
+  {
+    "mata_kuliah": "Kriptografi",
+    "dosen": "Indra",
+    "prodi": "D4 Teknik Informatika",
+    "hari": "Rabu",
+    "jam_mulai": "10:00",
+    "jam_selesai": "11:40",
+    "ruangan_kode": "LAB-315"
+  }
+  ```
+
+### 3. GET `/api/jadwal/:id`
+Mengambil data jadwal spesifik berdasarkan ObjectID.
+
+### 4. PUT `/api/jadwal/:id`
+Memperbarui data jadwal berdasarkan ObjectID.
+
+### 5. DELETE `/api/jadwal/:id`
+Menghapus data jadwal berdasarkan ObjectID.
 
 ---
 
-## POST /api/jadwal
+## Endpoint Ruangan Kelas
 
-Menambahkan data mata kuliah baru.
+### 1. GET `/api/ruangan`
+Mengambil semua daftar ruangan kelas.
 
-### Request Body
+### 2. POST `/api/ruangan`
+Menambahkan ruangan kelas baru.
+* **Request Body:**
+  ```json
+  {
+    "nama": "Lab Vokasi 312",
+    "kode": "LAB-312",
+    "kapasitas": 35,
+    "gedung": "School of Information Technology",
+    "fasilitas": ["AC", "Proyektor", "Komputer"]
+  }
+  ```
 
-```json
-{
-  "kode": "IF106",
-  "nama": "Networking",
-  "dosen": "Pak Andi",
-  "hari": "Rabu",
-  "jam": "10:00 - 12:00",
-  "ruangan": "Lab Jaringan",
-  "sks": 3,
-  "semester": 1
-}
-```
+### 3. GET `/api/ruangan/:kode`
+Mengambil data ruangan spesifik berdasarkan kode ruangan.
 
----
+### 4. PUT `/api/ruangan/:kode`
+Memperbarui data ruangan berdasarkan kode ruangan.
 
-## PUT /api/jadwal/:kode
-
-Mengupdate data mata kuliah berdasarkan kode.
-
-### Request Body
-
-```json
-{
-  "kode": "IF101",
-  "nama": "Rekayasa Perangkat Lunak",
-  "dosen": "Bu Sinta",
-  "hari": "Kamis",
-  "jam": "13:00 - 15:00",
-  "ruangan": "Lab Software",
-  "sks": 2,
-  "semester": 1
-}
-```
+### 5. DELETE `/api/ruangan/:kode`
+Menghapus data ruangan berdasarkan kode ruangan.
 
 ---
 
-## DELETE /api/jadwal/:kode
+# Fitur Modul 4
 
-Menghapus data mata kuliah berdasarkan kode.
-
----
-
-# Frontend
-
-| Halaman | URL | Fungsi |
-|---|---|---|
-| Jadwal | /jadwal | Kelola data mata kuliah & pengisian KRS |
-
----
-
-# Fitur
-
-✅ CRUD Data Mata Kuliah  
-✅ Tambah Mata Kuliah  
-✅ Edit Mata Kuliah  
-✅ Delete Mata Kuliah  
-✅ Pengisian KRS Mahasiswa  
-✅ Search Mata Kuliah  
-✅ Responsive UI  
-✅ REST API Fiber v2  
-✅ Frontend Interaktif  
+✅ **CRUD Jadwal Kuliah**: Tambah, edit, hapus, dan cari jadwal kuliah secara dinamis.  
+✅ **CRUD Ruangan Kelas**: Kelola ruangan kelas beserta kapasitas, gedung, dan fasilitas.  
+✅ **Validasi ObjectID**: Penanganan validasi ObjectID hex secara aman.  
+✅ **Fallback Static Routing**: Pencegahan tabrakan route statis `/jadwal/index.html` dengan API.  
+✅ **Responsive & Beautiful Dashboard UI**: Desain antarmuka premium dengan animasi transisi yang halus dan dark mode elements.  
+✅ **API Gateway /api**: Route API terorganisir di bawah prefix `/api` yang bersih.  
